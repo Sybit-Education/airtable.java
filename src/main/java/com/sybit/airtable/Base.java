@@ -32,6 +32,17 @@ class Base {
 
     /**
      *
+     * @param base
+     * @param airtable
+     */
+    public Base(String base, Airtable airtable) {
+        this(base);
+
+        setParent(airtable);
+    }
+
+    /**
+     *
      * @param parent
      */
     void setParent(Airtable parent) {
