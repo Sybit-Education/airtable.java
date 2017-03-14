@@ -115,9 +115,29 @@ public class Airtable {
      * @return the base object.
      */
     public Base base() throws AirtableException {
-        String property = "AirtableBase";
+        String property = "AIRTABLE_BASE";
         LOG.log(Level.CONFIG, "Using Java property '-D" + property + "' to get key.");
         String val = System.getProperty(property);
+
+        if(val == null) {
+            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + property + "' to get apikey.");
+            val = System.getenv(property);
+        }
+        if(val == null) {
+            String file = "/credentials.properties";
+            LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + property + "' to get apikey.");
+
+            try {
+                Properties prop = new Properties();
+                InputStream in = getClass().getResourceAsStream(file);
+                prop.load(in);
+                in.close();
+                val = prop.getProperty(property);
+            } catch (IOException | NullPointerException e) {
+                LOG.throwing(this.getClass().getName(), "configure", e);
+            }
+        }
+
 
         return base(val);
     }
