@@ -50,7 +50,7 @@ public class TableTest {
         assertNotNull(q);
     }
 
-    @Test(expected = HttpResponseException.class)
+    @Test(expected = AirtableException.class)
     public void testFindNotFound() throws AirtableException, HttpResponseException {
 
         Base base = airtable.configure().base();
