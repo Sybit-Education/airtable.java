@@ -12,6 +12,9 @@ import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import org.apache.http.HttpHost;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,8 +26,8 @@ public class Airtable {
     private static final Logger LOG = Logger.getLogger( Airtable.class.getName() );
     private static final String ENDPOINT_URL = "https://api.airtable.com/v0";
 
-    private static String  endpointUrl;
-    private static String apiKey;
+    private String  endpointUrl;
+    private String apiKey;
 
     /**
      * Configure, using java property vareiable 'AirtableAPI' to set API-Key.
@@ -32,9 +35,28 @@ public class Airtable {
      * @return
      */
     public Airtable configure() throws AirtableException {
-        String property = "AirtableApi";
-        LOG.log(Level.CONFIG, "Using Java property '-D" + property + "' to get key.");
-        final String airtableApi = System.getProperty(property);
+        String property = "AIRTABLE_API_KEY";
+        LOG.log(Level.CONFIG, "System-Property: Using Java property '-D" + property + "' to get apikey.");
+        String airtableApi = System.getProperty(property);
+
+        if(airtableApi == null) {
+            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + property + "' to get apikey.");
+            airtableApi = System.getenv(property);
+        }
+        if(airtableApi == null) {
+            String file = "credentials.properties";
+            LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + property + "' to get apikey.");
+
+            try {
+                Properties prop = new Properties();
+                InputStream in = getClass().getResourceAsStream(file);
+                prop.load(in);
+                in.close();
+                airtableApi = prop.getProperty(property);
+            } catch (IOException | NullPointerException e) {
+                LOG.throwing(this.getClass().getName(), "configure", e);
+            }
+        }
 
         return this.configure(airtableApi);
     }
@@ -57,10 +79,10 @@ public class Airtable {
      */
     public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
         if(apiKey == null) {
-            throw new AirtableException("apiKey was null");
+            throw new AirtableException("Missing Airtable API-Key");
         }
         if(endpointUrl == null) {
-            throw new AirtableException("endpointUrl was null");
+            throw new AirtableException("Missing endpointUrl");
         }
 
         this.apiKey = apiKey;
