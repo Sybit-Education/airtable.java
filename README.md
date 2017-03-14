@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/Sybit-Education/airtable.java.svg?branch=master)](https://travis-ci.org/Sybit-Education/airtable.java)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+
+
 # Airtable.java
 
 Java API for Airtable (http://www.airtable.com). The Airtable API provides a simple way of accessing your data within your Java project.
