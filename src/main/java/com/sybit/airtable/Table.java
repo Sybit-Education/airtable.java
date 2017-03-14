@@ -46,6 +46,17 @@ class Table<T> {
 
     /**
      *
+     * @param name
+     * @param type
+     * @param base
+     */
+    public Table(String name, Class<T> type, Base base){
+        this(name, type);
+        setParent(base);
+    }
+
+    /**
+     *
      * @param parent
      */
     public void setParent(Base parent) {
