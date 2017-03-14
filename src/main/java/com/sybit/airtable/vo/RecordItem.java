@@ -1,9 +1,15 @@
+/*
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ */
 package com.sybit.airtable.vo;
 
 import java.util.Map;
 
 /**
- * Created by Stephan on 07.03.2017.
+ *
  */
 public class RecordItem {
     private String id;
