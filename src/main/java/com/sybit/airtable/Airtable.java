@@ -44,7 +44,7 @@ public class Airtable {
             airtableApi = System.getenv(property);
         }
         if(airtableApi == null) {
-            String file = "credentials.properties";
+            String file = "/credentials.properties";
             LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + property + "' to get apikey.");
 
             try {
