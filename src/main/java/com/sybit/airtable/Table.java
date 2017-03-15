@@ -25,7 +25,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Representation Class of Airtable Tables.
  *
+ * @since 0.1
  */
 class Table<T> {
 
@@ -122,7 +124,6 @@ class Table<T> {
                 .header("Authorization", "Bearer " + base().airtable().apiKey())
                 .asObject(RecordItem.class);
             int code = response.getStatus();
-            //InputStream rawBody = response.getRawBody();
             if(200 == code) {
                 body = response.getBody();
             } else if(404 == code) {
@@ -174,11 +175,11 @@ class Table<T> {
     }
 
     /**
-     *
-     * @return
+     * Get the endpoint for the specified table.
+     * @return URL of tables endpoint.
      */
     private String getTableEndpointUrl() {
-        String url = base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
+        final String url = base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
 
         return  url;
     }
@@ -271,7 +272,7 @@ class Table<T> {
      * @param property
      * @return
      */
-    static boolean propertyExists (Object bean, String property) {
+    private static boolean propertyExists (Object bean, String property) {
         return PropertyUtils.isReadable(bean, property) &&
                 PropertyUtils.isWriteable(bean, property);
     }

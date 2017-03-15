@@ -12,9 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Representation Class of Airtable Base.
  *
+ * @since 0.1
  */
-class Base {
+public class Base {
 
     private Map<String, Table> tableMap = new HashMap<>();
 
@@ -23,44 +25,46 @@ class Base {
     private Airtable parent;
 
     /**
+     * Create Airtable Base with given base ID.
      *
-     * @param base
+     * ID could be found at https://airtable.com if you select your current base.
+     * @param base base ID could be found at https://airtable.com if you select your current base.
      */
     public Base(String base) {
         this.base = base;
     }
 
     /**
+     * Create Airtable Base with given base ID.
      *
-     * @param base
-     * @param airtable
+     * @param base base ID could be found at https://airtable.com if you select your current base.
+     * @param airtable parent airtable object
      */
     public Base(String base, Airtable airtable) {
         this(base);
-
         setParent(airtable);
     }
 
     /**
-     *
-     * @param parent
+     * Set Airtable object as parent.
+     * @param parent the base Airtable object.
      */
-    void setParent(Airtable parent) {
+    protected void setParent(Airtable parent) {
         this.parent = parent;
     }
 
     /**
-     *
+     * Get Airtable object as parent.
      * @return
      */
-    Airtable airtable() {
+    public Airtable airtable() {
         return parent;
     }
 
     /**
-     *
-     * @param name
-     * @return
+     * Get Table object of given table.
+     * @param name Name of required table.
+     * @return Object to access table.
      */
     public Table table(String name) {
 
@@ -68,10 +72,10 @@ class Base {
     }
 
     /**
-     *
-     * @param name
+     * Get Table object of given table.
+     * @param name Name of required table.
      * @param clazz
-     * @return
+     * @return Object to access table.
      */
     public Table table(String name, Class clazz) {
 
@@ -85,8 +89,8 @@ class Base {
     }
 
     /**
-     *
-     * @return
+     * Get base id of base.
+     * @return base id
      */
     public String name() {
         return base;

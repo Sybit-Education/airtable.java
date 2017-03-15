@@ -20,7 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Representation Class of Airtable.
+ * It is the entry class to access Airtable data.
  *
+ * @since 0.1
  */
 public class Airtable {
 

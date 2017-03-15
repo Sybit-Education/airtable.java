@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 /**
  * General Exception of API.
  *
+ * @since 0.1
  */
 public class AirtableException extends Exception {
     private static final Logger LOG = Logger.getLogger( AirtableException.class.getName() );
