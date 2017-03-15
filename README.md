@@ -14,8 +14,8 @@ Java API for Airtable (http://www.airtable.com). The Airtable API provides a sim
 
 ### API-Key
 The API key could be passed to the app by 
-+ defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`
-+ defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`
++ defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
++ defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
 + defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
 + On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
 

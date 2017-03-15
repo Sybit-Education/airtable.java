@@ -23,47 +23,47 @@ import java.util.logging.Logger;
  * Representation Class of Airtable.
  * It is the entry class to access Airtable data.
  *
+ * The API key could be passed to the app by
+ * + defining Java property <code>AIRTABLE_API_KEY</code> (e.g. <code>-DAIRTABLE_API_KEY=foo</code>).
+ * + defining OS environment variable <code>AIRTABLE_API_KEY</code> (e.g. <code>export AIRTABLE_API_KEY=foo</code>).
+ * + defining property file `credentials.properties` in root classpath containing key/value <code>AIRTABLE_API_KEY=foo</code>.
+ * + On the other hand the API-key could also be added by using the method <code>Airtable.configure(String apiKey)</code>.
+ *
  * @since 0.1
  */
 public class Airtable {
 
     private static final Logger LOG = Logger.getLogger( Airtable.class.getName() );
     private static final String ENDPOINT_URL = "https://api.airtable.com/v0";
+    private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
+    private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
     private String  endpointUrl;
     private String apiKey;
 
     /**
-     * Configure, using java property vareiable 'AirtableAPI' to set API-Key.
+     * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property, enviroment variable
+     * or within credentials.properties.
      *
-     * @return
+     * @return configured Airtable object.
      */
     public Airtable configure() throws AirtableException {
-        String property = "AIRTABLE_API_KEY";
-        LOG.log(Level.CONFIG, "System-Property: Using Java property '-D" + property + "' to get apikey.");
-        String airtableApi = System.getProperty(property);
+
+        LOG.log(Level.CONFIG, "System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
+        String airtableApi = System.getProperty(AIRTABLE_API_KEY);
 
         if(airtableApi == null) {
-            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + property + "' to get apikey.");
-            airtableApi = System.getenv(property);
+            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
+            airtableApi = System.getenv(AIRTABLE_API_KEY);
         }
         if(airtableApi == null) {
-            String file = "/credentials.properties";
-            LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + property + "' to get apikey.");
-
-            try {
-                Properties prop = new Properties();
-                InputStream in = getClass().getResourceAsStream(file);
-                prop.load(in);
-                in.close();
-                airtableApi = prop.getProperty(property);
-            } catch (IOException | NullPointerException e) {
-                LOG.throwing(this.getClass().getName(), "configure", e);
-            }
+            airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
         }
 
         return this.configure(airtableApi);
     }
+
+
 
     /**
      * Configure Airtable.
@@ -115,47 +115,36 @@ public class Airtable {
     }
 
     /**
-     * Getting the base by given Java VM property <code>AirtableBase</code> (<code>-DAirtableBase=xyz</code>.
+     * Getting the base by given property <code>AIRTABLE_BASE</code>.
+     *
      * @return the base object.
      */
     public Base base() throws AirtableException {
-        String property = "AIRTABLE_BASE";
-        LOG.log(Level.CONFIG, "Using Java property '-D" + property + "' to get key.");
-        String val = System.getProperty(property);
+
+        LOG.log(Level.CONFIG, "Using Java property '-D" + AIRTABLE_BASE + "' to get key.");
+        String val = System.getProperty(AIRTABLE_BASE);
 
         if(val == null) {
-            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + property + "' to get apikey.");
-            val = System.getenv(property);
+            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + AIRTABLE_BASE + "' to get base name.");
+            val = System.getenv(AIRTABLE_BASE);
         }
         if(val == null) {
-            String file = "/credentials.properties";
-            LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + property + "' to get apikey.");
-
-            try {
-                Properties prop = new Properties();
-                InputStream in = getClass().getResourceAsStream(file);
-                prop.load(in);
-                in.close();
-                val = prop.getProperty(property);
-            } catch (IOException | NullPointerException e) {
-                LOG.throwing(this.getClass().getName(), "configure", e);
-            }
+            val = getCredentialProperty(AIRTABLE_BASE);
         }
-
 
         return base(val);
     }
 
     /**
-     *
-     * @param base
+     * Builder method to create base of given base id.
+     * @param base the base id.
      * @return
      */
     public Base base(String base) throws AirtableException {
         if(base == null) {
             throw new AirtableException("base was null");
         }
-        Base b = new Base(base);
+        final Base b = new Base(base);
         b.setParent(this);
 
         return b;
@@ -177,4 +166,31 @@ public class Airtable {
         return apiKey;
     }
 
+    /**
+     * Get property value from <code>/credentials.properties</code> file.
+     *
+     * @param key key of property.
+     * @return value of property.
+     */
+    private String getCredentialProperty(String key) {
+
+        final String file = "/credentials.properties";
+        LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + key + "' to get value.");
+        String value;
+
+        InputStream in = null;
+        try {
+            final Properties prop = new Properties();
+            in = getClass().getResourceAsStream(file);
+            prop.load(in);
+            value = prop.getProperty(key);
+        } catch (IOException | NullPointerException e) {
+            LOG.throwing(this.getClass().getName(), "configure", e);
+            value = null;
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+
+        return value;
+    }
 }
