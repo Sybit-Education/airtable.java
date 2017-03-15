@@ -6,6 +6,7 @@
  */
 package com.sybit.airtable;
 
+import com.sybit.airtable.exception.AirtableException;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Test;
 

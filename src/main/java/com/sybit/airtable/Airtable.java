@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import com.sybit.airtable.exception.AirtableException;
 import org.apache.http.HttpHost;
 
 import java.io.IOException;

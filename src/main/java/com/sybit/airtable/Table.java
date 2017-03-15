@@ -9,6 +9,8 @@ package com.sybit.airtable;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.sybit.airtable.exception.AirtableException;
+import com.sybit.airtable.exception.AirtableNotfoundException;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
@@ -123,6 +125,8 @@ class Table<T> {
             //InputStream rawBody = response.getRawBody();
             if(200 == code) {
                 body = response.getBody();
+            } else if(404 == code) {
+              throw new AirtableNotfoundException("No data found for id [" + id + "]");
             } else {
                 throw new HttpResponseException(code, response.getStatusText());
             }

@@ -4,9 +4,8 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
-package com.sybit.airtable;
+package com.sybit.airtable.exception;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.conn.ConnectTimeoutException;
 
 import java.util.logging.Level;
@@ -23,7 +22,7 @@ public class AirtableException extends Exception {
         super(msg);
     }
 
-    public AirtableException(UnirestException e) {
+    public AirtableException(Throwable e) {
         super(e);
 
         if(e.getCause() instanceof ConnectTimeoutException) {
