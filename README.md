@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/stritti/airtable-java?utm_source=github.com&utm_medium=referral&utm_content=Sybit-Education/airtable.java&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/Sybit-Education/airtable.java.svg?branch=master)](https://travis-ci.org/Sybit-Education/airtable.java)
 [![Test Coverage](https://codeclimate.com/github/Sybit-Education/airtable.java/badges/coverage.svg)](https://codeclimate.com/github/Sybit-Education/airtable.java/coverage)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
