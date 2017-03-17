@@ -34,7 +34,12 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 
 ## CRUD-Operations on table items
 
+## Select
+Select List of items from table:
 
++ `table(name).select()`: get all items of table `name`
++ `table(name).select(maxRows)`: get max `maxRows` items of table `name`
++ `...`
 
 # Roadmap
 
