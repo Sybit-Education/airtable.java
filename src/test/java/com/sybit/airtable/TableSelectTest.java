@@ -26,7 +26,7 @@ public class TableSelectTest extends WireMockBaseTest {
     @Test
     public void testSelectExistingTable() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base();
+        Base base = airtable.base("appe9941ff07fffcc");
 
         String tableName = "Movies";
         String testUrl = endpointUrl() + "/" + base.name() + "/" + tableName;
@@ -40,7 +40,7 @@ public class TableSelectTest extends WireMockBaseTest {
     @Test(expected = AirtableException.class)
     public void testSelectNonExistingTable() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base();
+        Base base = airtable.base("appe9941ff07fffcc");
 
         List<Movie> retval = base.table("NotExists", Movie.class).select();
         assertNotNull(retval);

@@ -24,7 +24,7 @@ public class TableFindTest extends WireMockBaseTest {
     @Test
     public void testFind() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base();
+        Base base = airtable.base("appe9941ff07fffcc");
 
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor actor = actorTable.find("rec514228ed76ced1");
@@ -34,7 +34,7 @@ public class TableFindTest extends WireMockBaseTest {
     @Test(expected = AirtableException.class)
     public void testFindNotFound() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base();
+        Base base = airtable.base("appe9941ff07fffcc");
 
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor actor = actorTable.find("notexistend");
