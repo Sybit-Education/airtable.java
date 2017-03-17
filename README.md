@@ -38,13 +38,15 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 Select List of items from table:
 
 + `table(name).select()`: get all items of table `name`
-+ `table(name).select(maxRows)`: get max `maxRows` items of table `name`
++ `table(name).select(Integer maxRows)`: get max `maxRows` items of table `name`
++ `table(name).select(Query query)`: get items of table `name` using `query` to filter
+
 + `...`
 
 ## Find
 Use Find to get specific item of table:
 
-+ `table(name).find(id)`: get item with `id` of table `name`
++ `table(name).find(String id)`: get item with `id` of table `name`
 
 
 # Roadmap
