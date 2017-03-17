@@ -41,6 +41,12 @@ Select List of items from table:
 + `table(name).select(maxRows)`: get max `maxRows` items of table `name`
 + `...`
 
+## Find
+Use Find to get specific item of table:
+
++ `table(name).find(id)`: get item with `id` of table `name`
+
+
 # Roadmap
 
 ## Table Items
