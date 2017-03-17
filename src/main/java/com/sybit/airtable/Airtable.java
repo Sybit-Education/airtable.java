@@ -11,7 +11,6 @@ import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.exception.AirtableException;
-import org.apache.http.HttpHost;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,17 +91,20 @@ public class Airtable {
         this.apiKey = apiKey;
         this.endpointUrl = endpointUrl;
 
+
         final String httpProxy = System.getenv("http_proxy");
         if(httpProxy != null) {
             LOG.log( Level.INFO, "Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            Unirest.setProxy(HttpHost.create(httpProxy));
+            //Unirest.setProxy(HttpHost.create(httpProxy));
         }
+
 
         // Only one time
         Unirest.setObjectMapper(new ObjectMapper() {
             final Gson gson = new GsonBuilder().create();
 
             public <T> T readValue(String value, Class<T> valueType) {
+                LOG.log(Level.INFO, "readValue: " +value);
                 return gson.fromJson(value, valueType);
             }
 
@@ -192,5 +194,9 @@ public class Airtable {
         }
 
         return value;
+    }
+
+    public void setEndpointUrl(String endpointUrl) {
+        this.endpointUrl = endpointUrl;
     }
 }

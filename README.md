@@ -49,13 +49,14 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
 
-+ for tests run: `gradlew test`
++ for tests run: `./gradlew clean test`
++ build jar: `./gradlew jar` (The built JARs will be placed under `build/libs`.)
 
 # Credits
 
 
 # License
 
-MIT License, see [LICENSE]
+MIT License, see [LICENSE](LICENSE)
 
 

@@ -1,0 +1,44 @@
+/*
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ */
+package com.sybit.airtable;
+
+import com.sybit.airtable.exception.AirtableException;
+import com.sybit.airtable.movies.Actor;
+import com.sybit.airtable.test.WireMockBaseTest;
+import org.apache.http.client.HttpResponseException;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+
+/**
+ *
+ */
+public class TableFindTest extends WireMockBaseTest {
+
+
+
+    @Test
+    public void testFind() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base();
+
+        Table<Actor> actorTable = base.table("Actors", Actor.class);
+        Actor actor = actorTable.find("rec514228ed76ced1");
+        assertNotNull(actor);
+    }
+
+    @Test(expected = AirtableException.class)
+    public void testFindNotFound() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base();
+
+        Table<Actor> actorTable = base.table("Actors", Actor.class);
+        Actor actor = actorTable.find("notexistend");
+        assertNotNull(actor);
+    }
+
+}

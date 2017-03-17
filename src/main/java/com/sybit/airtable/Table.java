@@ -91,6 +91,9 @@ class Table<T> {
 
         if(200 == code) {
             records = response.getBody();
+        } else if(404 == code) {
+            LOG.log(Level.WARNING, IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
+            throw new AirtableNotfoundException("table [" + name + "] not found");
         } else {
             throw new HttpResponseException(code, response.getStatusText());
         }
@@ -127,7 +130,7 @@ class Table<T> {
             if(200 == code) {
                 body = response.getBody();
             } else if(404 == code) {
-              throw new AirtableNotfoundException("No data found for id [" + id + "]");
+              throw new AirtableNotfoundException("No data found in table [" + name + "] for id [" + id + "]");
             } else {
                 throw new HttpResponseException(code, response.getStatusText());
             }
@@ -242,7 +245,7 @@ class Table<T> {
             //Todo: get @SerializedName value ant then method.
 
         }else {
-            LOG.log( Level.INFO,retval.getClass() + " does not support public setter for existing property [" + property + "]");
+            LOG.log( Level.WARNING,retval.getClass() + " does not support public setter for existing property [" + property + "]");
         }
     }
 
