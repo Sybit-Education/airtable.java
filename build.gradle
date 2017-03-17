@@ -5,8 +5,18 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.palantir:jacoco-coverage:0.4.0'
+	}
+	}
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'com.palantir.jacoco-coverage'
 
 group = 'com.sybit'
 version = '0.1-SNAPSHOT'
