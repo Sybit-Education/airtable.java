@@ -6,6 +6,8 @@
  */
 package com.sybit.airtable.movies;
 
+import java.util.Date;
+
 /**
  *
  */
@@ -13,8 +15,7 @@ public class Movie {
     private String id;
     private String name;
     private String description;
-
-    private String createdTime;
+    private Date createdTime;
 
     public String getId() {
         return id;
@@ -40,11 +41,11 @@ public class Movie {
         this.description = description;
     }
 
-    public String getCreatedTime() {
+    public Date getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(String createdTime) {
+    public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 }
