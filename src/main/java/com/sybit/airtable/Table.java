@@ -9,8 +9,10 @@ package com.sybit.airtable;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.AirtableNotfoundException;
+import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
@@ -73,13 +75,97 @@ class Table<T> {
      * @throws AirtableException
      */
     public List<T> select() throws AirtableException, HttpResponseException {
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return null;
+            }
 
+            @Override
+            public String getView() {
+                return null;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return null;
+            }
+        });
+
+    }
+
+    public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return maxRecords;
+            }
+
+            @Override
+            public String getView() {
+                return null;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Select data of table by definied view.
+     * @param view
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException
+     */
+    public List<T> select(String  view) throws AirtableException, HttpResponseException {
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return null;
+            }
+
+            @Override
+            public String getView() {
+                return view;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Select List of data of table.
+     *
+     * @param query
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException
+     */
+    public List<T> select(Query query) throws AirtableException, HttpResponseException {
         HttpResponse<Records> response;
         try {
-            response = Unirest.get( getTableEndpointUrl())
-                            .header("accept", "application/json")
-                            .header("Authorization", "Bearer " + base().airtable().apiKey())
-                            .asObject(Records.class);
+            GetRequest request = Unirest.get(getTableEndpointUrl())
+                    .header("accept", "application/json")
+                    .header("Authorization", getBearerToken());
+            if(query.getMaxRecords() != null) {
+                request.queryString("maxRecords", query.getMaxRecords());
+            }
+            if(query.getView() != null) {
+                request.queryString("view", query.getView());
+            }
+            if(query.getSort() != null) {
+                for (Sort sort : query.getSort()) {
+                    request.queryString(sort.getField(), sort.getSort().toString());
+                }
+            }
+
+            response = request.asObject(Records.class);
         }
         catch (UnirestException e) {
 
@@ -88,17 +174,45 @@ class Table<T> {
 
         int code = response.getStatus();
         Records records;
-
+        List<T> list = null;
         if(200 == code) {
-            records = response.getBody();
+            list = getList(response);
         } else if(404 == code) {
             LOG.log(Level.WARNING, IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
             throw new AirtableNotfoundException("table [" + name + "] not found");
         } else {
-            throw new HttpResponseException(code, response.getStatusText());
+            HttpResponseExceptionHandler.onResponse(response);
         }
 
-        List<T> list = new ArrayList<T>(records.getRecords().size());
+        return list;
+    }
+    public List<T> select(Sort sortation) throws AirtableException, HttpResponseException {
+        final List<Sort> sortList = new ArrayList<>();
+        sortList.add(sortation);
+
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return null;
+            }
+
+            @Override
+            public String getView() {
+                return null;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return sortList;
+            }
+        });
+    }
+
+    private List<T> getList(HttpResponse<Records> response) {
+
+        final Records records = response.getBody();
+        final List<T> list = new ArrayList<T>(records.getRecords().size());
+
         for(Map<String, Object> record : records.getRecords()) {
             T item = null;
             try {
@@ -108,7 +222,6 @@ class Table<T> {
             }
             list.add(item);
         }
-
         return list;
     }
 
@@ -120,24 +233,26 @@ class Table<T> {
      */
     public T find(String id) throws AirtableException, HttpResponseException {
 
-        RecordItem body;
+        RecordItem body = null;
+
+        HttpResponse<RecordItem> response = null;
         try {
-            HttpResponse<RecordItem> response = Unirest.get( getTableEndpointUrl() + "/" + id)
+            response = Unirest.get( getTableEndpointUrl() + "/" + id)
                 .header("accept", "application/json")
-                .header("Authorization", "Bearer " + base().airtable().apiKey())
+                .header("Authorization", getBearerToken())
                 .asObject(RecordItem.class);
-            int code = response.getStatus();
-            if(200 == code) {
-                body = response.getBody();
-            } else if(404 == code) {
-              throw new AirtableNotfoundException("No data found in table [" + name + "] for id [" + id + "]");
-            } else {
-                throw new HttpResponseException(code, response.getStatusText());
-            }
         } catch (UnirestException e) {
             throw new AirtableException(e);
         }
+        int code = response.getStatus();
 
+        if(200 == code) {
+            body = response.getBody();
+        } else if(404 == code) {
+          throw new AirtableNotfoundException("No data found in table [" + name + "] for id [" + id + "]");
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
 
         try {
             return transform(body, this.type.newInstance() );
@@ -151,22 +266,22 @@ class Table<T> {
 
     public T create(T item) {
 
-        return item;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public T update(T item) {
 
-        return item;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public T replace(T item) {
 
-        return item;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     public T destroy(T item) {
 
-        return item;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     /**
@@ -185,6 +300,10 @@ class Table<T> {
         final String url = base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
 
         return  url;
+    }
+
+    private String getBearerToken() {
+        return "Bearer " + base().airtable().apiKey();
     }
 
     /**

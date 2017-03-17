@@ -108,7 +108,7 @@ public class Airtable {
             final Gson gson = new GsonBuilder().create();
 
             public <T> T readValue(String value, Class<T> valueType) {
-                LOG.log(Level.INFO, "readValue: " +value);
+                LOG.log(Level.INFO, "readValue: \n" + value);
                 return gson.fromJson(value, valueType);
             }
 

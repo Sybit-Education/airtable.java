@@ -29,12 +29,40 @@ public class TableSelectTest extends WireMockBaseTest {
         Base base = airtable.base("appe9941ff07fffcc");
 
         String tableName = "Movies";
-        String testUrl = endpointUrl() + "/" + base.name() + "/" + tableName;
-
-
         List<Movie> retval = base.table(tableName, Movie.class).select();
         assertNotNull(retval);
-        assertEquals(3, retval.size());
+        assertEquals(10, retval.size());
+        Movie mov = retval.get(0);
+        assertEquals("Sister Act", mov.getName());
+
+    }
+
+    @Test
+    public void testSelectExistingTableMaxRecords() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base("appe9941ff07fffcc");
+
+        String tableName = "Movies";
+        List<Movie> retval = base.table(tableName, Movie.class).select(2);
+        assertNotNull(retval);
+        assertEquals(2, retval.size());
+        Movie mov = retval.get(0);
+        assertEquals("Sister Act", mov.getName());
+
+    }
+
+    @Test
+    public void testSelectExistingTableView() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base("appe9941ff07fffcc");
+
+        String tableName = "Movies";
+        List<Movie> retval = base.table(tableName, Movie.class).select("Main View");
+        assertNotNull(retval);
+        assertEquals(10, retval.size());
+        Movie mov = retval.get(0);
+        assertEquals("The Godfather", mov.getName());
+
     }
 
     @Test(expected = AirtableException.class)

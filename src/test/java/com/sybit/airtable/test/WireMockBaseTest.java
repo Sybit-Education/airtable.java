@@ -30,11 +30,11 @@ public class WireMockBaseTest {
 
     @Before
     public void setup() throws AirtableException {
-
-        airtable.configure().setEndpointUrl("http://localhost:8080/v0");
+        airtable.configure();
+        airtable.setEndpointUrl("http://localhost:8080/v0");
 
         //set 404 as default
-        wireMockRule.stubFor(any(anyUrl())
+        stubFor(any(anyUrl())
                 .atPriority(10)
                 .willReturn(aResponse()
                         .withStatus(404)
