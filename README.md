@@ -52,6 +52,12 @@ We use [Gradle](https://gradle.org) to compile and package project:
 + for tests run: `./gradlew clean test`
 + build jar: `./gradlew jar` (The built JARs will be placed under `build/libs`.)
 
+## Testing
+There are JUnit tests to verify the API.
+The tests are based on the Airtable template [Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies
+) which could be created in your account.
+For testing, the JSON-responses are mocked via [WireMock](http://wiremock.org/). 
+
 # Credits
 
 
