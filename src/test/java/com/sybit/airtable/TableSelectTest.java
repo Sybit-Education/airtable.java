@@ -24,7 +24,7 @@ public class TableSelectTest extends WireMockBaseTest {
 
 
     @Test
-    public void testSelectExistingTable() throws AirtableException, HttpResponseException {
+    public void testSelectTable() throws AirtableException, HttpResponseException {
 
         Base base = airtable.base("appe9941ff07fffcc");
 
@@ -38,7 +38,7 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectExistingTableMaxRecords() throws AirtableException, HttpResponseException {
+    public void testSelectTableMaxRecords() throws AirtableException, HttpResponseException {
 
         Base base = airtable.base("appe9941ff07fffcc");
 
@@ -52,7 +52,27 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectExistingTableView() throws AirtableException, HttpResponseException {
+    public void testSelectTableSorted() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base("appe9941ff07fffcc");
+
+        String tableName = "Movies";
+        List<Movie> retval = base.table(tableName, Movie.class).select(new Sort("Name", Sort.Sorting.asc));
+        assertNotNull(retval);
+        assertEquals(10, retval.size());
+        Movie mov = retval.get(0);
+        assertEquals("Billy Madison", mov.getName());
+
+        retval = base.table(tableName, Movie.class).select(new Sort("Name", Sort.Sorting.desc));
+        assertNotNull(retval);
+        assertEquals(10, retval.size());
+        mov = retval.get(0);
+        assertEquals("You've got Mail", mov.getName());
+
+    }
+
+    @Test
+    public void testSelectTableView() throws AirtableException, HttpResponseException {
 
         Base base = airtable.base("appe9941ff07fffcc");
 

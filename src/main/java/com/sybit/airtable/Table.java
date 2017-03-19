@@ -160,10 +160,14 @@ class Table<T> {
                 request.queryString("view", query.getView());
             }
             if(query.getSort() != null) {
+                int i = 0;
                 for (Sort sort : query.getSort()) {
-                    request.queryString(sort.getField(), sort.getSort().toString());
+                    request.queryString("sort[" + i + "][field]", sort.getField());
+                    request.queryString("sort[" + i + "][direction]", sort.getSort());
                 }
             }
+
+            LOG.log(Level.INFO, "URL=" + request.getUrl());
 
             response = request.asObject(Records.class);
         }
@@ -211,7 +215,7 @@ class Table<T> {
     private List<T> getList(HttpResponse<Records> response) {
 
         final Records records = response.getBody();
-        final List<T> list = new ArrayList<T>(records.getRecords().size());
+        final List<T> list = new ArrayList<T>();
 
         for(Map<String, Object> record : records.getRecords()) {
             T item = null;

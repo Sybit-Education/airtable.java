@@ -17,6 +17,16 @@ public class Sort {
 
     private Sorting sort;
 
+    /**
+     *
+     * @param field
+     * @param sort
+     */
+    public Sort(String field, Sorting sort) {
+        this.field = field;
+        this.sort = sort;
+    }
+
     public String getField() {
         return field;
     }
