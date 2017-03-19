@@ -6,7 +6,10 @@
  */
 package com.sybit.airtable.movies;
 
+import com.sybit.airtable.vo.Attachment;
+
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -15,6 +18,10 @@ public class Movie {
     private String id;
     private String name;
     private String description;
+    private List<Attachment> photos;
+    private String director;
+    private List<String> actors;
+    private List<String> genre;
     private Date createdTime;
 
     public String getId() {
@@ -39,6 +46,38 @@ public class Movie {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Attachment> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Attachment> photos) {
+        this.photos = photos;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public List<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    public List<String> getGenre() {
+        return genre;
+    }
+
+    public void setGenre(List<String> genre) {
+        this.genre = genre;
     }
 
     public Date getCreatedTime() {

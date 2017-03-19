@@ -13,6 +13,11 @@ package com.sybit.airtable.vo;
  */
 public class Attachment {
     private String id;
+    private String url;
+    private String filename;
+    private Float size;
+    private String type;
+    //TODO thumbnails
 
     public String getId() {
         return id;
@@ -20,5 +25,37 @@ public class Attachment {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public Float getSize() {
+        return size;
+    }
+
+    public void setSize(Float size) {
+        this.size = size;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
