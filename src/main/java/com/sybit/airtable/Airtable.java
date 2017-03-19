@@ -117,7 +117,7 @@ public class Airtable {
             }
         });
 
-        // Add specific Converter vor Date
+        // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         ConvertUtils.register(dtConverter, Date.class);
