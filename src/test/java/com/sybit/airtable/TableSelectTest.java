@@ -28,13 +28,11 @@ public class TableSelectTest extends WireMockBaseTest {
 
         Base base = airtable.base("appe9941ff07fffcc");
 
-        String tableName = "Movies";
-        List<Movie> retval = base.table(tableName, Movie.class).select();
+        List<Movie> retval = base.table("Movies", Movie.class).select();
         assertNotNull(retval);
         assertEquals(10, retval.size());
         Movie mov = retval.get(0);
         assertEquals("Sister Act", mov.getName());
-
     }
 
     @Test
@@ -42,13 +40,11 @@ public class TableSelectTest extends WireMockBaseTest {
 
         Base base = airtable.base("appe9941ff07fffcc");
 
-        String tableName = "Movies";
-        List<Movie> retval = base.table(tableName, Movie.class).select(2);
+        List<Movie> retval = base.table("Movies", Movie.class).select(2);
         assertNotNull(retval);
         assertEquals(2, retval.size());
         Movie mov = retval.get(0);
         assertEquals("Sister Act", mov.getName());
-
     }
 
     @Test
@@ -76,13 +72,11 @@ public class TableSelectTest extends WireMockBaseTest {
 
         Base base = airtable.base("appe9941ff07fffcc");
 
-        String tableName = "Movies";
-        List<Movie> retval = base.table(tableName, Movie.class).select("Main View");
+        List<Movie> retval = base.table("Movies", Movie.class).select("Main View");
         assertNotNull(retval);
         assertEquals(10, retval.size());
         Movie mov = retval.get(0);
         assertEquals("The Godfather", mov.getName());
-
     }
 
     @Test(expected = AirtableException.class)

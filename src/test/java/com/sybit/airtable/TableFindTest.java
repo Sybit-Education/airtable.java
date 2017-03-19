@@ -12,14 +12,13 @@ import com.sybit.airtable.test.WireMockBaseTest;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
  *
  */
 public class TableFindTest extends WireMockBaseTest {
-
-
 
     @Test
     public void testFind() throws AirtableException, HttpResponseException {
@@ -29,6 +28,8 @@ public class TableFindTest extends WireMockBaseTest {
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor actor = actorTable.find("rec514228ed76ced1");
         assertNotNull(actor);
+        assertEquals("rec514228ed76ced1", actor.getId());
+        assertEquals("Marlon Brando", actor.getName());
     }
 
     @Test(expected = AirtableException.class)
