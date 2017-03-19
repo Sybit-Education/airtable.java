@@ -55,15 +55,15 @@ public class TableSelectTest extends WireMockBaseTest {
     public void testSelectTableSorted() throws AirtableException, HttpResponseException {
 
         Base base = airtable.base("appe9941ff07fffcc");
+        Table table = base.table("Movies", Movie.class);
 
-        String tableName = "Movies";
-        List<Movie> retval = base.table(tableName, Movie.class).select(new Sort("Name", Sort.Sorting.asc));
+        List<Movie> retval = table.select(new Sort("Name", Sort.Sorting.asc));
         assertNotNull(retval);
         assertEquals(10, retval.size());
         Movie mov = retval.get(0);
         assertEquals("Billy Madison", mov.getName());
 
-        retval = base.table(tableName, Movie.class).select(new Sort("Name", Sort.Sorting.desc));
+        retval = table.select(new Sort("Name", Sort.Sorting.desc));
         assertNotNull(retval);
         assertEquals(10, retval.size());
         mov = retval.get(0);
