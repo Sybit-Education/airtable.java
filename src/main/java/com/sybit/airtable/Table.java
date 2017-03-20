@@ -163,7 +163,7 @@ class Table<T> {
                 int i = 0;
                 for (Sort sort : query.getSort()) {
                     request.queryString("sort[" + i + "][field]", sort.getField());
-                    request.queryString("sort[" + i + "][direction]", sort.getSort());
+                    request.queryString("sort[" + i + "][direction]", sort.getDirection());
                 }
             }
 
@@ -190,6 +190,14 @@ class Table<T> {
 
         return list;
     }
+
+    /**
+     *
+     * @param sortation
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException
+     */
     public List<T> select(Sort sortation) throws AirtableException, HttpResponseException {
         final List<Sort> sortList = new ArrayList<>();
         sortList.add(sortation);
@@ -212,6 +220,12 @@ class Table<T> {
         });
     }
 
+    /**
+     * Get List of records of response.
+     *
+     * @param response
+     * @return
+     */
     private List<T> getList(HttpResponse<Records> response) {
 
         final Records records = response.getBody();
@@ -230,9 +244,10 @@ class Table<T> {
     }
 
     /**
+     * Find record by given id.
      *
-     * @param id
-     * @return
+     * @param id id of record.
+     * @return searched record.
      * @throws AirtableException
      */
     public T find(String id) throws AirtableException, HttpResponseException {
@@ -298,6 +313,7 @@ class Table<T> {
 
     /**
      * Get the endpoint for the specified table.
+     *
      * @return URL of tables endpoint.
      */
     private String getTableEndpointUrl() {
@@ -306,6 +322,11 @@ class Table<T> {
         return  url;
     }
 
+    /**
+     * Get Bearer Token for Authentication Header.
+     *
+     * @return
+     */
     private String getBearerToken() {
         return "Bearer " + base().airtable().apiKey();
     }
@@ -373,7 +394,8 @@ class Table<T> {
     }
 
     /**
-     * Convert AirTable ColumnName to Java PropertyName
+     * Convert AirTable ColumnName to Java PropertyName.
+     *
      * @param key
      * @return
      */
@@ -393,10 +415,11 @@ class Table<T> {
     }
 
     /**
+     * Check if writable property exists.
      *
-     * @param bean
-     * @param property
-     * @return
+     * @param bean bean to inspect
+     * @param property name of property
+     * @return true if writable property exists.
      */
     private static boolean propertyExists (Object bean, String property) {
         return PropertyUtils.isReadable(bean, property) &&

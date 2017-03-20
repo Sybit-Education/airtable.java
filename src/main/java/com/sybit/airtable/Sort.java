@@ -11,20 +11,20 @@ package com.sybit.airtable;
  */
 public class Sort {
 
-    public enum Sorting {asc, desc};
+    public enum Direction {asc, desc};
 
     private String field;
 
-    private Sorting sort;
+    private Direction direction;
 
     /**
      *
      * @param field
-     * @param sort
+     * @param direction
      */
-    public Sort(String field, Sorting sort) {
+    public Sort(String field, Direction direction) {
         this.field = field;
-        this.sort = sort;
+        this.direction = direction;
     }
 
     public String getField() {
@@ -35,11 +35,11 @@ public class Sort {
         this.field = field;
     }
 
-    public Sorting getSort() {
-        return sort;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void setSort(Sorting sort) {
-        this.sort = sort;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 }
