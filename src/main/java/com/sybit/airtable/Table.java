@@ -6,6 +6,7 @@
  */
 package com.sybit.airtable;
 
+import com.google.gson.annotations.SerializedName;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -15,6 +16,7 @@ import com.sybit.airtable.exception.AirtableNotfoundException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
+import java.lang.reflect.Field;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.client.HttpResponseException;
@@ -381,13 +383,20 @@ class Table<T> {
      * @throws InvocationTargetException
      */
     private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException {
-        final String property = key2property(key);
+        String property = key2property(key);
 
+        for (Field f: this.type.getFields()) {
+         SerializedName annotation = f.getAnnotation(SerializedName.class);
+         if(annotation != null){
+             String serializedProperty = f.getName();
+            if (property.equals(f.getName())){
+               property = serializedProperty;
+               break;
+            }
+         }
+        }
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
-        } else if (false) {
-            //Todo: get @SerializedName value ant then method.
-
         }else {
             LOG.log( Level.WARNING,retval.getClass() + " does not support public setter for existing property [" + property + "]");
         }
@@ -400,17 +409,13 @@ class Table<T> {
      * @return
      */
     private String key2property(String key) {
-
-        if(key.contains(" ") ) {
-            LOG.log( Level.SEVERE, "Do not use spaces in column names: [" + key + "]");
+        
+        if(key.contains(" ") || key.contains("-") ) {
+            LOG.log( Level.SEVERE, "Annotate Special Charakters with @SerializedName in: [" + key + "]");
         }
-        if(key.contains("-") ) {
-            LOG.log( Level.WARNING, "Do not use '-' in column names: [" + key + "]");
-        }
-
         String property = key.trim();
         property = property.substring(0,1).toLowerCase() + property.substring(1, property.length());
-        property = property.replace("-", "_");
+        
         return property;
     }
 
