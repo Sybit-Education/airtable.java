@@ -7,18 +7,9 @@ package com.sybit.airtable;
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
-import java.io.Closeable;
-
 final class IOUtils {
     private IOUtils() {}
 
-    public static void closeQuietly(Closeable... closeables) {
-        for (Closeable c : closeables) {
-            if (c != null) try {
-                c.close();
-            } catch(Exception ex) {}
-        }
-    }
 
     public static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");

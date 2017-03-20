@@ -199,7 +199,7 @@ public class Airtable {
             LOG.throwing(this.getClass().getName(), "configure", e);
             value = null;
         } finally {
-            IOUtils.closeQuietly(in);
+            org.apache.commons.io.IOUtils.closeQuietly(in);
         }
 
         return value;

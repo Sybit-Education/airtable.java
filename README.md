@@ -51,13 +51,14 @@ Use Find to get specific item of table:
 
 # Roadmap
 
-## Table Items
-+ Select
-  + SelectAll
-  + Queries
-+ Create RowItem
-+ Update RowItem
-+ Delete RowItem
++ [x] Select
+  + [x] SelectAll
+  + [x] Queries (MaxRows, Sortation & Views )
++ [x] Find RowItem
++ [ ] Create RowItem
++ [ ] Update RowItem
++ [ ] Delete RowItem
++ [ ] Replace RowItem
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
@@ -72,7 +73,14 @@ The tests are based on the Airtable template [Movies](https://airtable.com/templ
 For testing, the JSON-responses are mocked via [WireMock](http://wiremock.org/). 
 
 # Credits
+We use following libraries:
 
++ [unirest](http://unirest.io/java.html)
++ [Google gson](https://github.com/google/gson)
++ [Apache Commons Beanutils](http://commons.apache.org/proper/commons-beanutils/)
++ [Apache Commons IO](http://commons.apache.org/proper/commons-io/)
++ [JUnit](http://junit.org)
++ [WireMock](http://wiremock.org/)
 
 # License
 
