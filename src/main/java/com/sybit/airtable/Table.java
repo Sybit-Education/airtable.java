@@ -16,11 +16,11 @@ import com.sybit.airtable.exception.AirtableNotfoundException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
-import java.lang.reflect.Field;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.client.HttpResponseException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -345,7 +345,7 @@ class Table<T> {
      */
     private T transform(Map<String, Object> record, T retval) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
         for(String key: record.keySet()) {
-            if(key.equals("fields")) {
+            if("fields".equals(key)) {
                 retval = transform((Map<String, Object>)record.get("fields"), retval);
             } else {
                 setProperty(retval, key, record.get(key));
