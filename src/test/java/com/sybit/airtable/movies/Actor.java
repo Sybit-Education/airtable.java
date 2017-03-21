@@ -6,9 +6,12 @@
  */
 package com.sybit.airtable.movies;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Actor {
 
     private String id;
+    @SerializedName("Name")
     private String name;
 
     public String getId() {
