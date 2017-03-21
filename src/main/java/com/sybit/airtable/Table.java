@@ -385,7 +385,7 @@ class Table<T> {
     private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException {
         String property = key2property(key);
 
-        for (Field f: this.type.getFields()) {
+        for (Field f: this.type.getDeclaredFields()) {
          SerializedName annotation = f.getAnnotation(SerializedName.class);
          if(annotation != null){
              String serializedProperty = f.getName();
