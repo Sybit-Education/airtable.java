@@ -17,6 +17,7 @@ public class Attachment {
     private String filename;
     private Float size;
     private String type;
+    private Thumbnail thumbnail;
     //TODO thumbnails
 
     public String getId() {
@@ -57,5 +58,19 @@ public class Attachment {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the thumbnail
+     */
+    public Thumbnail getThumbnail() {
+        return thumbnail;
+    }
+
+    /**
+     * @param thumbnail the thumbnail to set
+     */
+    public void setThumbnail(Thumbnail thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

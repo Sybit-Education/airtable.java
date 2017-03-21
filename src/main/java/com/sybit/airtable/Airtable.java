@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.exception.AirtableException;
+import com.sybit.airtable.vo.Attachment;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
@@ -18,6 +19,7 @@ import org.apache.commons.beanutils.converters.DateTimeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -116,11 +118,18 @@ public class Airtable {
                 return gson.toJson(value);
             }
         });
-
+                
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
+        ListConverter lConverter = new ListConverter();
+        AttachementConverter atConverter = new AttachementConverter();
+        
+        lConverter.setListClass(Attachment.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        
         ConvertUtils.register(dtConverter, Date.class);
+        ConvertUtils.register(lConverter, List.class);
+        ConvertUtils.register(atConverter, Attachment.class);
 
         return this;
     }
