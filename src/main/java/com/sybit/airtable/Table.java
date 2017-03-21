@@ -19,14 +19,14 @@ import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.client.HttpResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Representation Class of Airtable Tables.
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 class Table<T> {
 
-    private static final Logger LOG = Logger.getLogger( Table.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( Table.class );
 
     private final String name;
     private final Class<T>  type;
@@ -171,7 +171,7 @@ class Table<T> {
                 }
             }
 
-            LOG.log(Level.INFO, "URL=" + request.getUrl());
+            LOG.debug("URL=" + request.getUrl());
 
             response = request.asObject(Records.class);
         }
@@ -186,7 +186,7 @@ class Table<T> {
         if(200 == code) {
             list = getList(response);
         } else if(404 == code) {
-            LOG.log(Level.WARNING, IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
+            LOG.warn(IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
             throw new AirtableNotfoundException("table [" + name + "] not found");
         } else {
             HttpResponseExceptionHandler.onResponse(response);
@@ -240,7 +240,7 @@ class Table<T> {
             try {
                 item = transform(record, this.type.newInstance());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                LOG.throwing(this.getClass().getName(), "select", e);
+                LOG.error(e.getMessage(), e);
             }
             list.add(item);
         }
@@ -280,7 +280,7 @@ class Table<T> {
         try {
             return transform(body, this.type.newInstance() );
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            LOG.throwing(this.getClass().getName(), "find", e);
+            LOG.error(e.getMessage(), e);
         }
 
         return null;
@@ -394,7 +394,7 @@ class Table<T> {
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
         }else {
-            LOG.log( Level.WARNING,retval.getClass() + " does not support public setter for existing property [" + property + "]");
+            LOG.warn(retval.getClass() + " does not support public setter for existing property [" + property + "]");
         }
     }
 
@@ -407,7 +407,7 @@ class Table<T> {
     private String key2property(String key) {
         
         if(key.contains(" ") || key.contains("-") ) {
-            LOG.log( Level.SEVERE, "Annotate Special Charakters with @SerializedName in: [" + key + "]");
+            LOG.warn( "Annotate special characters using @SerializedName for property: [" + key + "]");
         }
         String property = key.trim();
         property = property.substring(0,1).toLowerCase() + property.substring(1, property.length());

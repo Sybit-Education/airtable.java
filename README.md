@@ -79,6 +79,7 @@ We use following libraries:
 + [Google gson](https://github.com/google/gson)
 + [Apache Commons Beanutils](http://commons.apache.org/proper/commons-beanutils/)
 + [Apache Commons IO](http://commons.apache.org/proper/commons-io/)
++ [slf4j](https://www.slf4j.org)
 + [JUnit](http://junit.org)
 + [WireMock](http://wiremock.org/)
 
