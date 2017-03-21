@@ -386,15 +386,14 @@ class Table<T> {
         String property = key2property(key);
 
         for (Field f: this.type.getDeclaredFields()) {
-         SerializedName annotation = f.getAnnotation(SerializedName.class);
-         if(annotation != null){
-             String serializedProperty = f.getName();
-            if (property.equals(f.getName())){
-               property = serializedProperty;
+            final SerializedName annotation = f.getAnnotation(SerializedName.class);
+
+            if(annotation != null && property.equalsIgnoreCase(annotation.value())){
+               property = f.getName();
                break;
             }
-         }
         }
+
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
         }else {
