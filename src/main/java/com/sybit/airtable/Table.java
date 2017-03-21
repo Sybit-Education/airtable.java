@@ -239,7 +239,7 @@ class Table<T> {
             T item = null;
             try {
                 item = transform(record, this.type.newInstance());
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 LOG.throwing(this.getClass().getName(), "select", e);
             }
             list.add(item);
@@ -279,8 +279,7 @@ class Table<T> {
 
         try {
             return transform(body, this.type.newInstance() );
-        } catch (NoSuchMethodException | InvocationTargetException |
-                IllegalAccessException | InstantiationException e) {
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.throwing(this.getClass().getName(), "find", e);
         }
 

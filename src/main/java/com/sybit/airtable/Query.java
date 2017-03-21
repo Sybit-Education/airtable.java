@@ -7,11 +7,24 @@ package com.sybit.airtable;/*
 
 import java.util.List;
 
+/**
+ * Interface for specific queries.
+ */
+@SuppressWarnings("WeakerAccess")
 public interface Query {
 
+    /**
+     * @return number of max rows to load.
+     */
     Integer getMaxRecords();
 
+    /**
+     * @return Name of view to load.
+     */
     String getView();
 
+    /**
+     * @return sortation of result set.
+     */
     List<Sort> getSort();
 }
