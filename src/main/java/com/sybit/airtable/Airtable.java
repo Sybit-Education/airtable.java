@@ -50,6 +50,7 @@ public class Airtable {
      *
      * @return configured Airtable object.
      */
+    @SuppressWarnings("UnusedReturnValue")
     public Airtable configure() throws AirtableException {
 
         LOG.log(Level.CONFIG, "System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
@@ -74,6 +75,7 @@ public class Airtable {
      * @param apiKey API-Key of Airtable.
      * @return
      */
+    @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
         return configure(apiKey, ENDPOINT_URL);
     }
@@ -84,6 +86,7 @@ public class Airtable {
      * @param endpointUrl
      * @return
      */
+    @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
         if(apiKey == null) {
             throw new AirtableException("Missing Airtable API-Key");

@@ -18,9 +18,9 @@ import java.util.Map;
  */
 public class Base {
 
-    private Map<String, Table> tableMap = new HashMap<>();
+    private final Map<String, Table> tableMap = new HashMap<>();
 
-    private String base;
+    private final String base;
 
     private Airtable parent;
 

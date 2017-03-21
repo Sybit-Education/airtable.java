@@ -11,7 +11,7 @@ package com.sybit.airtable;
  */
 public class Sort {
 
-    public enum Direction {asc, desc};
+    public enum Direction {asc, desc}
 
     private String field;
 

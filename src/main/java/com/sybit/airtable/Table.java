@@ -58,6 +58,7 @@ class Table<T> {
      * @param type
      * @param base
      */
+    @SuppressWarnings("WeakerAccess")
     public Table(String name, Class<T> type, Base base){
         this(name, type);
         setParent(base);
@@ -149,6 +150,7 @@ class Table<T> {
      * @throws AirtableException
      * @throws HttpResponseException
      */
+    @SuppressWarnings("WeakerAccess")
     public List<T> select(Query query) throws AirtableException, HttpResponseException {
         HttpResponse<Records> response;
         try {
@@ -231,7 +233,7 @@ class Table<T> {
     private List<T> getList(HttpResponse<Records> response) {
 
         final Records records = response.getBody();
-        final List<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<>();
 
         for(Map<String, Object> record : records.getRecords()) {
             T item = null;
@@ -256,7 +258,7 @@ class Table<T> {
 
         RecordItem body = null;
 
-        HttpResponse<RecordItem> response = null;
+        HttpResponse<RecordItem> response;
         try {
             response = Unirest.get( getTableEndpointUrl() + "/" + id)
                 .header("accept", "application/json")
@@ -319,9 +321,8 @@ class Table<T> {
      * @return URL of tables endpoint.
      */
     private String getTableEndpointUrl() {
-        final String url = base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
 
-        return  url;
+        return base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
     }
 
     /**
@@ -338,14 +339,13 @@ class Table<T> {
      * @param record
      * @param retval
      * @return
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private T transform(Map<String, Object> record, T retval) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+    private T transform(Map<String, Object> record, T retval) throws InvocationTargetException, IllegalAccessException {
         for(String key: record.keySet()) {
             if("fields".equals(key)) {
+                //noinspection unchecked
                 retval = transform((Map<String, Object>)record.get("fields"), retval);
             } else {
                 setProperty(retval, key, record.get(key));
@@ -360,16 +360,14 @@ class Table<T> {
      * @param record
      * @param retval
      * @return
-     * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
-     * @throws InstantiationException
      */
-    private T transform(RecordItem record, T retval) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+    private T transform(RecordItem record, T retval) throws InvocationTargetException, IllegalAccessException {
         setProperty(retval, "id", record.getId());
         setProperty(retval, "createdTime", record.getCreatedTime());
 
-        retval = transform((Map<String, Object>)record.getFields(), retval);
+        retval = transform(record.getFields(), retval);
 
         return retval;
     }
