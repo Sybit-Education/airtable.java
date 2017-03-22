@@ -12,7 +12,6 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
-import com.sybit.airtable.exception.AirtableNotfoundException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
@@ -93,6 +92,11 @@ class Table<T> {
             public List<Sort> getSort() {
                 return null;
             }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
         });
 
     }
@@ -111,6 +115,11 @@ class Table<T> {
 
             @Override
             public List<Sort> getSort() {
+                return null;
+            }
+
+            @Override
+            public String filterByFormula() {
                 return null;
             }
         });
@@ -137,6 +146,11 @@ class Table<T> {
 
             @Override
             public List<Sort> getSort() {
+                return null;
+            }
+
+            @Override
+            public String filterByFormula() {
                 return null;
             }
         });
@@ -185,9 +199,6 @@ class Table<T> {
         List<T> list = null;
         if(200 == code) {
             list = getList(response);
-        } else if(404 == code) {
-            LOG.warn(IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
-            throw new AirtableNotfoundException("table [" + name + "] not found");
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }
@@ -220,6 +231,11 @@ class Table<T> {
             @Override
             public List<Sort> getSort() {
                 return sortList;
+            }
+
+            @Override
+            public String filterByFormula() {
+                return null;
             }
         });
     }
@@ -271,8 +287,6 @@ class Table<T> {
 
         if(200 == code) {
             body = response.getBody();
-        } else if(404 == code) {
-          throw new AirtableNotfoundException("No data found in table [" + name + "] for id [" + id + "]");
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }

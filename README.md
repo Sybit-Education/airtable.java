@@ -43,6 +43,12 @@ Select List of items from table:
 
 + `...`
 
+```Java
+// detailed Example see TableSelectTest.java
+Base base = new Airtable().base("appe9941ff07fffcc");
+List<Movie> retval = base.table("Movies", Movie.class).select();
+```
+
 ## Find
 Use Find to get specific item of table:
 
@@ -53,12 +59,13 @@ Use Find to get specific item of table:
 
 + [x] Select
   + [x] SelectAll
-  + [x] Queries (MaxRows, Sortation & Views )
-+ [x] Find RowItem
-+ [ ] Create RowItem
-+ [ ] Update RowItem
-+ [ ] Delete RowItem
-+ [ ] Replace RowItem
+  + [x] Queries (`maxRecords`, `sort` & `view` )
+  + [ ] Support of `filterByFormula`
++ [x] Find Record
++ [ ] Create Record
++ [ ] Update Record
++ [ ] Delete Record
++ [ ] Replace Record
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:

@@ -27,4 +27,10 @@ public interface Query {
      * @return sortation of result set.
      */
     List<Sort> getSort();
+
+    /**
+     *
+     * @return
+     */
+    String filterByFormula();
 }
