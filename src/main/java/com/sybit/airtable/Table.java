@@ -101,6 +101,58 @@ class Table<T> {
 
     }
 
+    /**
+     * Select List of data of table.
+     *
+     * @param query
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException
+     */
+    @SuppressWarnings("WeakerAccess")
+    public List<T> select(Query query) throws AirtableException, HttpResponseException {
+        HttpResponse<Records> response;
+        try {
+            GetRequest request = Unirest.get(getTableEndpointUrl())
+                    .header("accept", "application/json")
+                    .header("Authorization", getBearerToken());
+            if(query.getMaxRecords() != null) {
+                request.queryString("maxRecords", query.getMaxRecords());
+            }
+            if(query.getView() != null) {
+                request.queryString("view", query.getView());
+            }
+            if(query.filterByFormula() != null) {
+                request.queryString("filterByFormula", query.filterByFormula());
+            }
+            if(query.getSort() != null) {
+                int i = 0;
+                for (Sort sort : query.getSort()) {
+                    request.queryString("sort[" + i + "][field]", sort.getField());
+                    request.queryString("sort[" + i + "][direction]", sort.getDirection());
+                }
+            }
+
+            LOG.debug("URL=" + request.getUrl());
+
+            response = request.asObject(Records.class);
+        }
+        catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+
+        int code = response.getStatus();
+        List<T> list = null;
+        if(200 == code) {
+            list = getList(response);
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
+
+        return list;
+    }
+
+
     public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
         return select(new Query() {
             @Override
@@ -154,57 +206,6 @@ class Table<T> {
                 return null;
             }
         });
-    }
-
-    /**
-     * Select List of data of table.
-     *
-     * @param query
-     * @return
-     * @throws AirtableException
-     * @throws HttpResponseException
-     */
-    @SuppressWarnings("WeakerAccess")
-    public List<T> select(Query query) throws AirtableException, HttpResponseException {
-        HttpResponse<Records> response;
-        try {
-            GetRequest request = Unirest.get(getTableEndpointUrl())
-                    .header("accept", "application/json")
-                    .header("Authorization", getBearerToken());
-            if(query.getMaxRecords() != null) {
-                request.queryString("maxRecords", query.getMaxRecords());
-            }
-            if(query.getView() != null) {
-                request.queryString("view", query.getView());
-            }
-            if(query.filterByFormula() != null) {
-                request.queryString("filterByFormula", query.filterByFormula());
-            }
-            if(query.getSort() != null) {
-                int i = 0;
-                for (Sort sort : query.getSort()) {
-                    request.queryString("sort[" + i + "][field]", sort.getField());
-                    request.queryString("sort[" + i + "][direction]", sort.getDirection());
-                }
-            }
-
-            LOG.debug("URL=" + request.getUrl());
-
-            response = request.asObject(Records.class);
-        }
-        catch (UnirestException e) {
-            throw new AirtableException(e);
-        }
-
-        int code = response.getStatus();
-        List<T> list = null;
-        if(200 == code) {
-            list = getList(response);
-        } else {
-            HttpResponseExceptionHandler.onResponse(response);
-        }
-
-        return list;
     }
 
     /**
