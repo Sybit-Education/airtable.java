@@ -7,7 +7,7 @@ package com.sybit.airtable;
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
-final class IOUtils {
+public final class IOUtils {
     private IOUtils() {}
 
 

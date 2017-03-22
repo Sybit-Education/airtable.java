@@ -12,21 +12,20 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
-import com.sybit.airtable.exception.AirtableNotfoundException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
-import java.lang.reflect.Field;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.client.HttpResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Representation Class of Airtable Tables.
@@ -35,7 +34,7 @@ import java.util.logging.Logger;
  */
 class Table<T> {
 
-    private static final Logger LOG = Logger.getLogger( Table.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( Table.class );
 
     private final String name;
     private final Class<T>  type;
@@ -58,6 +57,7 @@ class Table<T> {
      * @param type
      * @param base
      */
+    @SuppressWarnings("WeakerAccess")
     public Table(String name, Class<T> type, Base base){
         this(name, type);
         setParent(base);
@@ -92,9 +92,66 @@ class Table<T> {
             public List<Sort> getSort() {
                 return null;
             }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
         });
 
     }
+
+    /**
+     * Select List of data of table.
+     *
+     * @param query
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException
+     */
+    @SuppressWarnings("WeakerAccess")
+    public List<T> select(Query query) throws AirtableException, HttpResponseException {
+        HttpResponse<Records> response;
+        try {
+            GetRequest request = Unirest.get(getTableEndpointUrl())
+                    .header("accept", "application/json")
+                    .header("Authorization", getBearerToken());
+            if(query.getMaxRecords() != null) {
+                request.queryString("maxRecords", query.getMaxRecords());
+            }
+            if(query.getView() != null) {
+                request.queryString("view", query.getView());
+            }
+            if(query.filterByFormula() != null) {
+                request.queryString("filterByFormula", query.filterByFormula());
+            }
+            if(query.getSort() != null) {
+                int i = 0;
+                for (Sort sort : query.getSort()) {
+                    request.queryString("sort[" + i + "][field]", sort.getField());
+                    request.queryString("sort[" + i + "][direction]", sort.getDirection());
+                }
+            }
+
+            LOG.debug("URL=" + request.getUrl());
+
+            response = request.asObject(Records.class);
+        }
+        catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+
+        int code = response.getStatus();
+        List<T> list = null;
+        if(200 == code) {
+            list = getList(response);
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
+
+        return list;
+    }
+
 
     public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
         return select(new Query() {
@@ -110,6 +167,11 @@ class Table<T> {
 
             @Override
             public List<Sort> getSort() {
+                return null;
+            }
+
+            @Override
+            public String filterByFormula() {
                 return null;
             }
         });
@@ -138,59 +200,12 @@ class Table<T> {
             public List<Sort> getSort() {
                 return null;
             }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
         });
-    }
-
-    /**
-     * Select List of data of table.
-     *
-     * @param query
-     * @return
-     * @throws AirtableException
-     * @throws HttpResponseException
-     */
-    public List<T> select(Query query) throws AirtableException, HttpResponseException {
-        HttpResponse<Records> response;
-        try {
-            GetRequest request = Unirest.get(getTableEndpointUrl())
-                    .header("accept", "application/json")
-                    .header("Authorization", getBearerToken());
-            if(query.getMaxRecords() != null) {
-                request.queryString("maxRecords", query.getMaxRecords());
-            }
-            if(query.getView() != null) {
-                request.queryString("view", query.getView());
-            }
-            if(query.getSort() != null) {
-                int i = 0;
-                for (Sort sort : query.getSort()) {
-                    request.queryString("sort[" + i + "][field]", sort.getField());
-                    request.queryString("sort[" + i + "][direction]", sort.getDirection());
-                }
-            }
-
-            LOG.log(Level.INFO, "URL=" + request.getUrl());
-
-            response = request.asObject(Records.class);
-        }
-        catch (UnirestException e) {
-
-            throw new AirtableException(e);
-        }
-
-        int code = response.getStatus();
-        Records records;
-        List<T> list = null;
-        if(200 == code) {
-            list = getList(response);
-        } else if(404 == code) {
-            LOG.log(Level.WARNING, IOUtils.convertStreamToString(response.getRawBody()) + ": " + getTableEndpointUrl());
-            throw new AirtableNotfoundException("table [" + name + "] not found");
-        } else {
-            HttpResponseExceptionHandler.onResponse(response);
-        }
-
-        return list;
     }
 
     /**
@@ -219,6 +234,11 @@ class Table<T> {
             public List<Sort> getSort() {
                 return sortList;
             }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
         });
     }
 
@@ -231,14 +251,14 @@ class Table<T> {
     private List<T> getList(HttpResponse<Records> response) {
 
         final Records records = response.getBody();
-        final List<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<>();
 
         for(Map<String, Object> record : records.getRecords()) {
             T item = null;
             try {
                 item = transform(record, this.type.newInstance());
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                LOG.throwing(this.getClass().getName(), "select", e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                LOG.error(e.getMessage(), e);
             }
             list.add(item);
         }
@@ -256,7 +276,7 @@ class Table<T> {
 
         RecordItem body = null;
 
-        HttpResponse<RecordItem> response = null;
+        HttpResponse<RecordItem> response;
         try {
             response = Unirest.get( getTableEndpointUrl() + "/" + id)
                 .header("accept", "application/json")
@@ -269,17 +289,14 @@ class Table<T> {
 
         if(200 == code) {
             body = response.getBody();
-        } else if(404 == code) {
-          throw new AirtableNotfoundException("No data found in table [" + name + "] for id [" + id + "]");
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }
 
         try {
             return transform(body, this.type.newInstance() );
-        } catch (NoSuchMethodException | InvocationTargetException |
-                IllegalAccessException | InstantiationException e) {
-            LOG.throwing(this.getClass().getName(), "find", e);
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            LOG.error(e.getMessage(), e);
         }
 
         return null;
@@ -319,9 +336,8 @@ class Table<T> {
      * @return URL of tables endpoint.
      */
     private String getTableEndpointUrl() {
-        final String url = base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
 
-        return  url;
+        return base().airtable().endpointUrl() + "/" + base().name() + "/" + this.name;
     }
 
     /**
@@ -338,14 +354,13 @@ class Table<T> {
      * @param record
      * @param retval
      * @return
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private T transform(Map<String, Object> record, T retval) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+    private T transform(Map<String, Object> record, T retval) throws InvocationTargetException, IllegalAccessException {
         for(String key: record.keySet()) {
-            if(key.equals("fields")) {
+            if("fields".equals(key)) {
+                //noinspection unchecked
                 retval = transform((Map<String, Object>)record.get("fields"), retval);
             } else {
                 setProperty(retval, key, record.get(key));
@@ -360,16 +375,14 @@ class Table<T> {
      * @param record
      * @param retval
      * @return
-     * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
-     * @throws InstantiationException
      */
-    private T transform(RecordItem record, T retval) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+    private T transform(RecordItem record, T retval) throws InvocationTargetException, IllegalAccessException {
         setProperty(retval, "id", record.getId());
         setProperty(retval, "createdTime", record.getCreatedTime());
 
-        retval = transform((Map<String, Object>)record.getFields(), retval);
+        retval = transform(record.getFields(), retval);
 
         return retval;
     }
@@ -386,19 +399,18 @@ class Table<T> {
         String property = key2property(key);
 
         for (Field f: this.type.getDeclaredFields()) {
-         SerializedName annotation = f.getAnnotation(SerializedName.class);
-         if(annotation != null){
-             String serializedProperty = f.getName();
-            if (property.equals(f.getName())){
-               property = serializedProperty;
+            final SerializedName annotation = f.getAnnotation(SerializedName.class);
+
+            if(annotation != null && property.equalsIgnoreCase(annotation.value())){
+               property = f.getName();
                break;
             }
-         }
         }
+
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
         }else {
-            LOG.log( Level.WARNING,retval.getClass() + " does not support public setter for existing property [" + property + "]");
+            LOG.warn(retval.getClass() + " does not support public setter for existing property [" + property + "]");
         }
     }
 
@@ -411,7 +423,7 @@ class Table<T> {
     private String key2property(String key) {
         
         if(key.contains(" ") || key.contains("-") ) {
-            LOG.log( Level.SEVERE, "Annotate Special Charakters with @SerializedName in: [" + key + "]");
+            LOG.warn( "Annotate special characters using @SerializedName for property: [" + key + "]");
         }
         String property = key.trim();
         property = property.substring(0,1).toLowerCase() + property.substring(1, property.length());

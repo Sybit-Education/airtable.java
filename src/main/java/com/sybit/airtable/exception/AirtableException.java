@@ -30,4 +30,14 @@ public class AirtableException extends Exception {
             LOG.log(Level.SEVERE, "possible forgotten to set correct apiKey or base?");
         }
     }
+
+    /**
+     * Default Exception simmilar to AirtableError of JavaScript Library.
+     * @param error
+     * @param message
+     * @param status
+     */
+    public AirtableException(String error, String message, Integer status) {
+        super(message + " (" + error + ")" + ((status != null) ? " [Http code " + status + "]": ""));
+    }
 }

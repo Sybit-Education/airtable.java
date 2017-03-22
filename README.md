@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Sybit-Education/airtable.java.svg?branch=master)](https://travis-ci.org/Sybit-Education/airtable.java)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/stritti/airtable-java?utm_source=github.com&utm_medium=referral&utm_content=Sybit-Education/airtable.java&utm_campaign=badger)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/Sybit-Education/airtable-java?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Sybit-Education/airtable.java&amp;utm_campaign=Badge_Coverage)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 
@@ -37,28 +38,43 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 ## Select
 Select List of items from table:
 
-+ `table(name).select()`: get all items of table `name`
-+ `table(name).select(Integer maxRows)`: get max `maxRows` items of table `name`
-+ `table(name).select(Query query)`: get items of table `name` using `query` to filter
++ `table(name).select()`: get all records of table `name`
++ `table(name).select(Integer maxRecords)`: get max `maxRecords` records of table `name`
++ `table(name).select(Query query)`: get records of table `name` using `query` to filter
 
 + `...`
 
+### Example
+```Java
+// detailed Example see TableSelectTest.java
+Base base = new Airtable().base(AIRTABLE_BASE);
+List<Movie> retval = base.table("Movies", Movie.class).select();
+```
+
 ## Find
-Use Find to get specific item of table:
+Use Find to get specific records of table:
 
-+ `table(name).find(String id)`: get item with `id` of table `name`
++ `table(name).find(String id)`: get record with `id` of table `name`
 
+### Example
+```Java
+// detailed Example see TableFindTest.java
+Base base = new Airtable().base(AIRTABLE_BASE);
+Table<Actor> actorTable = base.table("Actors", Actor.class);
+Actor actor = actorTable.find("rec514228ed76ced1");
+```
 
 # Roadmap
 
 + [x] Select
   + [x] SelectAll
-  + [x] Queries (MaxRows, Sortation & Views )
-+ [x] Find RowItem
-+ [ ] Create RowItem
-+ [ ] Update RowItem
-+ [ ] Delete RowItem
-+ [ ] Replace RowItem
+  + [x] Queries (`maxRecords`, `sort` & `view` )
+  + [ ] Support of `filterByFormula`
++ [x] Find Record
++ [ ] Create Record
++ [ ] Update Record
++ [ ] Delete Record
++ [ ] Replace Record
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
@@ -79,6 +95,7 @@ We use following libraries:
 + [Google gson](https://github.com/google/gson)
 + [Apache Commons Beanutils](http://commons.apache.org/proper/commons-beanutils/)
 + [Apache Commons IO](http://commons.apache.org/proper/commons-io/)
++ [slf4j](https://www.slf4j.org)
 + [JUnit](http://junit.org)
 + [WireMock](http://wiremock.org/)
 
