@@ -43,9 +43,10 @@ Select List of items from table:
 
 + `...`
 
+### Example
 ```Java
 // detailed Example see TableSelectTest.java
-Base base = new Airtable().base("appe9941ff07fffcc");
+Base base = new Airtable().base(AIRTABLE_BASE);
 List<Movie> retval = base.table("Movies", Movie.class).select();
 ```
 
@@ -54,6 +55,13 @@ Use Find to get specific records of table:
 
 + `table(name).find(String id)`: get record with `id` of table `name`
 
+### Example
+```Java
+// detailed Example see TableFindTest.java
+Base base = new Airtable().base(AIRTABLE_BASE);
+Table<Actor> actorTable = base.table("Actors", Actor.class);
+Actor actor = actorTable.find("rec514228ed76ced1");
+```
 
 # Roadmap
 
