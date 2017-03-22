@@ -177,6 +177,9 @@ class Table<T> {
             if(query.getView() != null) {
                 request.queryString("view", query.getView());
             }
+            if(query.filterByFormula() != null) {
+                request.queryString("filterByFormula", query.filterByFormula());
+            }
             if(query.getSort() != null) {
                 int i = 0;
                 for (Sort sort : query.getSort()) {
@@ -190,12 +193,10 @@ class Table<T> {
             response = request.asObject(Records.class);
         }
         catch (UnirestException e) {
-
             throw new AirtableException(e);
         }
 
         int code = response.getStatus();
-        Records records;
         List<T> list = null;
         if(200 == code) {
             list = getList(response);
