@@ -9,12 +9,8 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.sybit.airtable.IOUtils;
 import com.sybit.airtable.vo.Error;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpResponseExceptionHandler {
-
-    private static final Logger LOG = LoggerFactory.getLogger( HttpResponseExceptionHandler.class );
 
     public static void onResponse(HttpResponse response) throws AirtableException {
 
