@@ -7,6 +7,8 @@
 package com.sybit.airtable;
 
 import com.sybit.airtable.vo.Records;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +20,11 @@ import java.util.Map;
  */
 public class Base {
 
-    private Map<String, Table> tableMap = new HashMap<>();
+    private static final Logger LOG = LoggerFactory.getLogger( Base.class );
 
-    private String base;
+    private final Map<String, Table> tableMap = new HashMap<>();
+
+    private final String base;
 
     private Airtable parent;
 

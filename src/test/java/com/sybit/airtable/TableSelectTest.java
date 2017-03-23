@@ -7,6 +7,7 @@
 package com.sybit.airtable;
 
 import com.sybit.airtable.exception.AirtableException;
+import com.sybit.airtable.movies.ActorSerializedNames;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.test.WireMockBaseTest;
 import org.apache.http.client.HttpResponseException;
@@ -88,4 +89,13 @@ public class TableSelectTest extends WireMockBaseTest {
         assertNotNull(retval);
     }
 
+    @Test
+    public void testSelectWithSerializedNames() throws AirtableException, HttpResponseException {
+
+        Base base = airtable.base("appe9941ff07fffcc");
+
+        List<ActorSerializedNames> retval = base.table("SerializedNames", ActorSerializedNames.class).select();
+        assertNotNull(retval);
+        assertEquals("Marlon Brando", retval.get(0).getName());
+    }
 }

@@ -17,6 +17,8 @@ import com.sybit.airtable.vo.Thumbnail;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Representation Class of Airtable.
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class Airtable {
 
-    private static final Logger LOG = Logger.getLogger( Airtable.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger( Airtable.class );
     private static final String ENDPOINT_URL = "https://api.airtable.com/v0";
     private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
@@ -55,13 +55,14 @@ public class Airtable {
      *
      * @return configured Airtable object.
      */
+    @SuppressWarnings("UnusedReturnValue")
     public Airtable configure() throws AirtableException {
 
-        LOG.log(Level.CONFIG, "System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
+        LOG.info( "System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
         String airtableApi = System.getProperty(AIRTABLE_API_KEY);
 
         if(airtableApi == null) {
-            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
+            LOG.info( "Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
             airtableApi = System.getenv(AIRTABLE_API_KEY);
         }
         if(airtableApi == null) {
@@ -79,6 +80,7 @@ public class Airtable {
      * @param apiKey API-Key of Airtable.
      * @return
      */
+    @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
         return configure(apiKey, ENDPOINT_URL);
     }
@@ -89,6 +91,7 @@ public class Airtable {
      * @param endpointUrl
      * @return
      */
+    @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
         if(apiKey == null) {
             throw new AirtableException("Missing Airtable API-Key");
@@ -103,13 +106,14 @@ public class Airtable {
 
         final String httpProxy = System.getenv("http_proxy");
         if(httpProxy != null) {
-            LOG.log( Level.INFO, "Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
+            LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
             //Unirest.setProxy(HttpHost.create(httpProxy));
         }
 
 
         // Only one time
         Unirest.setObjectMapper(new GsonObjectMapper());
+
                 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
@@ -135,11 +139,11 @@ public class Airtable {
      */
     public Base base() throws AirtableException {
 
-        LOG.log(Level.CONFIG, "Using Java property '-D" + AIRTABLE_BASE + "' to get key.");
+        LOG.info("Using Java property '-D" + AIRTABLE_BASE + "' to get key.");
         String val = System.getProperty(AIRTABLE_BASE);
 
         if(val == null) {
-            LOG.log(Level.CONFIG, "Environment-Variable: Using OS environment '" + AIRTABLE_BASE + "' to get base name.");
+            LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_BASE + "' to get base name.");
             val = System.getenv(AIRTABLE_BASE);
         }
         if(val == null) {
@@ -189,7 +193,7 @@ public class Airtable {
     private String getCredentialProperty(String key) {
 
         final String file = "/credentials.properties";
-        LOG.log(Level.CONFIG, "credentials file: Using file '" + file + "' using key '" + key + "' to get value.");
+        LOG.info("credentials file: Using file '" + file + "' using key '" + key + "' to get value.");
         String value;
 
         InputStream in = null;
@@ -199,7 +203,7 @@ public class Airtable {
             prop.load(in);
             value = prop.getProperty(key);
         } catch (IOException | NullPointerException e) {
-            LOG.throwing(this.getClass().getName(), "configure", e);
+            LOG.error(e.getMessage(), e);
             value = null;
         } finally {
             org.apache.commons.io.IOUtils.closeQuietly(in);
