@@ -6,7 +6,7 @@
 package com.sybit.airtable;
 
 import com.google.gson.internal.LinkedTreeMap;
-import com.sybit.airtable.vo.Attachment;
+import com.sybit.airtable.vo.Thumbnail;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
@@ -16,16 +16,16 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
  *
  * @author fzr
  */
-public class ListConverter extends AbstractConverter {
-    
-    private Class listClass;
+public class ThumbnailConverter extends AbstractConverter{
+
+    private Class mapClass;
 
     @Override
-    protected <T> T convertToType(final Class<T> type, Object value) throws Throwable {
+    protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
         
         
-        Object instanz = this.getListClass().newInstance();
         Class<T> sourceType = (Class<T>) value.getClass();
+        Object instanz = this.mapClass.newInstance();
         
         if(value instanceof LinkedTreeMap){
             for (String key : ((LinkedTreeMap<String, Object>) value).keySet()) {
@@ -47,7 +47,18 @@ public class ListConverter extends AbstractConverter {
         return toStringList(sourceType,stringValue);
     }
     
-    private <T> T toStringList(final Class<T> type, final String value) {
+    private <T> T toClassList(final Class<T> type, final Object value) {
+        
+        if (type.equals(LinkedTreeMap.class)) {
+            List<T> returnList = new ArrayList<T>();
+            returnList.add((T) value);
+            return (T) returnList;
+        }
+        
+        return toStringList(type,value.toString());
+    }
+    
+     private <T> T toStringList(final Class<T> type, final String value) {
         
         List<T> returnList = new ArrayList<T>();
         
@@ -59,48 +70,14 @@ public class ListConverter extends AbstractConverter {
         returnList.add(type.cast(String.valueOf(value)));    
         return (T) returnList;
     }
-    
-    private <T> T toClassList(final Class<T> type, final Object value) {
-        
-        if (type.equals(LinkedTreeMap.class)) {
-            List<T> returnList = new ArrayList<T>();
-            returnList.add((T) value);
-            return (T) returnList;
-        }
-        
-        return toStringList(type,value.toString());
-    }
 
-    /**
-     * @return the listClass
-     */
-    public Class getListClass() {
-        return listClass;
-    }
-
-    /**
-     * @param listClass the listClass to set
-     */
-    public void setListClass(Class listClass) {
-        this.listClass = listClass;
-    }
-    
-    
-
-    //TODO Default überlegen
     @Override
     protected Class<?> getDefaultType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-
-
-
-
-
-    
-
-    
+    void setMapClass(Class<Thumbnail> aClass) {
+        this.mapClass = aClass;
+    }
     
 }

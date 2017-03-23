@@ -8,10 +8,12 @@ package com.sybit.airtable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
+import com.sybit.airtable.vo.Thumbnail;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,30 +109,21 @@ public class Airtable {
 
 
         // Only one time
-        Unirest.setObjectMapper(new ObjectMapper() {
-            final Gson gson = new GsonBuilder().create();
-
-            public <T> T readValue(String value, Class<T> valueType) {
-                LOG.log(Level.INFO, "readValue: \n" + value);
-                return gson.fromJson(value, valueType);
-            }
-
-            public String writeValue(Object value) {
-                return gson.toJson(value);
-            }
-        });
+        Unirest.setObjectMapper(new GsonObjectMapper());
                 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
         ListConverter lConverter = new ListConverter();
-        AttachementConverter atConverter = new AttachementConverter();
+        ThumbnailConverter thConverter = new ThumbnailConverter();
         
         lConverter.setListClass(Attachment.class);
+        thConverter.setMapClass(Thumbnail.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         
         ConvertUtils.register(dtConverter, Date.class);
         ConvertUtils.register(lConverter, List.class);
-        ConvertUtils.register(atConverter, Attachment.class);
+        //ConvertUtils.register(thConverter, Map.class);
+        
 
         return this;
     }

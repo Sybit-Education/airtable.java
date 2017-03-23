@@ -22,9 +22,6 @@ public class AttachementConverter extends AbstractConverter {
     private String type;
     private Thumbnail thumbnail;
     
-    public AttachementConverter(){
-        super();
-    }
 
     @Override
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
