@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/Sybit-Education/airtable.java.svg?branch=master)](https://travis-ci.org/Sybit-Education/airtable.java)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/stritti/airtable-java?utm_source=github.com&utm_medium=referral&utm_content=Sybit-Education/airtable.java&utm_campaign=badger)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/Sybit-Education/airtable-java?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Sybit-Education/airtable.java&amp;utm_campaign=Badge_Coverage)
+[![Download](https://api.bintray.com/packages/sybit-education/maven/airtable.java/images/download.svg) ](https://bintray.com/sybit-education/maven/airtable.java/_latestVersion) 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 
@@ -10,6 +11,12 @@ Java API for Airtable (http://www.airtable.com). The Airtable API provides a sim
 
 
 # Usage
+
+For adding dependency, you could use bintray-repository:
+[https://bintray.com/sybit-education/maven/airtable.java](https://bintray.com/sybit-education/maven/airtable.java)
+
+The files are stored at: [https://dl.bintray.com/sybit-education/maven/](https://dl.bintray.com/sybit-education/maven/)
+
 
 ## Initializing
 
