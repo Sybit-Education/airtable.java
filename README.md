@@ -64,6 +64,19 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
+## Annotations
+
+Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
+
+### Example
+```Java
+
+    import com.google.gson.annotations.SerializedName;
+
+    @SerializedName("First- & Lastname")
+    private String name;
+```
+
 # Roadmap
 
 + [x] Select
