@@ -7,7 +7,10 @@ package com.sybit.airtable;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.sybit.airtable.vo.Attachment;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.converters.AbstractConverter;
@@ -19,24 +22,39 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 public class ListConverter extends AbstractConverter {
     
     private Class listClass;
+    
+    @Override
+    protected Object convertArray(final Object value) {
+        return value;
+    }
 
     @Override
     protected <T> T convertToType(final Class<T> type, Object value) throws Throwable {
         
-        
-        Object instanz = this.getListClass().newInstance();
-        Class<T> sourceType = (Class<T>) value.getClass();
-        
-        if(value instanceof LinkedTreeMap){
-            for (String key : ((LinkedTreeMap<String, Object>) value).keySet()) {
-                Object val = ((LinkedTreeMap) value).get(key);            
-                BeanUtils.setProperty(instanz,key,val);          
-            }         
-            return toClassList(sourceType,instanz);
+        List<T> returnList = new ArrayList<T>();
+          
+        if(value instanceof List){
+            for (T item: ((List<T>) value)){
+                if(item instanceof LinkedTreeMap){
+                    Object instanz = this.getListClass().newInstance();
+                    for (String key : ((LinkedTreeMap<String, Object>) item).keySet()) {
+                        Object val = ((LinkedTreeMap) item).get(key);            
+                        BeanUtils.setProperty(instanz,key,val);     
+                    }         
+                    returnList = toClassList(item.getClass(),instanz,returnList);        
+                }
+                if(item instanceof String){
+                    returnList = toStringList(item.getClass(),item.toString(),returnList);
+                }
+                
+            }       
+            return (T) returnList;  
         }
         
+        
+        //TODO überarbeiten
         if(value instanceof String){
-            return toStringList(sourceType,value.toString());
+            return (T) toStringList(value.getClass(),value.toString(),returnList);
         }
         
         final String stringValue = value.toString().trim();
@@ -44,31 +62,28 @@ public class ListConverter extends AbstractConverter {
             return handleMissing(type);
         }
             
-        return toStringList(sourceType,stringValue);
+        return (T) toStringList(value.getClass(),stringValue,returnList);
     }
     
-    private <T> T toStringList(final Class<T> type, final String value) {
-        
-        List<T> returnList = new ArrayList<T>();
-        
+    private List toStringList(final Class type, final String value,List returnList) {
+         
         if (type.equals(String.class)) {      
-            returnList.add(type.cast(String.valueOf(value)));
-            return (T) returnList;
+            returnList.add(String.valueOf(value));
+            return returnList;
         }
         
-        returnList.add(type.cast(String.valueOf(value)));    
-        return (T) returnList;
+        returnList.add(String.valueOf(value));    
+        return returnList;
     }
     
-    private <T> T toClassList(final Class<T> type, final Object value) {
+    private List toClassList(final Class type, final Object value, List returnList) {
         
         if (type.equals(LinkedTreeMap.class)) {
-            List<T> returnList = new ArrayList<T>();
-            returnList.add((T) value);
-            return (T) returnList;
+            returnList.add(value);
+            return returnList;
         }
         
-        return toStringList(type,value.toString());
+        return toStringList(type,value.toString(),returnList);
     }
 
     /**

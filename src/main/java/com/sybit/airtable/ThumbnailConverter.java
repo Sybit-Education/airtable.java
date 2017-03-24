@@ -8,7 +8,9 @@ package com.sybit.airtable;
 import com.google.gson.internal.LinkedTreeMap;
 import com.sybit.airtable.vo.Thumbnail;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.converters.AbstractConverter;
 
@@ -24,19 +26,25 @@ public class ThumbnailConverter extends AbstractConverter{
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
         
         
-        Class<T> sourceType = (Class<T>) value.getClass();
         Object instanz = this.mapClass.newInstance();
-        
+        Class<T> sourceType = (Class<T>) value.getClass();
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+            
         if(value instanceof LinkedTreeMap){
             for (String key : ((LinkedTreeMap<String, Object>) value).keySet()) {
-                Object val = ((LinkedTreeMap) value).get(key);            
-                BeanUtils.setProperty(instanz,key,val);          
+                Object val = ((LinkedTreeMap) value).get(key);   
+                BeanUtils.setProperty(instanz,"name",key); 
+                for (String key2 : ((LinkedTreeMap<String, Object>) val).keySet()) {
+                    Object val2 = ((LinkedTreeMap) val).get(key2);            
+                    BeanUtils.setProperty(instanz,key2,val2);                                
+                }           
+                returnMap = toClassMap(sourceType,instanz,returnMap);
             }         
-            return toClassList(sourceType,instanz);
+            return (T) returnMap;
         }
         
         if(value instanceof String){
-            return toStringList(sourceType,value.toString());
+            return (T) toStringMap(sourceType,value.toString(),returnMap);
         }
         
         final String stringValue = value.toString().trim();
@@ -44,31 +52,32 @@ public class ThumbnailConverter extends AbstractConverter{
             return handleMissing(type);
         }
             
-        return toStringList(sourceType,stringValue);
+        return (T) toStringMap(sourceType,stringValue,returnMap);
     }
     
-    private <T> T toClassList(final Class<T> type, final Object value) {
+    private Map<String,Object> toClassMap(final Class type, final Object value,Map<String, Object> returnMap) {
         
-        if (type.equals(LinkedTreeMap.class)) {
-            List<T> returnList = new ArrayList<T>();
-            returnList.add((T) value);
-            return (T) returnList;
+        if (type.equals(LinkedTreeMap.class)) {   
+            if (value.getClass().equals(Thumbnail.class)) {
+                returnMap.put(((Thumbnail)value).getName(),value);
+            }     
+            return returnMap;
         }
         
-        return toStringList(type,value.toString());
+        return toStringMap(type,value.toString(),returnMap);
     }
     
-     private <T> T toStringList(final Class<T> type, final String value) {
+     private Map<String,Object> toStringMap(final Class type, final String value,Map<String, Object> returnMap) {
         
-        List<T> returnList = new ArrayList<T>();
+        List returnList = new ArrayList();
         
         if (type.equals(String.class)) {      
             returnList.add(type.cast(String.valueOf(value)));
-            return (T) returnList;
+            return (Map<String, Object>) returnList;
         }
         
         returnList.add(type.cast(String.valueOf(value)));    
-        return (T) returnList;
+        return (Map<String, Object>) returnList;
     }
 
     @Override
