@@ -6,29 +6,26 @@
  */
 package com.sybit.airtable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.internal.LinkedTreeMap;
-import com.mashape.unirest.http.ObjectMapper;
+
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
+
+import org.apache.http.HttpHost;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
-import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.http.HttpHost;
+
 
 /**
  * Representation Class of Airtable.
@@ -57,6 +54,7 @@ public class Airtable {
      * or within credentials.properties.
      *
      * @return configured Airtable object.
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure() throws AirtableException {
@@ -82,6 +80,7 @@ public class Airtable {
      *
      * @param apiKey API-Key of Airtable.
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
@@ -93,6 +92,7 @@ public class Airtable {
      * @param apiKey
      * @param endpointUrl
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
