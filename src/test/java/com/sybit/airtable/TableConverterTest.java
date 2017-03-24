@@ -24,6 +24,8 @@ import org.junit.Test;
  */
 public class TableConverterTest extends WireMockBaseTest {
     
+    //TODO Test für nicht gülitiges bzw String 
+    
     @Test
     public void testConvertMovie() throws AirtableException, HttpResponseException {
 
