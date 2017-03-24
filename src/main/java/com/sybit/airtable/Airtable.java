@@ -22,10 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.http.HttpHost;
 
 /**
  * Representation Class of Airtable.
@@ -107,7 +109,7 @@ public class Airtable {
         final String httpProxy = System.getenv("http_proxy");
         if(httpProxy != null) {
             LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            //Unirest.setProxy(HttpHost.create(httpProxy));
+            Unirest.setProxy(HttpHost.create(httpProxy));
         }
 
 
@@ -126,7 +128,7 @@ public class Airtable {
         
         ConvertUtils.register(dtConverter, Date.class);
         ConvertUtils.register(lConverter, List.class);
-        //ConvertUtils.register(thConverter, Map.class);
+        ConvertUtils.register(thConverter, Map.class);
         
 
         return this;
