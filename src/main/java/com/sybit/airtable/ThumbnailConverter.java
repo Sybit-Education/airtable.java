@@ -16,17 +16,31 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 
 /**
  *
+ * org.apache.commons.beanutils.Converter implementaion
+ * that handles conversion to and from Map<String,T> objects.
+ *
+ * This implementation converts Map<String,T> to Map<String,mapClass>.
+ * The mapClass can be set to the Class that is needed.
+ * 
  * @author fzr
  */
 public class ThumbnailConverter extends AbstractConverter{
 
     private Class mapClass;
 
+    /**
+     * 
+     * Converts the Input Object into a Map.
+     * 
+     * @param <T>
+     * @param type
+     * @param value
+     * @return
+     * @throws Throwable 
+     */
     @Override
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
-        
-        
-       
+              
         Class<T> sourceType = (Class<T>) value.getClass();
         Map<String, Object> returnMap = new HashMap<String, Object>();
             
@@ -56,6 +70,15 @@ public class ThumbnailConverter extends AbstractConverter{
         return (T) toStringMap(sourceType,stringValue,returnMap);
     }
     
+    /**
+     * 
+     * Default Conversion to specified Class.
+     * 
+     * @param type
+     * @param value
+     * @param returnMap
+     * @return 
+     */
     private Map<String,Object> toClassMap(final Class type, final Object value,Map<String, Object> returnMap) {
         
         if (type.equals(LinkedTreeMap.class)) {   
@@ -67,6 +90,16 @@ public class ThumbnailConverter extends AbstractConverter{
         
         return toStringMap(type,value.toString(),returnMap);
     }
+    
+    /**
+     * 
+     * Default toString Conversion.
+     * 
+     * @param type
+     * @param value
+     * @param returnMap
+     * @return 
+     */
     
      private Map<String,Object> toStringMap(final Class type, final String value,Map<String, Object> returnMap) {
         
