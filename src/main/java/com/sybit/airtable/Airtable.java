@@ -115,7 +115,7 @@ public class Airtable {
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
         ListConverter lConverter = new ListConverter();
-        ThumbnailConverter thConverter = new ThumbnailConverter();
+        MapConverter thConverter = new MapConverter();
         
         lConverter.setListClass(Attachment.class);
         thConverter.setMapClass(Thumbnail.class);

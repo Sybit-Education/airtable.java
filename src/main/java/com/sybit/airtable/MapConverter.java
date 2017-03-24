@@ -24,7 +24,7 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
  * 
  * @author fzr
  */
-public class ThumbnailConverter extends AbstractConverter{
+public class MapConverter extends AbstractConverter{
 
     private Class mapClass;
 
