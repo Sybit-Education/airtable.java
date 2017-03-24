@@ -1,3 +1,5 @@
+import com.smokejumperit.gradle.report.DependencyLicensePlugin
+
 /*
  * The MIT License (MIT)
  * Copyright (c) 2017 Sybit GmbH
@@ -12,15 +14,20 @@ buildscript {
 
     dependencies {
         classpath 'com.palantir:jacoco-coverage:0.4.0'
+        classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'com.palantir.jacoco-coverage'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: DependencyLicensePlugin
 
 group = 'com.sybit'
-version = '0.1-SNAPSHOT'
+version = '0.1'
 
 description = """com.sybit airtable"""
 
@@ -31,16 +38,16 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url "http://dl.bintray.com/typesafe/maven-releases" }
-
 }
 
 dependencies {
     compile group: 'com.mashape.unirest', name: 'unirest-java', version:'1.4.9'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.2'
-    compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:'4.0.2'
+    //compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version:'4.0.2'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.1'
     compile group: 'org.json', name: 'json', version:'20160810'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.5'
@@ -52,4 +59,72 @@ dependencies {
     testCompile group: 'commons-io', name: 'commons-io', version:'2.5'
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version:'2.5.1'
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.25'
+}
+
+
+/*
+ * Gets the version name from the latest Git tag
+ */
+def getVersionName = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+    catch (ignored) {
+        return version;
+    }
+}
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            if (plugins.hasPlugin('war')) {
+                from components.web
+            } else {
+                from components.java
+            }
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+
+    publications = ['mavenJava']
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    version getVersionName()
+    pkg {
+        repo = 'maven'
+        userOrg = 'sybit-education'
+        name = 'airtable.java'
+        licenses = ['MIT License']
+        vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
+
+    }
 }
