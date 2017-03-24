@@ -17,6 +17,15 @@ For adding dependency, you could use bintray-repository:
 
 The files are stored at: [https://dl.bintray.com/sybit-education/maven/](https://dl.bintray.com/sybit-education/maven/)
 
+## Gradle
+For Gradle add compile `com.sybit:airtable.java:[version]` to compile dependencies.
+Also add `jcenter` repository to dependencies:
+```
+repositories {
+    jcenter()
+    ...
+}
+```
 
 ## Initializing
 
