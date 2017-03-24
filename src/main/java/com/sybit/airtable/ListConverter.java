@@ -56,7 +56,7 @@ public class ListConverter extends AbstractConverter {
     @Override
     protected <T> T convertToType(final Class<T> type, Object value) throws InstantiationException, IllegalAccessException, InvocationTargetException  {
         
-        List<T> returnList = new ArrayList<T>();
+        List<T> returnList = new ArrayList<>();
           
         if(value instanceof List){
             for (T item: ((List<T>) value)){
@@ -96,7 +96,7 @@ public class ListConverter extends AbstractConverter {
      * @param type The type of the Class
      * @param value The String value
      * @param returnList A List of all currently converted Objects
-     * @return 
+     * @return A List
      */
     private List toStringList(final Class type, final String value,List returnList) {
          
@@ -117,7 +117,7 @@ public class ListConverter extends AbstractConverter {
      * @param type The type of the Class
      * @param value The value of the Input Object
      * @param returnList A List of all currently converted Objects
-     * @return 
+     * @return A List
      */
     private List toClassList(final Class type, final Object value, List returnList) {
         

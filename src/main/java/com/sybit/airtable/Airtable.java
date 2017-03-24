@@ -154,6 +154,7 @@ public class Airtable {
      * Getting the base by given property <code>AIRTABLE_BASE</code>.
      *
      * @return the base object.
+     * @throws com.sybit.airtable.exception.AirtableException Missing Airtable_BASE
      */
     public Base base() throws AirtableException {
 
@@ -175,6 +176,7 @@ public class Airtable {
      * Builder method to create base of given base id.
      * @param base the base id.
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException AIRTABLE_BASE was Null
      */
     public Base base(String base) throws AirtableException {
         if(base == null) {
