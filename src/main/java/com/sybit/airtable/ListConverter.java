@@ -6,11 +6,7 @@
 package com.sybit.airtable;
 
 import com.google.gson.internal.LinkedTreeMap;
-import com.sybit.airtable.vo.Attachment;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.converters.AbstractConverter;

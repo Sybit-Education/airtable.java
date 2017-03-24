@@ -26,12 +26,13 @@ public class ThumbnailConverter extends AbstractConverter{
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
         
         
-        Object instanz = this.mapClass.newInstance();
+       
         Class<T> sourceType = (Class<T>) value.getClass();
         Map<String, Object> returnMap = new HashMap<String, Object>();
             
         if(value instanceof LinkedTreeMap){
             for (String key : ((LinkedTreeMap<String, Object>) value).keySet()) {
+                Object instanz = this.mapClass.newInstance();
                 Object val = ((LinkedTreeMap) value).get(key);   
                 BeanUtils.setProperty(instanz,"name",key); 
                 for (String key2 : ((LinkedTreeMap<String, Object>) val).keySet()) {

@@ -109,7 +109,7 @@ public class Airtable {
         final String httpProxy = System.getenv("http_proxy");
         if(httpProxy != null) {
             LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            Unirest.setProxy(HttpHost.create(httpProxy));
+            //Unirest.setProxy(HttpHost.create(httpProxy));
         }
 
 
