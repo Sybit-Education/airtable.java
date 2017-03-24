@@ -13,33 +13,42 @@ public class Sort {
 
     public enum Direction {asc, desc}
 
-    private String field;
+    private final String field;
 
-    private Direction direction;
+    private final Direction direction;
 
     /**
+     * Sort ascending given field.
      *
-     * @param field
-     * @param direction
+     * @param field name of field
+     */
+    public Sort(String field) {
+        this(field, Direction.asc);
+    }
+    /**
+     * Sort given field by defined direction.
+     *
+     * @param field name of field
+     * @param direction sort direction
      */
     public Sort(String field, Direction direction) {
         this.field = field;
         this.direction = direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getField() {
         return field;
     }
 
-    public void setField(String field) {
-        this.field = field;
-    }
-
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 }
