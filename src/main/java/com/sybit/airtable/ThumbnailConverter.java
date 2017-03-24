@@ -17,9 +17,9 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 /**
  *
  * org.apache.commons.beanutils.Converter implementaion
- * that handles conversion to and from Map<String,T> objects.
+ * that handles conversion to and from Map&lt;String,T&gt; objects.
  *
- * This implementation converts Map<String,T> to Map<String,mapClass>.
+ * This implementation converts Map&lt;String,T&gt; to Map<String,mapClass>.
  * The mapClass can be set to the Class that is needed.
  * 
  * @author fzr
@@ -29,13 +29,12 @@ public class ThumbnailConverter extends AbstractConverter{
     private Class mapClass;
 
     /**
-     * 
      * Converts the Input Object into a Map.
      * 
-     * @param <T>
-     * @param type
-     * @param value
-     * @return
+     *  
+     * @param type The type of the Input Object
+     * @param value The value of the Input Object
+     * @return A Map
      * @throws Throwable 
      */
     @Override
@@ -74,10 +73,10 @@ public class ThumbnailConverter extends AbstractConverter{
      * 
      * Default Conversion to specified Class.
      * 
-     * @param type
-     * @param value
-     * @param returnMap
-     * @return 
+     * @param type The Class of the type
+     * @param value The value of the Object
+     * @param returnMap A Map of all currently converted Objects
+     * @return A Map
      */
     private Map<String,Object> toClassMap(final Class type, final Object value,Map<String, Object> returnMap) {
         
@@ -95,10 +94,10 @@ public class ThumbnailConverter extends AbstractConverter{
      * 
      * Default toString Conversion.
      * 
-     * @param type
-     * @param value
-     * @param returnMap
-     * @return 
+     * @param type The Class of the type
+     * @param value The String value 
+     * @param returnMap A Map of all currently converted Objects
+     * @return A Map
      */
     
      private Map<String,Object> toStringMap(final Class type, final String value,Map<String, Object> returnMap) {

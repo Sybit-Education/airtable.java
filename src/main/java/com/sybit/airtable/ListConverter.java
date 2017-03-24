@@ -6,6 +6,7 @@
 package com.sybit.airtable;
 
 import com.google.gson.internal.LinkedTreeMap;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
@@ -14,10 +15,10 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 /**
  * 
  * org.apache.commons.beanutils.Converter implementaion
- * that handles conversion to and from List<T> objects.
+ * that handles conversion to and from List&lt;T&gt; objects.
  *
- * This implementation converts List<T> to List<innerClass>.
- * The innerClass can be set to the Class that is needed.
+ * <p>This implementation converts List&lt;T&gt; to List&lt;innerClass&gt;.
+ * The innerClass can be set to the Class that is needed.</p>
  *
  * @author fzr
  */
@@ -29,8 +30,8 @@ public class ListConverter extends AbstractConverter {
      * 
      * Method overwritten so it doesent return only the first Element of the Array. 
      * 
-     * @param value
-     * @return value
+     * @param value The Input Value
+     * @return value The value to be returned
      */
     @Override
     protected Object convertArray(final Object value) {
@@ -43,16 +44,17 @@ public class ListConverter extends AbstractConverter {
      * 
      * This Method handles the conversion from a List of LinkedHashMaps to a List of Attachement Objects.
      * 
-     * If the Input Object is no List or the List Item is no LinkedHashMap everything will be converted into a (List?) String.
+     * <p>If the Input Object is no List or the List Item is no LinkedHashMap everything will be converted into a (List?) String.</p>
      * 
-     * @param <T>
-     * @param type
-     * @param value
-     * @return
-     * @throws Throwable 
+     * @param type The type of the Input Object
+     * @param value The value of the Input Object
+     * @return A List
+     * @throws java.lang.InstantiationException If no Instance of the listClass can be instantiated
+     * @throws java.lang.IllegalAccessException If the Object can't be accest
+     * @throws java.lang.reflect.InvocationTargetException If th Target can't be accessed
      */
     @Override
-    protected <T> T convertToType(final Class<T> type, Object value) throws Throwable {
+    protected <T> T convertToType(final Class<T> type, Object value) throws InstantiationException, IllegalAccessException, InvocationTargetException  {
         
         List<T> returnList = new ArrayList<T>();
           
@@ -91,9 +93,9 @@ public class ListConverter extends AbstractConverter {
     /**
      * Default toString conversion
      * 
-     * @param type
-     * @param value
-     * @param returnList
+     * @param type The type of the Class
+     * @param value The String value
+     * @param returnList A List of all currently converted Objects
      * @return 
      */
     private List toStringList(final Class type, final String value,List returnList) {
@@ -109,11 +111,12 @@ public class ListConverter extends AbstractConverter {
     
     /**
      * Default conversion to specified Class.
-     * If conversion is not possible default toString.
      * 
-     * @param type
-     * @param value
-     * @param returnList
+     * <p>If conversion is not possible default toString.</p>
+     * 
+     * @param type The type of the Class
+     * @param value The value of the Input Object
+     * @param returnList A List of all currently converted Objects
      * @return 
      */
     private List toClassList(final Class type, final Object value, List returnList) {
