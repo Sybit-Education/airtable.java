@@ -14,6 +14,7 @@ import com.sybit.airtable.exception.AirtableException;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,13 +99,7 @@ public class Airtable {
         this.apiKey = apiKey;
         this.endpointUrl = endpointUrl;
 
-
-        final String httpProxy = System.getenv("http_proxy");
-        if(httpProxy != null) {
-            LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            //Unirest.setProxy(HttpHost.create(httpProxy));
-        }
-
+        setProxy(endpointUrl);
 
         // Only one time
         Unirest.setObjectMapper(new ObjectMapper() {
@@ -126,6 +121,27 @@ public class Airtable {
         ConvertUtils.register(dtConverter, Date.class);
 
         return this;
+    }
+
+    /**
+     * Set Proxy environment for Unirest.
+     *
+     * Proxy will be ignored for endpointUrls containing <code>localhost</code> or <code>127.0.0.1,/code>
+     * @param endpointUrl
+     */
+    private void setProxy(String endpointUrl) {
+        final String httpProxy = System.getenv("http_proxy");
+        if(httpProxy != null
+                && (endpointUrl.contains("127.0.0.1")
+                || endpointUrl.contains("localhost"))) {
+            LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
+            Unirest.setProxy(null);
+        } else if(httpProxy != null) {
+            LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
+            Unirest.setProxy(HttpHost.create(httpProxy));
+        } else {
+            Unirest.setProxy(null);
+        }
     }
 
     /**
@@ -210,5 +226,6 @@ public class Airtable {
 
     public void setEndpointUrl(String endpointUrl) {
         this.endpointUrl = endpointUrl;
+        setProxy(endpointUrl);
     }
 }
