@@ -47,6 +47,11 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 
 If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
 
+## Logging
+
+The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.
+
+
 ## Access Base
 
 ## Access Table 
