@@ -45,6 +45,8 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 * On Windows: `set http_proxy=http://your_proxy:your_port`
 * On Unix/OS X: `export http_proxy=http://your_proxy:your_port`
 
+If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
+
 ## Access Base
 
 ## Access Table 
