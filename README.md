@@ -86,6 +86,7 @@ Actor actor = actorTable.find("rec514228ed76ced1");
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
+  + [ ] Support of Paging
 + [x] Find Record
 + [ ] Create Record
 + [ ] Update Record
