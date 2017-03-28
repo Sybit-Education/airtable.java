@@ -101,9 +101,7 @@ public class MapConverter extends AbstractConverter{
      */
     
      private Map<String,Object> toStringMap(final Class type, final String value,Map<String, Object> returnMap) {
-        
-        List returnList = new ArrayList();
-        
+                
         if (type.equals(String.class)) {      
             returnMap.put(value,value);
             return  returnMap;
