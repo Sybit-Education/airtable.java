@@ -45,6 +45,13 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 * On Windows: `set http_proxy=http://your_proxy:your_port`
 * On Unix/OS X: `export http_proxy=http://your_proxy:your_port`
 
+If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
+
+## Logging
+
+The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.
+
+
 ## Access Base
 
 ## Access Table 
@@ -80,6 +87,19 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
+## Annotations
+
+Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
+
+### Example
+```Java
+
+    import com.google.gson.annotations.SerializedName;
+
+    @SerializedName("First- & Lastname")
+    private String name;
+```
+
 # Roadmap
 + [x] Airtable Configure
   + [x] configuration of `proxy`
@@ -90,7 +110,7 @@ Actor actor = actorTable.find("rec514228ed76ced1");
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
-  + [ ] Paging
+  + [ ] Support of Paging
 
 + [x] Find Record
 
@@ -100,10 +120,10 @@ Actor actor = actorTable.find("rec514228ed76ced1");
 + [ ] Replace Record
 + General requirements
     + [ ] Automatic ObjectMapping
-      + [x] Read: converte to Objects
-      + [x] Read: convertion of `Attachment`s & `Thumbnail`s
+      + [x] Read: convert to Objects
+      + [x] Read: conversion of `Attachment`s & `Thumbnail`s
       + [ ] Write: convert Objects to JSON
-  + [ ] Errorhandling
+  + [x] Errorhandling
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
