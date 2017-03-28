@@ -45,6 +45,13 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 * On Windows: `set http_proxy=http://your_proxy:your_port`
 * On Unix/OS X: `export http_proxy=http://your_proxy:your_port`
 
+If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
+
+## Logging
+
+The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.
+
+
 ## Access Base
 
 ## Access Table 
@@ -94,16 +101,29 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 ```
 
 # Roadmap
++ [x] Airtable Configure
+  + [x] configuration of `proxy`
+  + [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` 
+  + [ ] configuration of `requestTimeout`
 
 + [x] Select
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
+  + [ ] Support of Paging
+
 + [x] Find Record
+
 + [ ] Create Record
 + [ ] Update Record
 + [ ] Delete Record
 + [ ] Replace Record
++ General requirements
+    + [ ] Automatic ObjectMapping
+      + [x] Read: convert to Objects
+      + [x] Read: conversion of `Attachment`s & `Thumbnail`s
+      + [ ] Write: convert Objects to JSON
+  + [x] Errorhandling
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
