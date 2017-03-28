@@ -5,8 +5,6 @@
  */
 package com.sybit.airtable.vo;
 
-import java.util.List;
-import java.util.Map;
 
 /**
  *

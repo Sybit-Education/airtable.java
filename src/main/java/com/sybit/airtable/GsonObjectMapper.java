@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 class GsonObjectMapper implements ObjectMapper{
     private static final Logger LOG = Logger.getLogger( GsonObjectMapper.class.getName() );
-    final Gson gson;
+    private final Gson gson;
                 
     public GsonObjectMapper() {
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();

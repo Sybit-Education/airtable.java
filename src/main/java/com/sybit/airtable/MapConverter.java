@@ -105,12 +105,12 @@ public class MapConverter extends AbstractConverter{
         List returnList = new ArrayList();
         
         if (type.equals(String.class)) {      
-            returnList.add(type.cast(String.valueOf(value)));
-            return (Map<String, Object>) returnList;
+            returnMap.put(value,value);
+            return  returnMap;
         }
         
-        returnList.add(type.cast(String.valueOf(value)));    
-        return (Map<String, Object>) returnList;
+        returnMap.put(value,value);    
+        return returnMap;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class MapConverter extends AbstractConverter{
      * 
      * @param aClass  The Parameter that is used
      */
-    void setMapClass(Class<Thumbnail> aClass) {
+    public void setMapClass(Class<Thumbnail> aClass) {
         this.mapClass = aClass;
     }
     
