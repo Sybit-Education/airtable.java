@@ -17,6 +17,15 @@ For adding dependency, you could use bintray-repository:
 
 The files are stored at: [https://dl.bintray.com/sybit-education/maven/](https://dl.bintray.com/sybit-education/maven/)
 
+## Gradle
+For Gradle add compile `com.sybit:airtable.java:[version]` to compile dependencies.
+Also add `jcenter` repository to dependencies:
+```
+repositories {
+    jcenter()
+    ...
+}
+```
 
 ## Initializing
 
@@ -69,6 +78,19 @@ Use Find to get specific records of table:
 Base base = new Airtable().base(AIRTABLE_BASE);
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
+```
+
+## Annotations
+
+Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
+
+### Example
+```Java
+
+    import com.google.gson.annotations.SerializedName;
+
+    @SerializedName("First- & Lastname")
+    private String name;
 ```
 
 # Roadmap
