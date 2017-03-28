@@ -118,6 +118,11 @@ public class MapConverter extends AbstractConverter{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Set-Method for the MapClass
+     * 
+     * @param aClass  The Parameter that is used
+     */
     void setMapClass(Class<Thumbnail> aClass) {
         this.mapClass = aClass;
     }
