@@ -7,9 +7,7 @@ package com.sybit.airtable;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.sybit.airtable.vo.Thumbnail;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.converters.AbstractConverter;
