@@ -81,16 +81,29 @@ Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
 # Roadmap
++ [x] Airtable Configure
+  + [x] configuration of `proxy`
+  + [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` 
+  + [ ] configuration of `requestTimeout`
 
 + [x] Select
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
+  + [ ] Paging
+
 + [x] Find Record
+
 + [ ] Create Record
 + [ ] Update Record
 + [ ] Delete Record
 + [ ] Replace Record
++ General requirements
+    + [ ] Automatic ObjectMapping
+      + [x] Read: converte to Objects
+      + [x] Read: convertion of `Attachment`s & `Thumbnail`s
+      + [ ] Write: convert Objects to JSON
+  + [ ] Errorhandling
 
 # Compiling project
 We use [Gradle](https://gradle.org) to compile and package project:
