@@ -6,11 +6,13 @@
  */
 package com.sybit.airtable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mashape.unirest.http.ObjectMapper;
+
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.exception.AirtableException;
+import com.sybit.airtable.vo.Attachment;
+import com.sybit.airtable.vo.Thumbnail;
+
+import org.apache.http.HttpHost;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
@@ -20,7 +22,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
 
 /**
  * Representation Class of Airtable.
@@ -49,6 +54,7 @@ public class Airtable {
      * or within credentials.properties.
      *
      * @return configured Airtable object.
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure() throws AirtableException {
@@ -74,6 +80,7 @@ public class Airtable {
      *
      * @param apiKey API-Key of Airtable.
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
@@ -85,6 +92,7 @@ public class Airtable {
      * @param apiKey
      * @param endpointUrl
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
@@ -98,40 +106,55 @@ public class Airtable {
         this.apiKey = apiKey;
         this.endpointUrl = endpointUrl;
 
-
-        final String httpProxy = System.getenv("http_proxy");
-        if(httpProxy != null) {
-            LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            //Unirest.setProxy(HttpHost.create(httpProxy));
-        }
-
+        setProxy(endpointUrl);
 
         // Only one time
-        Unirest.setObjectMapper(new ObjectMapper() {
-            final Gson gson = new GsonBuilder().create();
+        Unirest.setObjectMapper(new GsonObjectMapper());
 
-            public <T> T readValue(String value, Class<T> valueType) {
-                LOG.debug("readValue: \n" + value);
-                return gson.fromJson(value, valueType);
-            }
-
-            public String writeValue(Object value) {
-                return gson.toJson(value);
-            }
-        });
-
+                
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
+        ListConverter lConverter = new ListConverter();
+        MapConverter thConverter = new MapConverter();
+        
+        lConverter.setListClass(Attachment.class);
+        thConverter.setMapClass(Thumbnail.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        
         ConvertUtils.register(dtConverter, Date.class);
+        ConvertUtils.register(lConverter, List.class);
+        ConvertUtils.register(thConverter, Map.class);
+        
 
         return this;
+    }
+
+    /**
+     * Set Proxy environment for Unirest.
+     *
+     * Proxy will be ignored for endpointUrls containing <code>localhost</code> or <code>127.0.0.1,/code>
+     * @param endpointUrl
+     */
+    private void setProxy(String endpointUrl) {
+        final String httpProxy = System.getenv("http_proxy");
+        if(httpProxy != null
+                && (endpointUrl.contains("127.0.0.1")
+                || endpointUrl.contains("localhost"))) {
+            LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
+            Unirest.setProxy(null);
+        } else if(httpProxy != null) {
+            LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
+            Unirest.setProxy(HttpHost.create(httpProxy));
+        } else {
+            Unirest.setProxy(null);
+        }
     }
 
     /**
      * Getting the base by given property <code>AIRTABLE_BASE</code>.
      *
      * @return the base object.
+     * @throws com.sybit.airtable.exception.AirtableException Missing Airtable_BASE
      */
     public Base base() throws AirtableException {
 
@@ -153,6 +176,7 @@ public class Airtable {
      * Builder method to create base of given base id.
      * @param base the base id.
      * @return
+     * @throws com.sybit.airtable.exception.AirtableException AIRTABLE_BASE was Null
      */
     public Base base(String base) throws AirtableException {
         if(base == null) {
@@ -210,5 +234,6 @@ public class Airtable {
 
     public void setEndpointUrl(String endpointUrl) {
         this.endpointUrl = endpointUrl;
+        setProxy(endpointUrl);
     }
 }
