@@ -53,7 +53,7 @@ public class Base {
      * Set Airtable object as parent.
      * @param parent the base Airtable object.
      */
-    protected void setParent(Airtable parent) {
+    void setParent(Airtable parent) {
         this.parent = parent;
     }
 

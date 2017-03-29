@@ -29,8 +29,10 @@ public interface Query {
     List<Sort> getSort();
 
     /**
+     * Define a filter formula.
      *
-     * @return
+     * @see https://support.airtable.com/hc/en-us/articles/203255215-Formula-Field-Reference
+     * @return get the filter formula.
      */
     String filterByFormula();
 }
