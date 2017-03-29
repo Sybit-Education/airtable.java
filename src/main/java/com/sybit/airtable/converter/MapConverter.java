@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sybit.airtable;
+package com.sybit.airtable.converter;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.sybit.airtable.vo.Thumbnail;

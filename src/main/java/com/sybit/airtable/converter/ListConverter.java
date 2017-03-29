@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sybit.airtable;
+package com.sybit.airtable.converter;
 
 import com.google.gson.internal.LinkedTreeMap;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.converters.AbstractConverter;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.converters.AbstractConverter;
 
 /**
  * 
@@ -99,7 +100,8 @@ public class ListConverter extends AbstractConverter {
      * @return A List
      */
     private List toStringList(final Class type, final String value,List returnList) {
-         
+
+        //FIXME why this if?
         if (type.equals(String.class)) {      
             returnList.add(String.valueOf(value));
             return returnList;

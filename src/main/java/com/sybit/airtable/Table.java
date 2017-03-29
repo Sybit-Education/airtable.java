@@ -110,7 +110,7 @@ class Table<T> {
      * @throws HttpResponseException
      */
     @SuppressWarnings("WeakerAccess")
-    public List<T> select(Query query) throws AirtableException, HttpResponseException {
+    public List<T> select(Query query) throws AirtableException {
         HttpResponse<Records> response;
         try {
             GetRequest request = Unirest.get(getTableEndpointUrl())
@@ -272,7 +272,7 @@ class Table<T> {
      * @return searched record.
      * @throws AirtableException
      */
-    public T find(String id) throws AirtableException, HttpResponseException {
+    public T find(String id) throws AirtableException {
 
         RecordItem body = null;
 
@@ -423,7 +423,7 @@ class Table<T> {
     private String key2property(String key) {
         
         if(key.contains(" ") || key.contains("-") ) {
-            LOG.warn( "Annotate special characters using @SerializedName for property: [" + key + "]");
+            LOG.warn( "Annotate columns having special characters by using @SerializedName for property: [" + key + "]");
         }
         String property = key.trim();
         property = property.substring(0,1).toLowerCase() + property.substring(1, property.length());

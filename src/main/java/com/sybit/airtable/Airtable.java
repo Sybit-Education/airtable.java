@@ -8,6 +8,8 @@ package com.sybit.airtable;
 
 
 import com.mashape.unirest.http.Unirest;
+import com.sybit.airtable.converter.ListConverter;
+import com.sybit.airtable.converter.MapConverter;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;

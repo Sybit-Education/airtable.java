@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  *
  * @author fzr
  */
-class GsonObjectMapper implements ObjectMapper{
+class GsonObjectMapper implements ObjectMapper {
     private static final Logger LOG = Logger.getLogger( GsonObjectMapper.class.getName() );
     private final Gson gson;
                 
@@ -25,11 +25,12 @@ class GsonObjectMapper implements ObjectMapper{
     }
 
     public <T> T readValue(String value, Class<T> valueType) {
-        LOG.log(Level.INFO, "readValue: \n" + value);
+        LOG.log(Level.FINE, "readValue: \n" + value);
         return gson.fromJson(value, valueType);
     }
 
     public String writeValue(Object value) {
+        LOG.log(Level.FINE, "writeValue: \n" + value);
         return gson.toJson(value);
     }
 
