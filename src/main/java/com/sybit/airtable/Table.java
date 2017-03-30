@@ -317,6 +317,13 @@ class Table<T> {
 
         throw new UnsupportedOperationException("not yet implemented");
     }
+    
+    /**
+     * Delete Record by given id
+     * 
+     * @param id
+     * @throws AirtableException 
+     */
 
     public void destroy(String id) throws AirtableException {
         
