@@ -14,6 +14,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.Delete;
+import com.sybit.airtable.vo.PostRecord;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
@@ -24,9 +25,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Representation Class of Airtable Tables.
@@ -303,9 +309,50 @@ class Table<T> {
         return null;
     }
 
-    public T create(T item) {
+    public T create(T obj) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        
+        RecordItem responseBody = null;
+                
+        if(propertyExists(obj,"id")){
+            setProperty(obj,"id",null);
+        }
+        if(propertyExists(obj,"createdTime")){
+            setProperty(obj,"createdTime",null);
+        }
+                      
+        PostRecord body = new PostRecord<T>();
+        body.setFields(obj);
+              
+        
+        HttpResponse<RecordItem> response;
+        try {
+            response = Unirest.post( getTableEndpointUrl())
+                .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
+                .header("Content-type","application/json")
+                .body(body)
+                .asObject(RecordItem.class);
+        } catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+        
+        
+        int code = response.getStatus();
 
-        throw new UnsupportedOperationException("not yet implemented");
+        if(200 == code) {
+            responseBody = response.getBody();
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
+
+        try {
+            return transform(responseBody, this.type.newInstance() );
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        
+        return null;
     }
 
     public T update(T item) {
