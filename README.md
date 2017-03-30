@@ -87,6 +87,19 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
+## Destroy
+Use Destroy to delete a specific records of table:
+
++ `table(name).destroy(String id)`: delete record with `id` of table `name`
+
+### Example
+```Java
+// detailed Example see TableDestroyTest.java
+Base base = airtable.base(AIRTABLE_BASE);
+Table<Actor> actorTable = base.table("Actors", Actor.class);
+actorTable.destroy("recapJ3Js8AEwt0Bf");   
+```
+
 ## Annotations
 
 Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
@@ -116,7 +129,7 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 
 + [ ] Create Record
 + [ ] Update Record
-+ [ ] Delete Record
++ [x] Delete Record
 + [ ] Replace Record
 + General requirements
     + [ ] Automatic ObjectMapping
