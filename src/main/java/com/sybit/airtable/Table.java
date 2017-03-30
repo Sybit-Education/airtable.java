@@ -308,21 +308,31 @@ class Table<T> {
 
         return null;
     }
-
-    public T create(T obj) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    
+    /**
+     * Create Record of given Item
+     * 
+     * @param item the item to be created
+     * @return the created item
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         
         
         RecordItem responseBody = null;
                 
-        if(propertyExists(obj,"id")){
-            setProperty(obj,"id",null);
+        if(propertyExists(item,"id")){
+            setProperty(item,"id",null);
         }
-        if(propertyExists(obj,"createdTime")){
-            setProperty(obj,"createdTime",null);
+        if(propertyExists(item,"createdTime")){
+            setProperty(item,"createdTime",null);
         }
                       
         PostRecord body = new PostRecord<T>();
-        body.setFields(obj);
+        body.setFields(item);
               
         
         HttpResponse<RecordItem> response;
