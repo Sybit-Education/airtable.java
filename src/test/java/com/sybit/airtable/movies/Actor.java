@@ -7,12 +7,14 @@
 package com.sybit.airtable.movies;
 
 
+import com.google.gson.annotations.SerializedName;
 import com.sybit.airtable.vo.Attachment;
 import java.util.List;
 
 public class Actor {
 
     private String id;
+    @SerializedName("Name")
     private String name;
     private List<Attachment> Photo;
     private String Biography;
