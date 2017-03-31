@@ -21,6 +21,7 @@ public class Movie {
     private String name;
     @SerializedName("Description")
     private String description;
+    @SerializedName("Photos")
     private List<Attachment> photos;
     @SerializedName("Director")
     private List<String> director;
