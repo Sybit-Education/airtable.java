@@ -13,6 +13,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
+import com.sybit.airtable.vo.Delete;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
@@ -110,7 +111,7 @@ class Table<T> {
      * @throws HttpResponseException
      */
     @SuppressWarnings("WeakerAccess")
-    public List<T> select(Query query) throws AirtableException, HttpResponseException {
+    public List<T> select(Query query) throws AirtableException {
         HttpResponse<Records> response;
         try {
             GetRequest request = Unirest.get(getTableEndpointUrl())
@@ -272,7 +273,7 @@ class Table<T> {
      * @return searched record.
      * @throws AirtableException
      */
-    public T find(String id) throws AirtableException, HttpResponseException {
+    public T find(String id) throws AirtableException {
 
         RecordItem body = null;
 
@@ -316,10 +317,38 @@ class Table<T> {
 
         throw new UnsupportedOperationException("not yet implemented");
     }
+    
+    /**
+     * Delete Record by given id
+     * 
+     * @param id
+     * @throws AirtableException 
+     */
 
-    public T destroy(T item) {
+    public void destroy(String id) throws AirtableException {
+        
+        Delete body = null;
 
-        throw new UnsupportedOperationException("not yet implemented");
+        HttpResponse<Delete> response;
+        try {
+            response = Unirest.delete(getTableEndpointUrl() + "/" + id)
+                .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
+                .asObject(Delete.class);
+        } catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+        int code = response.getStatus();
+
+        if(200 == code) {
+            body = response.getBody();
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
+
+        if(!body.isDeleted()){
+            throw new AirtableException("Record id: "+body.getId()+" could not be deleted.");
+        }      
     }
 
     /**
@@ -423,7 +452,7 @@ class Table<T> {
     private String key2property(String key) {
         
         if(key.contains(" ") || key.contains("-") ) {
-            LOG.warn( "Annotate special characters using @SerializedName for property: [" + key + "]");
+            LOG.warn( "Annotate columns having special characters by using @SerializedName for property: [" + key + "]");
         }
         String property = key.trim();
         property = property.substring(0,1).toLowerCase() + property.substring(1, property.length());
