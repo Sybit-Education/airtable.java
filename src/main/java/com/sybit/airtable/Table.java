@@ -27,12 +27,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.apache.commons.beanutils.BeanUtilsBean;
 
 /**
  * Representation Class of Airtable Tables.
@@ -319,20 +323,38 @@ class Table<T> {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException 
      */
-    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         
         
         RecordItem responseBody = null;
+        T newItem = (T) item.getClass().newInstance();
                 
-        if(propertyExists(item,"id")){
-            setProperty(item,"id",null);
+        if(propertyExists(item,"id") || propertyExists(item,"createdTime")){
+            Field[] attributes = item.getClass().getDeclaredFields();
+            for (Field attribute : attributes) {
+                String name = attribute.getName();
+                if (name.equals("id") || name.equals("createdTime") || name.equals("$jacocoData")) {
+                    
+                } else if (BeanUtils.getProperty(item,attribute.getName()) == null){
+                    
+                } else if (attribute.getType().equals(List.class)){
+                    String [] s = BeanUtils.getArrayProperty(item,attribute.getName());
+                    List<String> value = Arrays.asList(s);
+                    BeanUtilsBean.getInstance().setProperty(newItem,attribute.getName(),value);
+                } else {
+                    BeanUtilsBean.getInstance().setProperty(newItem,attribute.getName(),BeanUtils.getProperty(item,attribute.getName()));
+                }          
+                
+            }
         }
-        if(propertyExists(item,"createdTime")){
-            setProperty(item,"createdTime",null);
-        }
+               
+        //TODO Date neu initialisieren ? Darf nicht null sein
+//        if(propertyExists(item,"id")){
+//            setProperty(item,"createdTime",null);
+//        }
                       
         PostRecord body = new PostRecord<T>();
-        body.setFields(item);
+        body.setFields(newItem);
               
         
         HttpResponse<RecordItem> response;
