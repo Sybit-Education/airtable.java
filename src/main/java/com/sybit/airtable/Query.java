@@ -31,7 +31,7 @@ public interface Query {
     /**
      * Define a filter formula.
      *
-     * @see https://support.airtable.com/hc/en-us/articles/203255215-Formula-Field-Reference
+     * see https://support.airtable.com/hc/en-us/articles/203255215-Formula-Field-Reference
      * @return get the filter formula.
      */
     String filterByFormula();
