@@ -6,6 +6,7 @@
  */
 package com.sybit.airtable.movies;
 
+import com.google.gson.annotations.SerializedName;
 import com.sybit.airtable.vo.Attachment;
 
 import java.util.Date;
@@ -16,11 +17,16 @@ import java.util.List;
  */
 public class Movie {
     private String id;
+    @SerializedName("Name")
     private String name;
+    @SerializedName("Description")
     private String description;
     private List<Attachment> photos;
-    private String director;
+    @SerializedName("Director")
+    private List<String> director;
+    @SerializedName("Actors")
     private List<String> actors;
+    @SerializedName("Genre")
     private List<String> genre;
     private Date createdTime;
 
@@ -56,11 +62,11 @@ public class Movie {
         this.photos = photos;
     }
 
-    public String getDirector() {
+    public List<String> getDirector() {
         return director;
     }
 
-    public void setDirector(String director) {
+    public void setDirector(List<String> director) {
         this.director = director;
     }
 
