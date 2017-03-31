@@ -9,6 +9,7 @@ import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.test.WireMockBaseTest;
+import com.sybit.airtable.vo.Attachment;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,32 @@ import org.junit.Test;
  */
 public class TableCreateRecordTest extends WireMockBaseTest  {
     
+    @Test(expected = AirtableException.class)
+    public void createMovieWithId() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+        
+        Base base = airtable.base("appe9941ff07fffcc");
+        
+        Table<Movie> movieTable = base.table("Movies", Movie.class);
+        Movie newMovie = new Movie();       
+        newMovie.setName("Neuer Film");       
+        newMovie.setId("1");     
+        Movie test = movieTable.create(newMovie);
+         
+    }
+    
+    @Test(expected = AirtableException.class)
+    public void createMovieWithCreatedTime() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+        
+        Base base = airtable.base("appe9941ff07fffcc");
+        
+        Table<Movie> movieTable = base.table("Movies", Movie.class);
+        Movie newMovie = new Movie();       
+        newMovie.setName("Neuer Film");       
+        newMovie.setCreatedTime(new Date());     
+        Movie test = movieTable.create(newMovie);
+         
+    }
+    
     @Test
     public void createActorTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
         
@@ -31,10 +58,39 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor newActor = new Actor();
         newActor.setName("Neuer Actor");
-        newActor.setId("10");
         Actor test = actorTable.create(newActor);
         assertEquals(test.getName(),newActor.getName());
         assertEquals(test.getId(),"rec123456789");
+        
+    }
+    
+    @Test
+    public void createMovieWithAttachementTest() throws AirtableException, IllegalAccessException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+        
+        Base base = airtable.base("appe9941ff07fffcc");
+        
+        Table<Movie> movieTable = base.table("Movies", Movie.class);
+        Movie newMovie = new Movie();
+        
+        newMovie.setName("Neuer Film");
+        List<Attachment> photos = new ArrayList<Attachment>();
+        Attachment photo1 = new Attachment();
+        Attachment photo2 = new Attachment();
+        photo1.setUrl("https://www.example.imgae.file1.de");
+        photo2.setUrl("https://www.example.imgae.file2.de");
+        photos.add(photo1);      
+        photos.add(photo2);
+        
+        newMovie.setPhotos(photos);
+
+        Movie test = movieTable.create(newMovie);
+        
+        assertEquals("https://www.example.imgae.file1.de", test.getPhotos().get(0).getUrl());
+        assertEquals("https://www.example.imgae.file2.de", test.getPhotos().get(1).getUrl());
+        
+        assertNotNull(test.getPhotos().get(0).getId());
+        assertNotNull(test.getPhotos().get(1).getId());
+        
         
     }
     
