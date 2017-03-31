@@ -47,16 +47,18 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 
 If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
 
-## Logging
+### Logging
 
-The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.
+The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction 
+for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired 
+logging framework at deployment time.
+
+### Request Limits
+The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
+need to wait 30 seconds before subsequent requests will succeed.
 
 
-## Access Base
-
-## Access Table 
-
-## CRUD-Operations on table items
+## CRUD-Operations on Table Records
 
 ## Select
 Select List of items from table:
@@ -102,13 +104,14 @@ actorTable.destroy("recapJ3Js8AEwt0Bf");
 
 ## Annotations
 
-Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
+Use the Gson Annotation `@SerializedName` to annotate Names which contain `-` or emtpy characters.
 
 ### Example
 ```Java
 
     import com.google.gson.annotations.SerializedName;
 
+    //Column in Airtable is named "First- & Lastname", which is mapped to field "name".
     @SerializedName("First- & Lastname")
     private String name;
 ```
@@ -117,9 +120,9 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 + [x] Airtable Configure
   + [x] configuration of `proxy`
   + [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` 
-  + [ ] configuration of `requestTimeout`
+  + [x] configuration of `requestTimeout`
 
-+ [x] Select
++ [x] Select Records
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
@@ -164,5 +167,3 @@ We use following libraries:
 # License
 
 MIT License, see [LICENSE](LICENSE)
-
-
