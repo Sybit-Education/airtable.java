@@ -1,11 +1,12 @@
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8
 
 before_install:
-- chmod +x ./gradlew
+  - chmod +x ./gradlew
 
-build: gradle check sendCoverageToCodacy
+script:
+  - gradlew check sendCoverageToCodacy
 
 deploy:
   - provider: script
