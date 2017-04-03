@@ -9,6 +9,8 @@
 
 Java API for Airtable (http://www.airtable.com). The Airtable API provides a simple way of accessing your data within your Java project.
 
+More information about the Airtable API coud be found at [https://airtable.com/api](https://airtable.com/api). 
+The documentation will provide detailed information about your created base.
 
 # Usage
 
@@ -29,12 +31,20 @@ repositories {
 
 ## Initializing
 
+It is required to initialize the Java API before it is used. At leased you have to pss your API-Key to get
+access to Airtable:
+
+```Java
+Airtable airtable = new Airtable().configure();
+
+```
+
 ### API-Key
-The API key could be passed to the app by 
-+ defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
-+ defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
-+ defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
-+ On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
+The API key could be passed to the app in different ways: 
+* defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
+* defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
+* defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
+* On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
 
 #### How to get API-Key
 See: https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-
@@ -57,6 +67,28 @@ logging framework at deployment time.
 The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
 need to wait 30 seconds before subsequent requests will succeed.
 
+## Object Mapping
+The Java implementation of the Airtable API provides automatic Object mapping.
+ 
+ *TODO:* 
+ * How to create objects
+ * Basic objects (attachment, ...)
+
+
+### Annotations
+
+Use the Gson Annotation `@SerializedName` to annotate Names which contain `-`, emtpy characters or other not mappable characters.
+The airtable.java API will respect these mappings automatically.
+
+#### Example
+```Java
+
+    import com.google.gson.annotations.SerializedName;
+
+    //Column in Airtable is named "First- & Lastname", which is mapped to field "name".
+    @SerializedName("First- & Lastname")
+    private String name;
+```
 
 ## CRUD-Operations on Table Records
 
@@ -102,19 +134,6 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
 
-## Annotations
-
-Use the Gson Annotation `@SerializedName` to annotate Names which contain `-` or emtpy characters.
-
-### Example
-```Java
-
-    import com.google.gson.annotations.SerializedName;
-
-    //Column in Airtable is named "First- & Lastname", which is mapped to field "name".
-    @SerializedName("First- & Lastname")
-    private String name;
-```
 
 # Roadmap
 + [x] Airtable Configure
@@ -138,10 +157,22 @@ Use the Gson Annotation `@SerializedName` to annotate Names which contain `-` or
     + [ ] Automatic ObjectMapping
       + [x] Read: convert to Objects
       + [x] Read: conversion of `Attachment`s & `Thumbnail`s
-      + [ ] Write: convert Objects to JSON
-  + [x] Errorhandling
+      + [ ] Write: convert Objects to JSON for Airtable API
+  + [x] Error handling
 
-# Compiling project
+# Contribute
+
+We are glad to see your pull requests. 
+
+## Current status
+
+The current status of our project is maintained on our agile board:
+[Kanban Board of airtable.java](https://github.com/Sybit-Education/airtable.java/projects/1)
+
+## Compiling project
+
+airtable.jave is developed and compiled using Java 8.
+
 We use [Gradle](https://gradle.org) to compile and package project:
 
 + for tests run: `./gradlew clean test`
@@ -154,6 +185,9 @@ The tests are based on the Airtable template [Movies](https://airtable.com/templ
 For testing, the JSON-responses are mocked via [WireMock](http://wiremock.org/). 
 
 # Credits
+
+Thank you very much for these gread frameworks and ibraries provided open source!
+ 
 We use following libraries:
 
 + [unirest](http://unirest.io/java.html)
