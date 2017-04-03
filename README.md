@@ -59,7 +59,7 @@ If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored 
 
 ### Logging
 
-The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction 
+The Simple Logging Facade for Java [SLF4J](https://www.slf4j.org/) serves as a simple facade or abstraction 
 for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired 
 logging framework at deployment time.
 
@@ -72,7 +72,7 @@ The Java implementation of the Airtable API provides automatic Object mapping.
  
  *TODO:* 
  * How to create objects
- * Basic objects (attachment, ...)
+ * Basic objects (attachment, thumbnails, ...)
 
 
 ### Annotations
@@ -93,7 +93,7 @@ The airtable.java API will respect these mappings automatically.
 ## CRUD-Operations on Table Records
 
 ## Select
-Select List of items from table:
+Select list of items from table:
 
 + `table(name).select()`: get all records of table `name`
 + `table(name).select(Integer maxRecords)`: get max `maxRecords` records of table `name`
@@ -103,39 +103,43 @@ Select List of items from table:
 
 ### Example
 ```Java
-// detailed Example see TableSelectTest.java
 Base base = new Airtable().base(AIRTABLE_BASE);
 List<Movie> retval = base.table("Movies", Movie.class).select();
 ```
 
+Detailed example see [TableSelectTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableSelectTest.java)
+
 ## Find
-Use Find to get specific records of table:
+Use `find` to get specific records of table:
 
 + `table(name).find(String id)`: get record with `id` of table `name`
 
 ### Example
 ```Java
-// detailed Example see TableFindTest.java
 Base base = new Airtable().base(AIRTABLE_BASE);
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
+Detailed example see [TableFindTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableFindTest.java)
+
 ## Destroy
-Use Destroy to delete a specific records of table:
+Use `destroy` to delete a specific records of table:
 
 + `table(name).destroy(String id)`: delete record with `id` of table `name`
 
 ### Example
 ```Java
-// detailed Example see TableDestroyTest.java
 Base base = airtable.base(AIRTABLE_BASE);
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
-
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
 
 # Roadmap
+
+Short overview of features, which are supported:
+
 + [x] Airtable Configure
   + [x] configuration of `proxy`
   + [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` 
@@ -151,7 +155,7 @@ actorTable.destroy("recapJ3Js8AEwt0Bf");
 
 + [ ] Create Record
 + [ ] Update Record
-+ [x] Delete Record
++ [x] Delete/Destroy Record
 + [ ] Replace Record
 + General requirements
     + [ ] Automatic ObjectMapping
