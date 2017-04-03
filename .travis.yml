@@ -5,10 +5,12 @@ jdk:
 before_install:
 - chmod +x ./gradlew
 
+build: gradle check sendCoverageToCodacy
+
 deploy:
   - provider: script
     skip_cleanup: true
-    script: gradlew install sendCoverageToCodacy bintrayUpload
+    script: gradlew install bintrayUpload
     on:
       tags: true
 
