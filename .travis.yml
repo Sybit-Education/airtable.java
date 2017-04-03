@@ -6,7 +6,7 @@ before_install:
   - chmod +x ./gradlew
 
 script:
-  - gradlew check sendCoverageToCodacy
+  - ./gradlew check sendCoverageToCodacy
 
 deploy:
   - provider: script
