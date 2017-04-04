@@ -541,24 +541,29 @@ class Table<T> {
                     }           
                 } else if (name.equals("photos")){
                     List<Attachment> obj = (List<Attachment>) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(item, "photos");
-                    if(obj != null){
-                        for (int i = 0; i < obj.size(); i++) {
-                            if(propertyExists(obj.get(i),"id") || propertyExists(obj.get(i),"size") || propertyExists(obj.get(i), "type") || propertyExists(obj.get(i), "filename")){
-                                Field[] attributesPhotos = item.getClass().getDeclaredFields();
-                                for (Field attributePhoto : attributesPhotos) {
-                                    String namePhotoAttribute = attributePhoto.getName();
-                                    if (namePhotoAttribute.equals("id") || namePhotoAttribute.equals("size") || namePhotoAttribute.equals("Tpye") ||  namePhotoAttribute.equals("filename")) {
-                                        if(BeanUtils.getProperty(obj.get(i),namePhotoAttribute) != null){
-                                            throw new AirtableException("Property "+namePhotoAttribute+" should be null!");
-                                        }           
-                                    }
-                                }
-                            }
-                        }  
-                    }               
+                    checkPropertiesOfAttachement(obj);
                 }                 
             }
         }
         
+    }
+    
+    private void checkPropertiesOfAttachement(List<Attachment> attachements) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+        
+        if(attachements != null){
+            for (int i = 0; i < attachements.size(); i++) {
+                if(propertyExists(attachements.get(i),"id") || propertyExists(attachements.get(i),"size") || propertyExists(attachements.get(i), "type") || propertyExists(attachements.get(i), "filename")){
+                    Field[] attributesPhotos = attachements.getClass().getDeclaredFields();
+                    for (Field attributePhoto : attributesPhotos) {
+                        String namePhotoAttribute = attributePhoto.getName();
+                        if (namePhotoAttribute.equals("id") || namePhotoAttribute.equals("size") || namePhotoAttribute.equals("Tpye") ||  namePhotoAttribute.equals("filename")) {
+                            if(BeanUtils.getProperty(attachements.get(i),namePhotoAttribute) != null){
+                                throw new AirtableException("Property "+namePhotoAttribute+" should be null!");
+                            }           
+                        }
+                    }
+                }
+            }  
+        }               
     }
 }
