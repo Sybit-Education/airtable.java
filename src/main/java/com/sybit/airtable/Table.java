@@ -325,8 +325,7 @@ class Table<T> {
      * @throws NoSuchMethodException 
      */
     public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        
-        
+               
         RecordItem responseBody = null;
         
         checkProperties(item);
@@ -334,7 +333,6 @@ class Table<T> {
         PostRecord body = new PostRecord<T>();
         body.setFields(item);
               
-        
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.post( getTableEndpointUrl())
@@ -346,8 +344,7 @@ class Table<T> {
         } catch (UnirestException e) {
             throw new AirtableException(e);
         }
-        
-        
+             
         int code = response.getStatus();
 
         if(200 == code) {
@@ -529,6 +526,15 @@ class Table<T> {
                 PropertyUtils.isWriteable(bean, property);
     }
 
+    /**
+     * Checks if the Property Values of the item are valid for the Request.
+     * 
+     * @param item
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
     private void checkProperties(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         
         if(propertyExists(item,"id") || propertyExists(item,"createdTime")){
