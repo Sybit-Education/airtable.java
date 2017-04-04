@@ -25,7 +25,30 @@ import org.junit.Test;
 public class TableCreateRecordTest extends WireMockBaseTest  {
     
     @Test(expected = AirtableException.class)
-    public void createMovieWithId() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+    public void createMovieWithPhotoIdTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        Base base = airtable.base("appe9941ff07fffcc");
+        
+        Table<Movie> movieTable = base.table("Movies", Movie.class);
+        Movie newMovie = new Movie();       
+        newMovie.setName("Neuer Film");       
+           
+        List<Attachment> photos = new ArrayList<Attachment>();
+        Attachment photo1 = new Attachment();
+        
+        photo1.setUrl("https://www.example.imgae.file1.de");
+        photo1.setId("1");
+              
+        photos.add(photo1);      
+           
+        newMovie.setPhotos(photos);
+        
+        Movie test = movieTable.create(newMovie);
+    
+    }
+    
+    @Test(expected = AirtableException.class)
+    public void createMovieWithIdTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
         
         Base base = airtable.base("appe9941ff07fffcc");
         
@@ -38,7 +61,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     }
     
     @Test(expected = AirtableException.class)
-    public void createMovieWithCreatedTime() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+    public void createMovieWithCreatedTimeTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
         
         Base base = airtable.base("appe9941ff07fffcc");
         
@@ -51,7 +74,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     }
     
     @Test
-    public void createActorTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+    public void createActorTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
         
         Base base = airtable.base("appe9941ff07fffcc");
         
@@ -65,7 +88,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     }
     
     @Test
-    public void createMovieWithAttachementTest() throws AirtableException, IllegalAccessException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+    public void createMovieWithAttachementTest() throws AirtableException, IllegalAccessException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InvocationTargetException, NoSuchFieldException {
         
         Base base = airtable.base("appe9941ff07fffcc");
         
@@ -95,7 +118,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     }
     
     @Test
-    public void createMovieTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException{
+    public void createMovieTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
         
         Base base = airtable.base("appe9941ff07fffcc");
         
@@ -114,8 +137,6 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
         List<String> genre = new ArrayList<>();
         genre.add("Drama");
         newMovie.setGenre(genre);
-        //Date d = new Date();
-        //newMovie.setCreatedTime(d);
         
         Movie test = movieTable.create(newMovie);
         
