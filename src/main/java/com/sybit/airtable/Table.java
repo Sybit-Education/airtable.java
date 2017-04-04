@@ -600,6 +600,18 @@ class Table<T> {
             }  
         }               
     }
+    
+    /**
+     * 
+     * Get the String Id from the item.
+     * 
+     * @param item
+     * @return
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
 
     private String getIdOfItem(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         
@@ -612,6 +624,16 @@ class Table<T> {
         throw new AirtableException("Id of "+item+" not Found!");
     }
 
+    /**
+     * 
+     * Filter the Fields of the PostRecord Object. Id and created Time are set to null so Object Mapper doesent convert them to JSON.
+     * 
+     * @param item
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
     private T filterFields(T item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
        
         System.out.println(item);
