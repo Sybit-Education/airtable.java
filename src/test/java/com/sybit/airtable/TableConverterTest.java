@@ -39,7 +39,7 @@ public class TableConverterTest extends WireMockBaseTest {
         assertEquals(movie.getName(),"The Godfather");
         assertEquals(movie.getDescription(),"The Godfather is a 1972 American crime film film directed by Francis Ford Coppola and produced by Albert S. Ruddy and based on Mario Puzo's best-selli...");
         assertEquals(movie.getPhotos().size(),2);
-        assertEquals(movie.getDirector(),"recfaf64fe0db19a9");
+        assertEquals(movie.getDirector().size(),1);
         assertEquals(movie.getActors().size(),2);
         assertEquals(movie.getGenre().size(),1);
         //TODO Test für Datum

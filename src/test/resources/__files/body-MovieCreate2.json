@@ -1,0 +1,43 @@
+{
+    "id": "rec6733da527dd0f1",
+    "fields": {
+        "Name": "The Godfather",
+        "Photos": [
+            {
+                "id": "att6dba4af5786df1",
+                "url": "https://www.example.imgae.file1.de",
+                "filename": "220px-TheGodfatherAlPacinoMarlonBrando.jpg",
+                "size": 16420,
+                "type": "image/jpeg",
+                "thumbnails": {
+                    "small": {
+                        "url": "https://www.filepicker.io/api/file/XvbySDtbSxymbbUJzCoN"
+                    },
+                    "large": {
+                        "url": "https://www.filepicker.io/api/file/Fpc86btaS1Stl79SvHX4"
+                    }
+                }
+            },
+            {
+                "id": "attzWvarnmYBBd2Wm",
+                "url": "https://www.example.imgae.file2.de",
+                "filename": "Lighthouse.jpg",
+                "size": 561276,
+                "type": "image/jpeg",
+                "thumbnails": {
+                    "small": {
+                        "url": "https://dl.airtable.com/MbdRAn4ZQLuNyUqrHONp_small_Lighthouse.jpg",
+                        "width": 48,
+                        "height": 36
+                    },
+                    "large": {
+                        "url": "https://dl.airtable.com/8QX7f3nSAe6lrOxeuvTP_large_Lighthouse.jpg",
+                        "width": 512,
+                        "height": 512
+                    }
+                }
+            }
+        ]
+    },
+    "createdTime": "2014-07-18T04:42:06.000Z"
+}
