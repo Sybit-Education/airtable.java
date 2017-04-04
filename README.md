@@ -147,15 +147,15 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 
 + [x] Find Record
 
-+ [ ] Create Record
++ [x] Create Record
 + [ ] Update Record
 + [x] Delete Record
 + [ ] Replace Record
 + General requirements
-    + [ ] Automatic ObjectMapping
+    + [x] Automatic ObjectMapping
       + [x] Read: convert to Objects
       + [x] Read: conversion of `Attachment`s & `Thumbnail`s
-      + [ ] Write: convert Objects to JSON
+      + [x] Write: convert Objects to JSON
   + [x] Errorhandling
 
 # Compiling project
