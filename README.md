@@ -156,13 +156,6 @@ newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
 ```
 
-## Annotations
-
-Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
-
-### Example
-```Java
-=======
 # Roadmap
 
 Short overview of features, which are supported:
