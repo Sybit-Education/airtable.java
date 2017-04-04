@@ -82,7 +82,7 @@ Photos and Attached Files in Airtable are retrieved as Attachements. Photos furt
 
 ## Attachement
 All the Attachement Objects got the following attributes:
-`public class Attachment {
+```public class Attachment {
     
     private String id;
     private String url;
@@ -90,7 +90,7 @@ All the Attachement Objects got the following attributes:
     private Float size;
     private String type;
 
-}`
+}```
 
 * String `id`
 * String `url`
@@ -99,7 +99,7 @@ All the Attachement Objects got the following attributes:
 * String `type`
 
 Photos additionally have:
-`private Map<String,Thumbnail> thumbnails;`
+```private Map<String,Thumbnail> thumbnails;```
 
 * Map<String,Thumbnail> `thumbnails`
 
@@ -109,14 +109,14 @@ The Keys are `small` and `large` for the different sizes. The Value is a Thumbna
 
 A Thumbnail got the following Attributes:
 
-`public class Thumbnail {
+```public class Thumbnail {
     
         private String name;
     
         private String url;
         private Float width;
         private Float height;
-}`
+}```
 * String `name`
 * String `url`
 * Float `width`
