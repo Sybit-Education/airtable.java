@@ -74,6 +74,55 @@ The Java implementation of the Airtable API provides automatic Object mapping.
  * How to create objects
  * Basic objects (attachment, thumbnails, ...)
 
+### Create an Object
+
+### Basic Objects
+The Java implementation of the Airtable API provides an implementation of Basic Airtable Objects such as Attachements and Thumbnails.  
+Photos and Attached Files in Airtable are retrieved as Attachements. Photos furthermore cointain Thumbnail Objects in different sizes.
+
+## Attachement
+All the Attachement Objects got the following attributes:
+`public class Attachment {
+    
+    private String id;
+    private String url;
+    private String filename;
+    private Float size;
+    private String type;
+
+}`
+
+* String `id`
+* String `url`
+* String `filename`
+* Float `size`
+* String `type`
+
+Photos additionally have:
+`private Map<String,Thumbnail> thumbnails;`
+
+* Map<String,Thumbnail> `thumbnails`
+
+## Thumbnails
+A Thumbnail is generated for Photo Objects in Airtable. Thumbnails are bound to an Attachement Object as a key/value Map.
+The Keys are `small` and `large` for the different sizes. The Value is a Thumbnail Object.
+
+A Thumbnail got the following Attributes:
+
+`public class Thumbnail {
+    
+        private String name;
+    
+        private String url;
+        private Float width;
+        private Float height;
+}`
+* String `name`
+* String `url`
+* Float `width`
+* Float `height`
+
+Note: The `name` of a Thumbnail Object is identical with it´s key.
 
 ### Annotations
 
@@ -159,9 +208,9 @@ Actor test = actorTable.create(newActor);
 ## Update
 Use `update` to update a record of table:
 
-+ `Actor.setName("New Name");`: update the value
++ `Actor.setName("New Name");`: set or update to a new Value
 
-   `Actor test = actorTable.update(Actor);`: updates the Actor
+   `Actor test = actorTable.update(Actor);`: update the Actor in the Table
 
 ### Example
 ```Java
@@ -192,7 +241,6 @@ Short overview of features, which are supported:
 + [x] Create Record
 + [x] Update Record
 + [x] Delete/Destroy Record
-+ [ ] Replace Record
 + General requirements
     + [x] Automatic ObjectMapping
       + [x] Read: convert to Objects
