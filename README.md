@@ -75,6 +75,14 @@ The Java implementation of the Airtable API provides automatic Object mapping.
  * Basic objects (attachment, thumbnails, ...)
 
 ### Create an Object
+The Java Objects represent records or 'values' in Airtable. So the Object attributes need to be adjusted to the Airtable Base.
+
+#### Example
+
+In Aritable we got a Table Actor. The coulumns represent the Object attributes.
+
+*TODO:*
+* Add Table
 
 ### Basic Objects
 The Java implementation of the Airtable API provides an implementation of Basic Airtable Objects such as Attachements and Thumbnails.  
