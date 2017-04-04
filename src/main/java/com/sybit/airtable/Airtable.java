@@ -44,12 +44,11 @@ import java.util.Properties;
 public class Airtable {
 
     private static final Logger LOG = LoggerFactory.getLogger( Airtable.class );
-    private static final String ENDPOINT_URL = "https://api.airtable.com/v0";
+
     private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
-    private String  endpointUrl;
-    private String apiKey;
+    private Configuration config;
 
     /**
      * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property, enviroment variable
@@ -86,29 +85,32 @@ public class Airtable {
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
-        return configure(apiKey, ENDPOINT_URL);
+        return configure(new Configuration(apiKey, Configuration.ENDPOINT_URL));
     }
 
     /**
      *
-     * @param apiKey
-     * @param endpointUrl
+     * @param config
      * @return
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
-    public Airtable configure(String apiKey, String endpointUrl) throws AirtableException {
-        if(apiKey == null) {
+    public Airtable configure(Configuration config) throws AirtableException {
+        if(config.getApiKey() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
-        if(endpointUrl == null) {
+        if(config.getEndpointUrl() == null) {
             throw new AirtableException("Missing endpointUrl");
         }
 
-        this.apiKey = apiKey;
-        this.endpointUrl = endpointUrl;
+        this.config = config;
 
-        setProxy(endpointUrl);
+        if(config.getTimeout() != null) {
+            LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
+            Unirest.setTimeouts(config.getTimeout(), config.getTimeout());
+        }
+
+        setProxy(config.getEndpointUrl());
 
         // Only one time
         Unirest.setObjectMapper(new GsonObjectMapper());
@@ -184,10 +186,18 @@ public class Airtable {
         if(base == null) {
             throw new AirtableException("base was null");
         }
-        final Base b = new Base(base);
-        b.setParent(this);
+        final Base b = new Base(base, this);
 
         return b;
+    }
+
+    public Configuration getConfig() {
+        return config;
+    }
+
+    public void setConfig(Configuration config) {
+        this.config = config;
+        setProxy(config.getEndpointUrl());
     }
 
     /**
@@ -195,7 +205,7 @@ public class Airtable {
      * @return
      */
     public String endpointUrl() {
-        return endpointUrl;
+        return this.config.getEndpointUrl();
     }
 
     /**
@@ -203,7 +213,7 @@ public class Airtable {
      * @return
      */
     public String apiKey() {
-        return apiKey;
+        return this.config.getApiKey();
     }
 
     /**
@@ -235,7 +245,7 @@ public class Airtable {
     }
 
     public void setEndpointUrl(String endpointUrl) {
-        this.endpointUrl = endpointUrl;
+        this.config.setEndpointUrl(endpointUrl);
         setProxy(endpointUrl);
     }
 }

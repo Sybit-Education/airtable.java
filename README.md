@@ -9,6 +9,8 @@
 
 Java API for Airtable (http://www.airtable.com). The Airtable API provides a simple way of accessing your data within your Java project.
 
+More information about the Airtable API coud be found at [https://airtable.com/api](https://airtable.com/api). 
+The documentation will provide detailed information about your created base.
 
 # Usage
 
@@ -29,12 +31,20 @@ repositories {
 
 ## Initializing
 
+It is required to initialize the Java API before it is used. At leased you have to pss your API-Key to get
+access to Airtable:
+
+```Java
+Airtable airtable = new Airtable().configure();
+
+```
+
 ### API-Key
-The API key could be passed to the app by 
-+ defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
-+ defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
-+ defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
-+ On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
+The API key could be passed to the app in different ways: 
+* defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
+* defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
+* defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
+* On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
 
 #### How to get API-Key
 See: https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-
@@ -47,19 +57,43 @@ The API supports environment variable `http_proxy`. If the variable is set, it i
 
 If `endpointUrl` contains `localhost` or `127.0.0.1` proxy settings are ignored automatically.
 
-## Logging
+### Logging
 
-The Simple Logging Facade for Java [https://www.slf4j.org/](SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.
+The Simple Logging Facade for Java [SLF4J](https://www.slf4j.org/) serves as a simple facade or abstraction 
+for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired 
+logging framework at deployment time.
+
+### Request Limits
+The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
+need to wait 30 seconds before subsequent requests will succeed.
+
+## Object Mapping
+The Java implementation of the Airtable API provides automatic Object mapping.
+ 
+ *TODO:* 
+ * How to create objects
+ * Basic objects (attachment, thumbnails, ...)
 
 
-## Access Base
+### Annotations
 
-## Access Table 
+Use the Gson Annotation `@SerializedName` to annotate Names which contain `-`, emtpy characters or other not mappable characters.
+The airtable.java API will respect these mappings automatically.
 
-## CRUD-Operations on table items
+#### Example
+```Java
+
+    import com.google.gson.annotations.SerializedName;
+
+    //Column in Airtable is named "First- & Lastname", which is mapped to field "name".
+    @SerializedName("First- & Lastname")
+    private String name;
+```
+
+## CRUD-Operations on Table Records
 
 ## Select
-Select List of items from table:
+Select list of items from table:
 
 + `table(name).select()`: get all records of table `name`
 + `table(name).select(Integer maxRecords)`: get max `maxRecords` records of table `name`
@@ -69,36 +103,38 @@ Select List of items from table:
 
 ### Example
 ```Java
-// detailed Example see TableSelectTest.java
 Base base = new Airtable().base(AIRTABLE_BASE);
 List<Movie> retval = base.table("Movies", Movie.class).select();
 ```
 
+Detailed example see [TableSelectTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableSelectTest.java)
+
 ## Find
-Use Find to get specific records of table:
+Use `find` to get specific records of table:
 
 + `table(name).find(String id)`: get record with `id` of table `name`
 
 ### Example
 ```Java
-// detailed Example see TableFindTest.java
 Base base = new Airtable().base(AIRTABLE_BASE);
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
+Detailed example see [TableFindTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableFindTest.java)
+
 ## Destroy
-Use Destroy to delete a specific records of table:
+Use `destroy` to delete a specific records of table:
 
 + `table(name).destroy(String id)`: delete record with `id` of table `name`
 
 ### Example
 ```Java
-// detailed Example see TableDestroyTest.java
 Base base = airtable.base(AIRTABLE_BASE);
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
 
 ## Create
 First build your record. Then use Create to generate a specific records of table:
@@ -126,20 +162,17 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 
 ### Example
 ```Java
-
-    import com.google.gson.annotations.SerializedName;
-
-    @SerializedName("First- & Lastname")
-    private String name;
-```
-
+=======
 # Roadmap
+
+Short overview of features, which are supported:
+
 + [x] Airtable Configure
   + [x] configuration of `proxy`
   + [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` 
-  + [ ] configuration of `requestTimeout`
+  + [x] configuration of `requestTimeout`
 
-+ [x] Select
++ [x] Select Records
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [ ] Support of `filterByFormula`
@@ -149,7 +182,7 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
 
 + [x] Create Record
 + [ ] Update Record
-+ [x] Delete Record
++ [x] Delete/Destroy Record
 + [ ] Replace Record
 + General requirements
     + [x] Automatic ObjectMapping
@@ -158,7 +191,20 @@ Use the Gson Annotation @SerializedName to annotate Names which contain - or an 
       + [x] Write: convert Objects to JSON
   + [x] Errorhandling
 
-# Compiling project
+# Contribute
+
+We are glad to see your pull requests. 
+
+## Current status
+
+The current status of our project is maintained on our agile board:
+[Kanban Board of airtable.java](https://github.com/Sybit-Education/airtable.java/projects/1)
+
+## Compiling project
+
+airtable.jave is developed and compiled using Java 8.
+
+
 We use [Gradle](https://gradle.org) to compile and package project:
 
 + for tests run: `./gradlew clean test`
@@ -171,6 +217,9 @@ The tests are based on the Airtable template [Movies](https://airtable.com/templ
 For testing, the JSON-responses are mocked via [WireMock](http://wiremock.org/). 
 
 # Credits
+
+Thank you very much for these gread frameworks and ibraries provided open source!
+ 
 We use following libraries:
 
 + [unirest](http://unirest.io/java.html)
@@ -184,5 +233,3 @@ We use following libraries:
 # License
 
 MIT License, see [LICENSE](LICENSE)
-
-
