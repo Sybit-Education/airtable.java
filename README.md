@@ -100,6 +100,26 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
 
+## Create
+First build your record. Then use Create to generate a specific records of table:
+
++ `Table<Actor> actorTable = base.table("Actors", Actor.class);
+   Actor newActor = new Actor();
+   newActor.setName("Neuer Actor");`: build your record
+
+   `Actor test = actorTable.create(newActor);`: create the recently build record
+
+### Example
+```Java
+// detailed Example see TableCreateTest.java
+Base base = airtable.base("AIRTABLE_BASE");
+        
+Table<Actor> actorTable = base.table("Actors", Actor.class);
+Actor newActor = new Actor();
+newActor.setName("Neuer Actor");
+Actor test = actorTable.create(newActor);
+```
+
 ## Annotations
 
 Use the Gson Annotation @SerializedName to annotate Names which contain - or an emtpy Charakter.
