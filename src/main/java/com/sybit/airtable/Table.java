@@ -13,6 +13,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
+import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Delete;
 import com.sybit.airtable.vo.PostRecord;
 import com.sybit.airtable.vo.RecordItem;
@@ -323,23 +324,13 @@ class Table<T> {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException 
      */
-    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         
         
         RecordItem responseBody = null;
-                
-        if(propertyExists(item,"id") || propertyExists(item,"createdTime")){
-            Field[] attributes = item.getClass().getDeclaredFields();
-            for (Field attribute : attributes) {
-                String name = attribute.getName();
-                if (name.equals("id") || name.equals("createdTime")) {
-                    if(BeanUtils.getProperty(item,attribute.getName()) != null){
-                        throw new AirtableException("Property "+name+" should be null!");
-                    }           
-                }                 
-            }
-        }
-                      
+        
+        checkProperties(item);
+                                      
         PostRecord body = new PostRecord<T>();
         body.setFields(item);
               
@@ -536,5 +527,38 @@ class Table<T> {
     private static boolean propertyExists (Object bean, String property) {
         return PropertyUtils.isReadable(bean, property) &&
                 PropertyUtils.isWriteable(bean, property);
+    }
+
+    private void checkProperties(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        if(propertyExists(item,"id") || propertyExists(item,"createdTime")){
+            Field[] attributes = item.getClass().getDeclaredFields();
+            for (Field attribute : attributes) {
+                String name = attribute.getName();
+                if (name.equals("id") || name.equals("createdTime")) {
+                    if(BeanUtils.getProperty(item,attribute.getName()) != null){
+                        throw new AirtableException("Property "+name+" should be null!");
+                    }           
+                } else if (name.equals("photos")){
+                    List<Attachment> obj = (List<Attachment>) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(item, "photos");
+                    if(obj != null){
+                        for (int i = 0; i < obj.size(); i++) {
+                            if(propertyExists(obj.get(i),"id") || propertyExists(obj.get(i),"size") || propertyExists(obj.get(i), "type") || propertyExists(obj.get(i), "filename")){
+                                Field[] attributesPhotos = item.getClass().getDeclaredFields();
+                                for (Field attributePhoto : attributesPhotos) {
+                                    String namePhotoAttribute = attributePhoto.getName();
+                                    if (namePhotoAttribute.equals("id") || namePhotoAttribute.equals("size") || namePhotoAttribute.equals("Tpye") ||  namePhotoAttribute.equals("filename")) {
+                                        if(BeanUtils.getProperty(obj.get(i),namePhotoAttribute) != null){
+                                            throw new AirtableException("Property "+namePhotoAttribute+" should be null!");
+                                        }           
+                                    }
+                                }
+                            }
+                        }  
+                    }               
+                }                 
+            }
+        }
+        
     }
 }
