@@ -137,7 +137,7 @@ actorTable.destroy("recapJ3Js8AEwt0Bf");
 Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
 
 ## Create
-First build your record. Then use Create to generate a specific records of table:
+First build your record. Then use `create` to generate a specific records of table:
 
 + `Table<Actor> actorTable = base.table("Actors", Actor.class);
    Actor newActor = new Actor();
@@ -154,6 +154,22 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor newActor = new Actor();
 newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
+```
+
+## Update
+Use `update` to update a record of table:
+
++ `Actor.setName("New Name");`: update the value
+
+   `Actor test = actorTable.update(Actor);`: updates the Actor
+
+### Example
+```Java
+// detailed Example see TableCreateTest.java
+Base base = airtable.base("appe9941ff07fffcc");
+        
+Actor.setName("Neuer Name");
+Actor updated = actorTable.update(marlonBrando);
 ```
 
 # Roadmap
@@ -174,7 +190,7 @@ Short overview of features, which are supported:
 + [x] Find Record
 
 + [x] Create Record
-+ [ ] Update Record
++ [x] Update Record
 + [x] Delete/Destroy Record
 + [ ] Replace Record
 + General requirements
