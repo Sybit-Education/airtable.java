@@ -80,19 +80,8 @@ The Java implementation of the Airtable API provides automatic Object mapping.
 The Java implementation of the Airtable API provides an implementation of Basic Airtable Objects such as Attachements and Thumbnails.  
 Photos and Attached Files in Airtable are retrieved as Attachements. Photos furthermore cointain Thumbnail Objects in different sizes.
 
-## Attachement
+#### Attachement
 All the Attachement Objects got the following attributes:
-```Java
-public class Attachment {
-    
-    private String id;
-    private String url;
-    private String filename;
-    private Float size;
-    private String type;
-
-}
-```
 
 * String `id`
 * String `url`
@@ -101,28 +90,15 @@ public class Attachment {
 * String `type`
 
 Photos additionally have:
-```Java
-private Map<String,Thumbnail> thumbnails;
-```
 
 * Map<String,Thumbnail> `thumbnails`
 
-## Thumbnails
+#### Thumbnails
 A Thumbnail is generated for Photo Objects in Airtable. Thumbnails are bound to an Attachement Object as a key/value Map.
 The Keys are `small` and `large` for the different sizes. The Value is a Thumbnail Object.
 
 A Thumbnail got the following Attributes:
 
-```Java
-public class Thumbnail {
-    
-        private String name;
-    
-        private String url;
-        private Float width;
-        private Float height;
-}
-```
 * String `name`
 * String `url`
 * Float `width`
