@@ -13,7 +13,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
+import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Delete;
+import com.sybit.airtable.vo.PostRecord;
 import com.sybit.airtable.vo.RecordItem;
 import com.sybit.airtable.vo.Records;
 import org.apache.commons.beanutils.BeanUtils;
@@ -25,8 +27,11 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtilsBean;
 
 /**
  * Representation Class of Airtable Tables.
@@ -302,10 +307,53 @@ class Table<T> {
 
         return null;
     }
+    
+    /**
+     * Create Record of given Item
+     * 
+     * @param item the item to be created
+     * @return the created item
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+               
+        RecordItem responseBody = null;
+        
+        checkProperties(item);
+                                      
+        PostRecord body = new PostRecord<T>();
+        body.setFields(item);
+              
+        HttpResponse<RecordItem> response;
+        try {
+            response = Unirest.post( getTableEndpointUrl())
+                .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
+                .header("Content-type","application/json")
+                .body(body)
+                .asObject(RecordItem.class);
+        } catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+             
+        int code = response.getStatus();
 
-    public T create(T item) {
+        if(200 == code) {
+            responseBody = response.getBody();
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
 
-        throw new UnsupportedOperationException("not yet implemented");
+        try {
+            return transform(responseBody, this.type.newInstance() );
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        
+        return null;
     }
 
     public T update(T item) {
@@ -470,5 +518,47 @@ class Table<T> {
     private static boolean propertyExists (Object bean, String property) {
         return PropertyUtils.isReadable(bean, property) &&
                 PropertyUtils.isWriteable(bean, property);
+    }
+
+    /**
+     * Checks if the Property Values of the item are valid for the Request.
+     * 
+     * @param item
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+    private void checkProperties(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        if(propertyExists(item,"id") || propertyExists(item,"createdTime")){
+            Field[] attributes = item.getClass().getDeclaredFields();
+            for (Field attribute : attributes) {
+                String name = attribute.getName();
+                if (name.equals("id") || name.equals("createdTime")) {
+                    if(BeanUtils.getProperty(item,attribute.getName()) != null){
+                        throw new AirtableException("Property "+name+" should be null!");
+                    }           
+                } else if (name.equals("photos")){
+                    List<Attachment> obj = (List<Attachment>) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(item, "photos");
+                    if(obj != null){
+                        for (int i = 0; i < obj.size(); i++) {
+                            if(propertyExists(obj.get(i),"id") || propertyExists(obj.get(i),"size") || propertyExists(obj.get(i), "type") || propertyExists(obj.get(i), "filename")){
+                                Field[] attributesPhotos = item.getClass().getDeclaredFields();
+                                for (Field attributePhoto : attributesPhotos) {
+                                    String namePhotoAttribute = attributePhoto.getName();
+                                    if (namePhotoAttribute.equals("id") || namePhotoAttribute.equals("size") || namePhotoAttribute.equals("Tpye") ||  namePhotoAttribute.equals("filename")) {
+                                        if(BeanUtils.getProperty(obj.get(i),namePhotoAttribute) != null){
+                                            throw new AirtableException("Property "+namePhotoAttribute+" should be null!");
+                                        }           
+                                    }
+                                }
+                            }
+                        }  
+                    }               
+                }                 
+            }
+        }
+        
     }
 }

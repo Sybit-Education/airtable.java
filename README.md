@@ -136,6 +136,26 @@ actorTable.destroy("recapJ3Js8AEwt0Bf");
 ```
 Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
 
+## Create
+First build your record. Then use Create to generate a specific records of table:
+
++ `Table<Actor> actorTable = base.table("Actors", Actor.class);
+   Actor newActor = new Actor();
+   newActor.setName("Neuer Actor");`: build your record
+
+   `Actor test = actorTable.create(newActor);`: create the recently build record
+
+### Example
+```Java
+// detailed Example see TableCreateTest.java
+Base base = airtable.base("AIRTABLE_BASE");
+        
+Table<Actor> actorTable = base.table("Actors", Actor.class);
+Actor newActor = new Actor();
+newActor.setName("Neuer Actor");
+Actor test = actorTable.create(newActor);
+```
+
 # Roadmap
 
 Short overview of features, which are supported:
@@ -153,16 +173,16 @@ Short overview of features, which are supported:
 
 + [x] Find Record
 
-+ [ ] Create Record
++ [x] Create Record
 + [ ] Update Record
 + [x] Delete/Destroy Record
 + [ ] Replace Record
 + General requirements
-    + [ ] Automatic ObjectMapping
+    + [x] Automatic ObjectMapping
       + [x] Read: convert to Objects
       + [x] Read: conversion of `Attachment`s & `Thumbnail`s
-      + [ ] Write: convert Objects to JSON for Airtable API
-  + [x] Error handling
+      + [x] Write: convert Objects to JSON
+  + [x] Errorhandling
 
 # Contribute
 
@@ -176,6 +196,7 @@ The current status of our project is maintained on our agile board:
 ## Compiling project
 
 airtable.jave is developed and compiled using Java 8.
+
 
 We use [Gradle](https://gradle.org) to compile and package project:
 
