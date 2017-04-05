@@ -186,8 +186,7 @@ public class Airtable {
         if(base == null) {
             throw new AirtableException("base was null");
         }
-        final Base b = new Base(base);
-        b.setParent(this);
+        final Base b = new Base(base, this);
 
         return b;
     }

@@ -7,16 +7,21 @@
 package com.sybit.airtable.movies;
 
 
+import com.google.gson.annotations.SerializedName;
 import com.sybit.airtable.vo.Attachment;
 import java.util.List;
 
 public class Actor {
 
     private String id;
+    @SerializedName("Name")
     private String name;
-    private List<Attachment> Photo;
-    private String Biography;
-    private String[] Filmography;
+    @SerializedName("Photo")
+    private List<Attachment> photo;
+    @SerializedName("Biography")
+    private String biography;
+    @SerializedName("Filmography")
+    private String[] filmography;
     
    
 
@@ -37,27 +42,27 @@ public class Actor {
     }
 
     public String[] getFilmography() {
-        return Filmography;
+        return filmography;
     }
 
     public void setFilmography(String[] Filmography) {
-        this.Filmography = Filmography;
+        this.filmography = Filmography;
     }
 
     public List<Attachment> getPhoto() {
-        return Photo;
+        return photo;
     }
 
     public void setPhoto(List<Attachment> Photo) {
-        this.Photo = Photo;
+        this.photo = Photo;
     }
 
     public String getBiography() {
-        return Biography;
+        return biography;
     }
 
     public void setBiography(String Biography) {
-        this.Biography = Biography;
+        this.biography = Biography;
     }
     
     

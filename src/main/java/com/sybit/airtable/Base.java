@@ -26,17 +26,8 @@ public class Base {
 
     private final String base;
 
-    private Airtable parent;
+    private final Airtable parent;
 
-    /**
-     * Create Airtable Base with given base ID.
-     *
-     * ID could be found at https://airtable.com if you select your current base.
-     * @param base base ID could be found at https://airtable.com if you select your current base.
-     */
-    public Base(String base) {
-        this.base = base;
-    }
 
     /**
      * Create Airtable Base with given base ID.
@@ -45,18 +36,10 @@ public class Base {
      * @param airtable parent airtable object
      */
     public Base(String base, Airtable airtable) {
-        this(base);
-        setParent(airtable);
+        this.base = base;
+        this.parent = airtable;
     }
-
-    /**
-     * Set Airtable object as parent.
-     * @param parent the base Airtable object.
-     */
-    void setParent(Airtable parent) {
-        this.parent = parent;
-    }
-
+    
     /**
      * Get Airtable object as parent.
      * @return
@@ -78,12 +61,13 @@ public class Base {
     /**
      * Get Table object of given table.
      * @param name Name of required table.
-     * @param clazz
+     * @param clazz Class representing row of resultsets
      * @return Object to access table.
      */
     public Table table(String name, Class clazz) {
 
         if(!tableMap.containsKey(name)) {
+            LOG.debug("Create new instance for table [" + name + "]");
             Table t = new Table(name, clazz);
             t.setParent(this);
             tableMap.put(name, t);
