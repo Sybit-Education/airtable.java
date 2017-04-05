@@ -1,0 +1,14 @@
+{
+  "request" : {
+      "url" : "/v0/appe9941ff07fffcc/Movies",
+      "method" : "POST",
+      "bodyPatterns" : [{"equalToJson" : "{\"fields\":{\"Name\":\"Neuer Film\",\"Photos\": [{\"url\":\"https://www.example.imgae.file1.de\"},{\"url\":\"https://www.example.imgae.file2.de\"}]}}",
+      "ignoreArrayOrder" : true,
+      "ignoreExtraElements" : true
+    }]
+},
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "/body-MovieCreate2.json"
+  }
+}
