@@ -617,7 +617,7 @@ class Table<T> {
         
         if(propertyExists(item,"id")){
             String id = BeanUtils.getProperty(item, "id");
-            if(!id.equals(null)){
+            if(id != null){
                 return id;
             }                
         }
@@ -642,10 +642,8 @@ class Table<T> {
         
         for (Field attribute : attributes) {
             String name = attribute.getName();
-            if (name.equals("id") || name.equals("createdTime")) {
-                if(BeanUtils.getProperty(item,attribute.getName()) != null){
-                    BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, name, null);
-                }    
+            if ((name.equals("id") || name.equals("createdTime")) && (BeanUtils.getProperty(item,name) != null)) {
+                BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, name, null);       
             }
         }
             
