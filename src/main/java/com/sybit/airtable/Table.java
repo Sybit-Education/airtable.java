@@ -356,9 +356,43 @@ class Table<T> {
         return null;
     }
 
-    public T update(T item) {
+    public T update(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        RecordItem responseBody = null;
+        
+        String id = getIdOfItem(item);
+            
+        PostRecord body = new PostRecord<T>();
+        body.setFields(filterFields(item));
+              
+        HttpResponse<RecordItem> response;
+        try {
+            response = Unirest.patch( getTableEndpointUrl()+"/"+id)
+                .header("accept", "application/json")
+                .header("Authorization", getBearerToken())
+                .header("Content-type","application/json")
+                .body(body)
+                .asObject(RecordItem.class);
+        } catch (UnirestException e) {
+            throw new AirtableException(e);
+        }
+             
+        int code = response.getStatus();
 
-        throw new UnsupportedOperationException("not yet implemented");
+        if(200 == code) {
+            responseBody = response.getBody();
+        } else {
+            HttpResponseExceptionHandler.onResponse(response);
+        }
+
+        try {
+            return transform(responseBody, this.type.newInstance() );
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        
+        return null;
+
     }
 
     public T replace(T item) {
@@ -565,5 +599,54 @@ class Table<T> {
                 }
             }  
         }               
+    }
+    
+    /**
+     * 
+     * Get the String Id from the item.
+     * 
+     * @param item
+     * @return
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+
+    private String getIdOfItem(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        
+        if(propertyExists(item,"id")){
+            String id = BeanUtils.getProperty(item, "id");
+            if(id != null){
+                return id;
+            }                
+        }
+        throw new AirtableException("Id of "+item+" not Found!");
+    }
+
+    /**
+     * 
+     * Filter the Fields of the PostRecord Object. Id and created Time are set to null so Object Mapper doesent convert them to JSON.
+     * 
+     * @param item
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+    private T filterFields(T item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+       
+        System.out.println(item);
+        
+        Field[] attributes = item.getClass().getDeclaredFields();
+        
+        for (Field attribute : attributes) {
+            String name = attribute.getName();
+            if ((name.equals("id") || name.equals("createdTime")) && (BeanUtils.getProperty(item,name) != null)) {
+                BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, name, null);       
+            }
+        }
+            
+        return item;
     }
 }
