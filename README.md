@@ -214,6 +214,21 @@ The airtable.java API will respect these mappings automatically.
     @SerializedName("First- & Lastname")
     private String name;
 ```
+### Sort
+With the integrated Sort element you can retrieve a list of sort objects that specifies how the records will be ordered. 
+Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc".
+The default direction is "asc".
+
+For example, to sort records by Name, pass in:
+
+```Java
+Sort sort = new Sort("Name", Sort.Direction.desc);
+List<Movie> listMovies = movieTable.select(sort);
+```
+If you set the view parameter, the returned records in that view will be sorted by these fields.
+
+Detailed Example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableParameterTest.java)
+
 
 ## CRUD-Operations on Table Records
 
@@ -227,18 +242,6 @@ Select list of items from table:
 + `table(name).select(Sort sortation)`: get records of table `name` using `sort` to sort records (More about Sort [here](#sort))
 + `table(name).select(Query query)`: get records of table `name` using `query` to filter
 
-### Sort
-With the integrated Sort element you can retrieve a list of sort objects that specifies how the records will be ordered. 
-Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc".
-The default direction is "asc".
-
-For example, to sort records by Name, pass in:
-
-```Java
-Sort sort = new Sort("Name", Sort.Direction.desc);
-List<Movie> listMovies = movieTable.select(sort);
-```
-If you set the view parameter, the returned records in that view will be sorted by these fields.
 
 ### Example
 ```Java
@@ -295,6 +298,8 @@ newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
 ```
 
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableCreateRecordTest.java)
+
 ## Update
 Use `update` to update a record of table:
 
@@ -310,6 +315,8 @@ Actor marlonBrando = ...;
 marlonBrando.setName("Marlon Brando");
 Actor updated = actorTable.update(marlonBrando);
 ```
+
+Detailed example see [TableUpdateTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableUpdateTest.java)
 
 # Roadmap
 
