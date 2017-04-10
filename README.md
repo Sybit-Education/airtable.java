@@ -9,7 +9,7 @@
 
 Java API for Airtable (http://www.airtable.com). The Airtable API provides a simple way of accessing your data within your Java project.
 
-More information about the Airtable API coud be found at [https://airtable.com/api](https://airtable.com/api). 
+More information about the Airtable API could be found at [https://airtable.com/api](https://airtable.com/api). 
 The documentation will provide detailed information about your created base.
 
 # Usage
@@ -74,7 +74,7 @@ need to wait 30 seconds before subsequent requests will succeed.
 ## Object Mapping
 The Java implementation of the Airtable API provides automatic Object mapping. You can map any Table to your own Java Classes.
 But first you need to specify those Classes.
- 
+
 ### Create a Object
 The Java Objects represent records or 'values' in Airtable. So the Class attributes need to be adjusted to the Airtable Base.
 
@@ -84,16 +84,15 @@ In Aritable we got a Table Actor. The coulumns represent the Class attributes.
 
 This is how our Actor Table looks like:
 
-|Index| Name          |     Photo    |  Biography | Filmography                     |
-|:---:|:-------------:|:------------:|:----------:|:-------------------------------:|
-|   1 | Marlon Brando |  Some Photos | Long Text  |  Reference to the Movie Table   |
-|   2 | Bill Murray   |  Some Photos | Long Text  |  Reference to the Movie Table   |
-|   3 | Al Pacino     |  Some Photos | Long Text  |  Reference to the Movie Table   |
-| ... | ...           |  ...         | ...        |  ...                            |
-    
+| Index |     Name      |    Photo    | Biography |         Filmography          |
+| :---: | :-----------: | :---------: | :-------: | :--------------------------: |
+|   1   | Marlon Brando | Some Photos | Long Text | Reference to the Movie Table |
+|   2   |  Bill Murray  | Some Photos | Long Text | Reference to the Movie Table |
+|   3   |   Al Pacino   | Some Photos | Long Text | Reference to the Movie Table |
+|  ...  |      ...      |     ...     |    ...    |             ...              |
+
 Now our Java Class should look like this:
 ```Java
-
   public class Actor {
 
       private String id;
@@ -126,56 +125,52 @@ Now our Java Class should look like this:
           return filmography;
       }
 
-      public void setFilmography(String[] Filmography) {
-          this.filmography = Filmography;
+      public void setFilmography(String[] filmography) {
+          this.filmography = filmography;
       }
 
       public List<Attachment> getPhoto() {
           return photo;
       }
 
-      public void setPhoto(List<Attachment> Photo) {
-          this.photo = Photo;
+      public void setPhoto(List<Attachment> photo) {
+          this.photo = photo;
       }
 
       public String getBiography() {
           return biography;
       }
 
-      public void setBiography(String Biography) {
-          this.biography = Biography;
+      public void setBiography(String biography) {
+          this.biography = biography;
       }
-
-
   }
-
 ```
-For each column we give the Java Class an attribute with the column name (Be carefull! See more about naming in the Annotation Section) 
+For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the [Section 'Annotations'](#Annotations)) 
 and add Getters and Setters for each attribute. The attribute types can be either primitive Java types like `String` and `Float` for Text and Numbers,
 `String Array` for references on other Tables or `Attachment` for attached photos and files.
 
 
 Now we got everything we need to create our first Airtable Table Object.
-We use the Java class we just wrote to specify what kind of Object should be saved in our Table. Then we tell our `base` Object which Table we want to access.
+We use the Java class we just wrote to specify what kind of Object should be saved in our Table. Then we tell our `base`-Object which Table we want to access.
 All the Records saved in our Airtable DB now should be in our local Table<JAVA CLASS> Object.
 
 Example:
 
 ```Java
 
-        Base base = airtable.base(AIRTABLE_API_KEY);
-        Table<JAVA CLASS> actorTable = base.table(NAME OF THE TABLE, JAVA CLASS);
+        Base base = airtable.base('AIRTABLE_API_KEY');
+        Table<JAVA CLASS> actorTable = base.table("NAME OF THE TABLE", <JAVA_CLASS>);
         //Example with the Actor Table
         Table<Actor> actorTable = base.table("Actors", Actor.class);
-
 ```
 
 ### Basic Objects
-The Java implementation of the Airtable API provides an implementation of Basic Airtable Objects such as Attachements and Thumbnails.  
-Photos and Attached Files in Airtable are retrieved as Attachements. Photos furthermore cointain Thumbnail Objects in different sizes.
+The Java implementation of the Airtable-API provides an implementation of basic Airtable objects such as attachments and Thumbnails.  
+Photos and attached files in Airtable are retrieved as `Attachment`s. Photos furthermore contain `Thumbnail`-Objects for different sizes.
 
-#### Attachement
-All the Attachement Objects got the following attributes:
+#### Attachment
+All the `Attachment`-Objects got the following attributes:
 
 * String `id`
 * String `url`
@@ -188,21 +183,21 @@ Photos additionally have:
 * Map<String,Thumbnail> `thumbnails`
 
 #### Thumbnails
-A Thumbnail is generated for Photo Objects in Airtable. Thumbnails are bound to an Attachement Object as a key/value Map.
-The Keys are `small` and `large` for the different sizes. The Value is a Thumbnail Object.
+A Thumbnail is generated for image files in Airtable. Thumbnails are bound to an Attachment Object as a key/value Map.
+The Keys are `small` and `large` for the different sizes. The Value is a `Thumbnail`-Object.
 
-A Thumbnail got the following Attributes:
+A `Thumbnail`-Object got the following Attributes:
 
 * String `name`
 * String `url`
 * Float `width`
 * Float `height`
 
-Note: The `name` of a Thumbnail Object is identical with it´s key.
+Note: The `name` of a Thumbnail Object is identical with it´s key ( `small` or `large` ).
 
 ### Annotations
 
-Use the Gson Annotation `@SerializedName` to annotate Names which contain `-`, emtpy characters or other not mappable characters.
+Use the Java Annotation `@SerializedName` of [Gson](https://github.com/google/gson) to annotate column names containing `-`, empty characters or other not in Java mappable characters.
 The airtable.java API will respect these mappings automatically.
 
 #### Example
@@ -228,7 +223,7 @@ Select list of items from table:
 
 ### Example
 ```Java
-Base base = new Airtable().base(AIRTABLE_BASE);
+Base base = new Airtable().base("AIRTABLE_BASE");
 List<Movie> retval = base.table("Movies", Movie.class).select();
 ```
 
@@ -241,7 +236,7 @@ Use `find` to get specific records of table:
 
 ### Example
 ```Java
-Base base = new Airtable().base(AIRTABLE_BASE);
+Base base = new Airtable().base("AIRTABLE_BASE");
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
@@ -255,7 +250,7 @@ Use `destroy` to delete a specific records of table:
 
 ### Example
 ```Java
-Base base = airtable.base(AIRTABLE_BASE);
+Base base = airtable.base("AIRTABLE_BASE");
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
@@ -291,9 +286,9 @@ Use `update` to update a record of table:
 ### Example
 ```Java
 // detailed Example see TableCreateTest.java
-Base base = airtable.base("appe9941ff07fffcc");
-        
-Actor.setName("Neuer Name");
+
+Actor marlonBrando = ...;
+marlonBrando.setName("Marlon Brando");
 Actor updated = actorTable.update(marlonBrando);
 ```
 
@@ -322,7 +317,7 @@ Short overview of features, which are supported:
       + [x] Read: convert to Objects
       + [x] Read: conversion of `Attachment`s & `Thumbnail`s
       + [x] Write: convert Objects to JSON
-  + [x] Errorhandling
++ [x] Errorhandling
 
 # Contribute
 
@@ -345,14 +340,22 @@ We use [Gradle](https://gradle.org) to compile and package project:
 
 ## Testing
 There are JUnit tests to verify the API.
-The tests are based on the Airtable template [Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies
-) which could be created in your account.
-For testing, the JSON-responses are mocked via [WireMock](http://wiremock.org/). 
+The tests are based on the Airtable template [Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies) which could be created in your account.
+For testing, the JSON-responses are mocked by [WireMock](http://wiremock.org/). 
+
+# Other Airtable Projects
+
+- [Airtable.js](https://github.com/Airtable/airtable.js): JavaScript Client
+- [Airtable Ruby Client](https://github.com/Airtable/airtable-ruby): Ruzby Client
+- [Airtable Phyton](https://github.com/nicocanali/airtable-python): Phyton Client
+- [Airtabler](https://github.com/bergant/airtabler): R interface to the Airtable API
+
+More Github-Projects using topic *[Airtable](https://github.com/search?q=topic%3Aairtable&type=Repositories)*
 
 # Credits
 
-Thank you very much for these gread frameworks and ibraries provided open source!
- 
+Thank you very much for these great frameworks and libraries provided open source!
+
 We use following libraries:
 
 + [unirest](http://unirest.io/java.html)
