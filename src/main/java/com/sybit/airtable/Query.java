@@ -12,6 +12,16 @@ import java.util.List;
  */
 @SuppressWarnings("WeakerAccess")
 public interface Query {
+    
+    /**
+     * @return Fields to be loaded 
+     */
+    String [] getFields();
+    
+    /**
+     * @return the number of records per page
+     */
+    Integer getPageSize();
 
     /**
      * @return number of max rows to load.
