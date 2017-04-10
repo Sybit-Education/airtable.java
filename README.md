@@ -80,7 +80,7 @@ The Java Objects represent records or 'values' in Airtable. So the Class attribu
 
 #### Example
 
-In Aritable we got a Table Actor. The coulumns represent the Class attributes.
+In Aritable we got a Table Actor. The columns represent the Class attributes.
 
 This is how our Actor Table looks like:
 
@@ -146,7 +146,7 @@ Now our Java Class should look like this:
       }
   }
 ```
-For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the [Section 'Annotations'](#Annotations)) 
+For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the [Section 'Annotations'](#annotations)) 
 and add Getters and Setters for each attribute. The attribute types can be either primitive Java types like `String` and `Float` for Text and Numbers,
 `String Array` for references on other Tables or `Attachment` for attached photos and files.
 
