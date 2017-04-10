@@ -1,0 +1,10 @@
+{
+  "request" : {
+      "url" : "/v0/appe9941ff07fffcc/Movies?filterByFormula=NOT%28%7BName%7D+%3D+%27%27%29",
+      "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "/body-ParameterSelectFormula.json"
+  }
+}

@@ -8,10 +8,11 @@ package com.sybit.airtable;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.test.WireMockBaseTest;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.client.HttpResponseException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,9 @@ public class TableParameterTest extends WireMockBaseTest {
         
         List<Movie> listMovies = movieTable.select(fields);
         assertNotNull(listMovies);
+        assertNull(listMovies.get(0).getDirector());
+        assertNull(listMovies.get(0).getActors());
+        assertNull(listMovies.get(0).getDescription());
     
     }
     
@@ -68,12 +72,14 @@ public class TableParameterTest extends WireMockBaseTest {
 
             @Override
             public String filterByFormula() {
-                return "FORMULA";
+                return "NOT({Name} = '')";
             }
         };
          
         List<Movie> listMovies = movieTable.select(query);
         assertNotNull(listMovies);
+        assertEquals(listMovies.size(),2);
+  
     
     }
     
@@ -83,14 +89,14 @@ public class TableParameterTest extends WireMockBaseTest {
         Base base = airtable.base("appe9941ff07fffcc");
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         
-        int maxRecords = 10;
+        int maxRecords = 2;
          
         List<Movie> listMovies = movieTable.select(maxRecords);
         assertNotNull(listMovies);
-        //Working
+        assertEquals(listMovies.size(),2);
+        
     }
     
-    //TODO both integer impossible
     @Test
     public void pageSizeParamTest() throws AirtableException, HttpResponseException {
         
@@ -131,7 +137,7 @@ public class TableParameterTest extends WireMockBaseTest {
          
         List<Movie> listMovies = movieTable.select(query);
         assertNotNull(listMovies);
-        //working
+      
     }
     
     @Test
@@ -139,9 +145,12 @@ public class TableParameterTest extends WireMockBaseTest {
         
         Base base = airtable.base("appe9941ff07fffcc");
         Table<Movie> movieTable = base.table("Movies", Movie.class);
+        Sort sort = new Sort("Name", Sort.Direction.desc);
          
-        
-        List<Movie> listMovies;
+        List<Movie> listMovies = movieTable.select(sort);
+        assertNotNull(listMovies);
+        assertEquals(listMovies.get(9).getName(),"Billy Madison");
+     
     
     }
     
@@ -151,12 +160,13 @@ public class TableParameterTest extends WireMockBaseTest {
         Base base = airtable.base("appe9941ff07fffcc");
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         
-        String view = "Comedies";
+        String view = "Dramas";
          
         
         List<Movie> listMovies = movieTable.select(view);
         assertNotNull(listMovies);
-        //working
+        assertEquals(listMovies.size(),5);
+        
     }
     
     
