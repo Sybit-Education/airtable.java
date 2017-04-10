@@ -78,6 +78,8 @@ class Table<T> {
     }
 
     /**
+     * 
+     * If no Parameter ser all querys to null.
      *
      * @return
      * @throws AirtableException
@@ -118,7 +120,7 @@ class Table<T> {
     }
 
     /**
-     * Select List of data of table.
+     * Select List of data of table with defined Query Parameters.
      *
      * @param query
      * @return
@@ -132,8 +134,11 @@ class Table<T> {
             GetRequest request = Unirest.get(getTableEndpointUrl())
                     .header("accept", "application/json")
                     .header("Authorization", getBearerToken());
-            if(query.getFields() != null && query.getFields().length > 0){               
-                request.queryString("fields",query.getFields());         
+            if(query.getFields() != null && query.getFields().length > 0){ 
+                String[] fields = query.getFields();
+                for (int i = 0; i < fields.length; i++) {
+                    request.queryString("fields[]",fields[i]);     
+                }      
             }
             if(query.getMaxRecords() != null) {
                 request.queryString("maxRecords", query.getMaxRecords());
@@ -178,7 +183,14 @@ class Table<T> {
         return list;
     }
 
-
+    /**
+     * select with Parameter maxRecords
+     * 
+     * @param maxRecords
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException 
+     */
     public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
         return select(new Query() {
             @Override
@@ -255,7 +267,8 @@ class Table<T> {
     }
 
     /**
-     *
+     *select Table data with defined sortation
+     * 
      * @param sortation
      * @return
      * @throws AirtableException
@@ -298,6 +311,14 @@ class Table<T> {
         });
     }
     
+    /**
+     * select only Table data with defined Fields
+     * 
+     * @param fields
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException 
+     */
     public List<T> select(String[] fields) throws AirtableException, HttpResponseException {
 
         return select(new Query() {
