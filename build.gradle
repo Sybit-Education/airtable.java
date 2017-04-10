@@ -1,5 +1,3 @@
-import com.smokejumperit.gradle.report.DependencyLicensePlugin
-
 /*
  * The MIT License (MIT)
  * Copyright (c) 2017 Sybit GmbH
@@ -24,7 +22,6 @@ apply plugin: 'maven'
 apply plugin: 'com.palantir.jacoco-coverage'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: DependencyLicensePlugin
 
 group = 'com.sybit'
 version = '0.1'
@@ -84,15 +81,20 @@ def getVersionName = { ->
     }
 }
 
-// custom tasks for creating source/javadoc jars
+// custom tasks for creating source jar
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
-
+// custom tasks for creating javadoc jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
 }
 
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
@@ -106,10 +108,6 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     ]
 }
 
-// add javadoc/source jar tasks as artifacts
-artifacts {
-    archives sourcesJar, javadocJar
-}
 
 publishing {
     publications {
