@@ -67,9 +67,14 @@ logging framework at deployment time.
 The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
 need to wait 30 seconds before subsequent requests will succeed.
 
-*TODO:*
-* How to create an Airtable Object
-* How to create an Airtable Base
+### Connecting to Airtable
+To use this Libraray you will need a Airtable Object. Simply create one! `Airtable airtable = new Airtable();`.
+This Object needs an API-Key or it won't work properly so `airtable.configure(AIRTABLE_API_KEY);`.
+Now the Airtable Object needs to know on which base you want access. This Method will return a Base Object which will be used in the Future.
+`Base base = airtable.base(AIRTABLE_BASE);`
+
+With the Base object you can perform all kind of Operations see more [here](#crud-operations-on-table-records).
+
 
 ## Object Mapping
 The Java implementation of the Airtable API provides automatic Object mapping. You can map any Table to your own Java Classes.
@@ -146,7 +151,7 @@ Now our Java Class should look like this:
       }
   }
 ```
-For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the [Section 'Annotations'](#annotations)) 
+For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the Section [Annotations](#annotations)) 
 and add Getters and Setters for each attribute. The attribute types can be either primitive Java types like `String` and `Float` for Text and Numbers,
 `String Array` for references on other Tables or `Attachment` for attached photos and files.
 
@@ -318,8 +323,8 @@ Short overview of features, which are supported:
 + [x] Select Records
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
-  + [ ] Support of `filterByFormula`
-  + [ ] Support of Paging
+  + [x] Support of `filterByFormula`
+  + [x] Support of Paging
 
 + [x] Find Record
 
