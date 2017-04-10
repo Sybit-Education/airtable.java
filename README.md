@@ -67,13 +67,138 @@ logging framework at deployment time.
 The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
 need to wait 30 seconds before subsequent requests will succeed.
 
-## Object Mapping
-The Java implementation of the Airtable API provides automatic Object mapping.
- 
- *TODO:* 
- * How to create objects
- * Basic objects (attachment, thumbnails, ...)
+*TODO:*
+* How to create an Airtable Object
+* How to create an Airtable Base
 
+## Object Mapping
+The Java implementation of the Airtable API provides automatic Object mapping. You can map any Table to your own Java Classes.
+But first you need to specify those Classes.
+ 
+### Create a Object
+The Java Objects represent records or 'values' in Airtable. So the Class attributes need to be adjusted to the Airtable Base.
+
+#### Example
+
+In Aritable we got a Table Actor. The coulumns represent the Class attributes.
+
+This is how our Actor Table looks like:
+
+|Index| Name          |     Photo    |  Biography | Filmography                     |
+|:---:|:-------------:|:------------:|:----------:|:-------------------------------:|
+|   1 | Marlon Brando |  Some Photos | Long Text  |  Reference to the Movie Table   |
+|   2 | Bill Murray   |  Some Photos | Long Text  |  Reference to the Movie Table   |
+|   3 | Al Pacino     |  Some Photos | Long Text  |  Reference to the Movie Table   |
+| ... | ...           |  ...         | ...        |  ...                            |
+    
+Now our Java Class should look like this:
+```Java
+
+  public class Actor {
+
+      private String id;
+      @SerializedName("Name")
+      private String name;
+      @SerializedName("Photo")
+      private List<Attachment> photo;
+      @SerializedName("Biography")
+      private String biography;
+      @SerializedName("Filmography")
+      private String[] filmography;
+
+      public String getId() {
+          return id;
+      }
+
+      public void setId(String id) {
+          this.id = id;
+      }
+
+      public String getName() {
+          return name;
+      }
+
+      public void setName(String name) {
+          this.name = name;
+      }
+
+      public String[] getFilmography() {
+          return filmography;
+      }
+
+      public void setFilmography(String[] Filmography) {
+          this.filmography = Filmography;
+      }
+
+      public List<Attachment> getPhoto() {
+          return photo;
+      }
+
+      public void setPhoto(List<Attachment> Photo) {
+          this.photo = Photo;
+      }
+
+      public String getBiography() {
+          return biography;
+      }
+
+      public void setBiography(String Biography) {
+          this.biography = Biography;
+      }
+
+
+  }
+
+```
+For each column we give the Java Class an attribute with the column name (Be carefull! See more about naming in the Annotation Section) 
+and add Getters and Setters for each attribute. The attribute types can be either primitive Java types like `String` and `Float` for Text and Numbers,
+`String Array` for references on other Tables or `Attachment` for attached photos and files.
+
+
+Now we got everything we need to create our first Airtable Table Object.
+We use the Java class we just wrote to specify what kind of Object should be saved in our Table. Then we tell our `base` Object which Table we want to access.
+All the Records saved in our Airtable DB now should be in our local Table<JAVA CLASS> Object.
+
+Example:
+
+```Java
+
+        Base base = airtable.base(AIRTABLE_API_KEY);
+        Table<JAVA CLASS> actorTable = base.table(NAME OF THE TABLE, JAVA CLASS);
+        //Example with the Actor Table
+        Table<Actor> actorTable = base.table("Actors", Actor.class);
+
+```
+
+### Basic Objects
+The Java implementation of the Airtable API provides an implementation of Basic Airtable Objects such as Attachements and Thumbnails.  
+Photos and Attached Files in Airtable are retrieved as Attachements. Photos furthermore cointain Thumbnail Objects in different sizes.
+
+#### Attachement
+All the Attachement Objects got the following attributes:
+
+* String `id`
+* String `url`
+* String `filename`
+* Float `size`
+* String `type`
+
+Photos additionally have:
+
+* Map<String,Thumbnail> `thumbnails`
+
+#### Thumbnails
+A Thumbnail is generated for Photo Objects in Airtable. Thumbnails are bound to an Attachement Object as a key/value Map.
+The Keys are `small` and `large` for the different sizes. The Value is a Thumbnail Object.
+
+A Thumbnail got the following Attributes:
+
+* String `name`
+* String `url`
+* Float `width`
+* Float `height`
+
+Note: The `name` of a Thumbnail Object is identical with it´s key.
 
 ### Annotations
 
@@ -151,7 +276,7 @@ actorTable.destroy("recapJ3Js8AEwt0Bf");
 Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
 
 ## Create
-First build your record. Then use Create to generate a specific records of table:
+First build your record. Then use `create` to generate a specific records of table:
 
 + `Table<Actor> actorTable = base.table("Actors", Actor.class);
    Actor newActor = new Actor();
@@ -168,6 +293,22 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor newActor = new Actor();
 newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
+```
+
+## Update
+Use `update` to update a record of table:
+
++ `Actor.setName("New Name");`: set or update to a new Value
+
+   `Actor test = actorTable.update(Actor);`: update the Actor in the Table
+
+### Example
+```Java
+// detailed Example see TableCreateTest.java
+Base base = airtable.base("appe9941ff07fffcc");
+        
+Actor.setName("Neuer Name");
+Actor updated = actorTable.update(marlonBrando);
 ```
 
 # Roadmap
@@ -188,9 +329,8 @@ Short overview of features, which are supported:
 + [x] Find Record
 
 + [x] Create Record
-+ [ ] Update Record
++ [x] Update Record
 + [x] Delete/Destroy Record
-+ [ ] Replace Record
 + General requirements
     + [x] Automatic ObjectMapping
       + [x] Read: convert to Objects
