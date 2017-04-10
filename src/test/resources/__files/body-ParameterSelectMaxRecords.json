@@ -1,0 +1,27 @@
+{
+    "records":[{
+        "id":"rec110972df115479",
+        "fields":{
+            "Name":"Sister Act",
+            "Description":"Sister Act is a 1992 American comedy film released by Touchstone Pictures. Directed by Emile Ardolino, it features musical arrangements by Marc Shaiman and stars Whoopi Goldberg as a Reno lounge singer who has been put under protective custody in a San Francisco convent of Poor Clares and has to pretend to be a nun when a mob boss puts her on his hit list. Also in the cast are Maggie Smith, Kathy Najimy, Wendy Makkena, Mary Wickes, and Harvey Keitel.",
+            "Photos":[{
+                "id":"att9141430d2b6dc1",
+                "url":"https://www.filepicker.io/api/file/tav0vGKoTjiyMcbjsx3r",
+                "filename":"Sister_Act_film_poster.jpg",
+                "size":19805,
+                "type":"image/jpeg",
+                "thumbnails":{
+                    "small":{
+                        "url":"https://www.filepicker.io/api/file/IiTD31iiQ32mRI6KYEzy"
+                    },
+                    "large":{
+                        "url":"https://www.filepicker.io/api/file/Oczxr4sYQ2lrA3ppGMhg"
+                    }}
+                }],
+            "Actors":["rec73fcac60a91bc1"],
+            "Director":["rec114faab248e582"],
+            "Genre":["Comedy"]
+        },
+        "createdTime":"2014-07-18T04:42:06.000Z"
+    }]
+}
