@@ -67,9 +67,14 @@ logging framework at deployment time.
 The API of Airtable itself is limited to 5 requests per second. If you exceed this rate, you will receive a 429 status code and will 
 need to wait 30 seconds before subsequent requests will succeed.
 
-*TODO:*
-* How to create an Airtable Object
-* How to create an Airtable Base
+### Connecting to Airtable
+To use this Libraray you will need a Airtable Object. Simply create one! `Airtable airtable = new Airtable();`.
+This Object needs an API-Key or it won't work properly so `airtable.configure(AIRTABLE_API_KEY);`.
+Now the Airtable Object needs to know on which base you want access. This Method will return a Base Object which will be used in the Future.
+`Base base = airtable.base(AIRTABLE_BASE);`
+
+With the Base object you can perform all kind of Operations see more [here](#crud-operations-on-table-records).
+
 
 ## Object Mapping
 The Java implementation of the Airtable API provides automatic Object mapping. You can map any Table to your own Java Classes.
@@ -146,7 +151,7 @@ Now our Java Class should look like this:
       }
   }
 ```
-For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the [Section 'Annotations'](#annotations)) 
+For each column we give the Java class an attribute with the column name (Be careful! See more about naming in the Section [Annotations](#annotations)) 
 and add Getters and Setters for each attribute. The attribute types can be either primitive Java types like `String` and `Float` for Text and Numbers,
 `String Array` for references on other Tables or `Attachment` for attached photos and files.
 
@@ -209,6 +214,21 @@ The airtable.java API will respect these mappings automatically.
     @SerializedName("First- & Lastname")
     private String name;
 ```
+### Sort
+With the integrated Sort element you can retrieve a list of sort objects that specifies how the records will be ordered. 
+Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc".
+The default direction is "asc".
+
+For example, to sort records by Name, pass in:
+
+```Java
+Sort sort = new Sort("Name", Sort.Direction.desc);
+List<Movie> listMovies = movieTable.select(sort);
+```
+If you set the view parameter, the returned records in that view will be sorted by these fields.
+
+Detailed Example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableParameterTest.java)
+
 
 ## CRUD-Operations on Table Records
 
@@ -217,9 +237,11 @@ Select list of items from table:
 
 + `table(name).select()`: get all records of table `name`
 + `table(name).select(Integer maxRecords)`: get max `maxRecords` records of table `name`
++ `table(name).select(String[] fields)`: get records of table `name` with only the specified `fields`
++ `table(name).select(String view)`: get records of table `name` with the specified `view` (more about [views](https://support.airtable.com/hc/en-us/sections/200644955-Views))
++ `table(name).select(Sort sortation)`: get records of table `name` using `sort` to sort records (More about Sort [here](#sort))
 + `table(name).select(Query query)`: get records of table `name` using `query` to filter
 
-+ `...`
 
 ### Example
 ```Java
@@ -276,6 +298,8 @@ newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
 ```
 
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableCreateRecordTest.java)
+
 ## Update
 Use `update` to update a record of table:
 
@@ -292,6 +316,8 @@ marlonBrando.setName("Marlon Brando");
 Actor updated = actorTable.update(marlonBrando);
 ```
 
+Detailed example see [TableUpdateTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableUpdateTest.java)
+
 # Roadmap
 
 Short overview of features, which are supported:
@@ -304,8 +330,8 @@ Short overview of features, which are supported:
 + [x] Select Records
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
-  + [ ] Support of `filterByFormula`
-  + [ ] Support of Paging
+  + [x] Support of `filterByFormula`
+  + [x] Support of Paging
 
 + [x] Find Record
 
