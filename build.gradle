@@ -1,4 +1,9 @@
-import com.smokejumperit.gradle.report.DependencyLicensePlugin
+/*
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ */
 
 /*
  * Gets the version name from the latest Git tag
@@ -16,12 +21,6 @@ def getVersionName = { ->
         return version;
     }
 }
-/*
- * The MIT License (MIT)
- * Copyright (c) 2017 Sybit GmbH
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- */
 
 buildscript {
     repositories {
@@ -40,7 +39,6 @@ apply plugin: 'maven'
 apply plugin: 'com.palantir.jacoco-coverage'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: DependencyLicensePlugin
 
 group = 'com.sybit'
 version = getVersionName()
@@ -82,16 +80,20 @@ dependencies {
     codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.13'
 }
 
-
-// custom tasks for creating source/javadoc jars
+// custom tasks for creating source jar
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
-
+// custom tasks for creating javadoc jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+    archives sourcesJar, javadocJar
 }
 
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
@@ -105,10 +107,6 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     ]
 }
 
-// add javadoc/source jar tasks as artifacts
-artifacts {
-    archives sourcesJar, javadocJar
-}
 
 publishing {
     publications {

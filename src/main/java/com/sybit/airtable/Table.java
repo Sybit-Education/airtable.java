@@ -38,7 +38,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
  *
  * @since 0.1
  */
-class Table<T> {
+public class Table<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger( Table.class );
 
@@ -78,6 +78,8 @@ class Table<T> {
     }
 
     /**
+     * 
+     * If no Parameter ser all querys to null.
      *
      * @return
      * @throws AirtableException
@@ -103,17 +105,26 @@ class Table<T> {
             public String filterByFormula() {
                 return null;
             }
+
+            @Override
+            public String[] getFields() {
+                return null;
+            }
+
+            @Override
+            public Integer getPageSize() {
+                return null;
+            }
         });
 
     }
 
     /**
-     * Select List of data of table.
+     * Select List of data of table with defined Query Parameters.
      *
      * @param query
      * @return
      * @throws AirtableException
-     * @throws HttpResponseException
      */
     @SuppressWarnings("WeakerAccess")
     public List<T> select(Query query) throws AirtableException {
@@ -122,6 +133,12 @@ class Table<T> {
             GetRequest request = Unirest.get(getTableEndpointUrl())
                     .header("accept", "application/json")
                     .header("Authorization", getBearerToken());
+            if(query.getFields() != null && query.getFields().length > 0){ 
+                String[] fields = query.getFields();
+                for (int i = 0; i < fields.length; i++) {
+                    request.queryString("fields[]",fields[i]);     
+                }      
+            }
             if(query.getMaxRecords() != null) {
                 request.queryString("maxRecords", query.getMaxRecords());
             }
@@ -130,6 +147,13 @@ class Table<T> {
             }
             if(query.filterByFormula() != null) {
                 request.queryString("filterByFormula", query.filterByFormula());
+            }
+            if(query.getPageSize() != null){
+                if (query.getPageSize() > 100) {
+                    request.queryString("pageSize",100);
+                } else {
+                    request.queryString("pageSize",query.getPageSize());
+                }      
             }
             if(query.getSort() != null) {
                 int i = 0;
@@ -158,7 +182,14 @@ class Table<T> {
         return list;
     }
 
-
+    /**
+     * select with Parameter maxRecords
+     * 
+     * @param maxRecords
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException 
+     */
     public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
         return select(new Query() {
             @Override
@@ -178,6 +209,16 @@ class Table<T> {
 
             @Override
             public String filterByFormula() {
+                return null;
+            }
+
+            @Override
+            public String[] getFields() {
+                return null;
+            }
+
+            @Override
+            public Integer getPageSize() {
                 return null;
             }
         });
@@ -211,11 +252,22 @@ class Table<T> {
             public String filterByFormula() {
                 return null;
             }
+
+            @Override
+            public String[] getFields() {
+                return null;
+            }
+
+            @Override
+            public Integer getPageSize() {
+                return null;
+            }
         });
     }
 
     /**
-     *
+     *select Table data with defined sortation
+     * 
      * @param sortation
      * @return
      * @throws AirtableException
@@ -243,6 +295,59 @@ class Table<T> {
 
             @Override
             public String filterByFormula() {
+                return null;
+            }
+
+            @Override
+            public String[] getFields() {
+                return null;
+            }
+
+            @Override
+            public Integer getPageSize() {
+                return null;
+            }
+        });
+    }
+    
+    /**
+     * select only Table data with defined Fields
+     * 
+     * @param fields
+     * @return
+     * @throws AirtableException
+     * @throws HttpResponseException 
+     */
+    public List<T> select(String[] fields) throws AirtableException, HttpResponseException {
+
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return null;
+            }
+
+            @Override
+            public String getView() {
+                return null;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return null;
+            }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
+
+            @Override
+            public String[] getFields() {
+                return fields;
+            }
+
+            @Override
+            public Integer getPageSize() {
                 return null;
             }
         });
