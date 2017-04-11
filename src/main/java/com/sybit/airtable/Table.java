@@ -125,7 +125,6 @@ public class Table<T> {
      * @param query
      * @return
      * @throws AirtableException
-     * @throws HttpResponseException
      */
     @SuppressWarnings("WeakerAccess")
     public List<T> select(Query query) throws AirtableException {
