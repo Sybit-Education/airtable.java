@@ -1,4 +1,11 @@
 /*
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ */
+
+/*
  * Gets the version name from the latest Git tag
  */
 def getVersionName = { ->
@@ -14,12 +21,6 @@ def getVersionName = { ->
         return version;
     }
 }
-/*
- * The MIT License (MIT)
- * Copyright (c) 2017 Sybit GmbH
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- */
 
 buildscript {
     repositories {
@@ -77,23 +78,6 @@ dependencies {
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.25'
 
     codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.13'
-}
-
-/*
- * Gets the version name from the latest Git tag
- */
-def getVersionName = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'describe', '--tags'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim()
-    }
-    catch (ignored) {
-        return version;
-    }
 }
 
 // custom tasks for creating source jar
