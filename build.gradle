@@ -5,6 +5,23 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
+/*
+ * Gets the version name from the latest Git tag
+ */
+def getVersionName = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+    catch (ignored) {
+        return version;
+    }
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -24,7 +41,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.sybit'
-version = '0.1'
+version = getVersionName()
 
 description = """com.sybit airtable"""
 
@@ -61,24 +78,6 @@ dependencies {
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.25'
 
     codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.13'
-}
-
-
-/*
- * Gets the version name from the latest Git tag
- */
-def getVersionName = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'describe', '--tags'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim()
-    }
-    catch (ignored) {
-        return version;
-    }
 }
 
 // custom tasks for creating source jar
@@ -128,17 +127,21 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-    publications = ['mavenJava']
+    //publications = ['mavenJava']
+    configurations = ['archives']
 
     dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
-    version getVersionName()
+
     pkg {
         repo = 'maven'
         userOrg = 'sybit-education'
         name = 'airtable.java'
         licenses = ['MIT License']
         vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
-
+        version {
+            name = getVersionName()
+            released = new Date()
+        }
     }
 }
