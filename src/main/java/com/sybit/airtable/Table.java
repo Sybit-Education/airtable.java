@@ -38,7 +38,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
  *
  * @since 0.1
  */
-class Table<T> {
+public class Table<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger( Table.class );
 
