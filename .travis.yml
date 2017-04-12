@@ -16,7 +16,7 @@ deploy:
     repo: Sybit-Education/airtable.java
     tags: true
 - provider: script
-  skip_cleanup: false
+  skip_cleanup: true
   script: "./gradlew -i bintrayUpload"
   on:
     repo: Sybit-Education/airtable.java
