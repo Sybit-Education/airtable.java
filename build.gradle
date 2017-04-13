@@ -131,6 +131,17 @@ publishing {
     }
 }
 
+//we have to change scope from runtime to compile. especially for Gson-lib.
+publishing.publications.all {
+    pom.withXml {
+        asNode().dependencies.'*'.findAll() {
+            it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                dep.name == it.artifactId.text()
+            }
+        }.each { it.scope*.value = 'compile'}
+    }
+}
+
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
