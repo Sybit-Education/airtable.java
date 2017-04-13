@@ -128,39 +128,39 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
         }
-    }
-}
 
-//we have to change scope from runtime to compile. especially for Gson-lib.
-publishing.publications.all {
-    pom.withXml {
-        asNode().dependencies.'*'.findAll() {
-            it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                dep.name == it.artifactId.text()
+        all {
+            //we have to change scope from runtime to compile. especially for Gson-lib.
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each { it.scope*.value = 'compile' }
             }
-        }.each { it.scope*.value = 'compile'}
+        }
     }
-}
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    bintray {
+        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-    publications = ['MyPublication']
-    //configurations = ['archives']
+        publications = ['MyPublication']
+        //configurations = ['archives']
 
-    dryRun = false //Whether to run this as dry-run, without deploying
-    publish = true //If version should be auto published after an upload
+        dryRun = false //Whether to run this as dry-run, without deploying
+        publish = true //If version should be auto published after an upload
 
-    pkg {
-        repo = 'maven'
-        userOrg = 'sybit-education'
-        name = 'airtable.java'
-        licenses = ['MIT License']
-        vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
-        version {
-            name = getVersionName()
-            released = new Date()
+        pkg {
+            repo = 'maven'
+            userOrg = 'sybit-education'
+            name = 'airtable.java'
+            licenses = ['MIT License']
+            vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
+            version {
+                name = getVersionName()
+                released = new Date()
+            }
         }
     }
 }
