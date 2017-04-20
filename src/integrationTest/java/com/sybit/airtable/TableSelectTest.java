@@ -4,8 +4,11 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
-package com.sybit.airtable;
+package com.sybit.airtable.integrationTests;
 
+import com.sybit.airtable.Base;
+import com.sybit.airtable.Sort;
+import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.ActorSerializedNames;
 import com.sybit.airtable.movies.Movie;

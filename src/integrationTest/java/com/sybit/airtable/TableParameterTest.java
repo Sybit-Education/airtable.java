@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sybit.airtable;
+package com.sybit.airtable.integrationTests;
 
+import com.sybit.airtable.Base;
+import com.sybit.airtable.Query;
+import com.sybit.airtable.Sort;
+import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.test.WireMockBaseTest;
