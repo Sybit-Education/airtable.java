@@ -51,6 +51,24 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
+sourceSets {
+  itest {
+    compileClasspath += main.output + test.output
+    runtimeClasspath += main.output + test.output
+    // You can add other directories to the classpath like this:
+    //runtimeClasspath += files('src/itest/resources/com/buransky')
+    // Use "java" if you don't use Scala as a programming language
+    java.srcDir file('src/itest/java')
+  }
+  // This is just to trick IntelliJ IDEA to add integration test
+  // resources to classpath when running integration tests from
+  // the IDE. It's is not a good solution but I don't know about
+  // a better one.
+  test {
+    resources.srcDir file('src/itest/resources')
+  }
+}
+
 repositories {
     jcenter()
     mavenCentral()
@@ -60,6 +78,19 @@ repositories {
 
 configurations {
     codacy
+}
+configurations {
+  itestCompile.extendsFrom testCompile
+  itestRuntime.extendsFrom testRuntime
+}
+
+task itest(type: Test) {
+  testClassesDir = sourceSets.itest.output.classesDir
+  classpath = sourceSets.itest.runtimeClasspath
+  // This is not needed, but I like to see which tests have run
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
 }
 
 dependencies {

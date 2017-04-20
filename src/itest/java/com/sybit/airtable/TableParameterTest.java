@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sybit.airtable.integrationTests;
+package com.sybit.airtable.integrationTest;
 
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Query;

@@ -13,7 +13,7 @@ hs_err_pid*
 build/
 .gradle/
 src/test/resources/credentials.properties
-src/integrationTest/resources/credentials.properties
+src/itest/resources/credentials.properties
 
 # IDE
 .idea

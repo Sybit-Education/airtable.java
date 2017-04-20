@@ -4,7 +4,7 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
-package com.sybit.airtable.integrationTests;
+package com.sybit.airtable;
 
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Table;
