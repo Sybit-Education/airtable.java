@@ -40,8 +40,7 @@ public class CustomObjectMapperTest {
     public void listClassTest(){
         
         listConverter.setListClass(Attachment.class);
-        assertEquals(listConverter.getListClass(),Attachment.class);      
-          
+        assertEquals(listConverter.getListClass(),Attachment.class);             
     }
     
     @Test 
@@ -50,7 +49,7 @@ public class CustomObjectMapperTest {
         mapConverter.setMapClass(Thumbnail.class);
         assertEquals(mapConverter.getMapClass(),Thumbnail.class);
     }
-    
+        
     @Test
     public void convertListTest(){
     
