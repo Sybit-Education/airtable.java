@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sybit.airtable.integrationTest;
+package com.sybit.airtable;
 
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
-import com.sybit.airtable.test.WireMockBaseTest;
+import com.sybit.airtable.mock.WireMockBaseTest;
 import java.util.List;
 import org.apache.http.client.HttpResponseException;
 import static org.junit.Assert.assertEquals;

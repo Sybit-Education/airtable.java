@@ -4,7 +4,7 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
-package com.sybit.airtable.test;
+package com.sybit.airtable.mock;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.sybit.airtable.Airtable;
