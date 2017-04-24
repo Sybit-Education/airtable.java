@@ -31,7 +31,7 @@ repositories {
 
 ## Initializing
 
-It is required to initialize the Java API before it is used. At leased you have to pss your API-Key to get
+It is required to initialize the Java API before it is used. At leased you have to pass your API-Key to get
 access to Airtable:
 
 ```Java
@@ -41,9 +41,9 @@ Airtable airtable = new Airtable().configure();
 
 ### API-Key
 The API key could be passed to the app in different ways: 
-* defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
-* defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
-* defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
+* Defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
+* Defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
+* Defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
 * On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
 
 #### How to get API-Key
@@ -68,26 +68,26 @@ The API of Airtable itself is limited to 5 requests per second. If you exceed th
 need to wait 30 seconds before subsequent requests will succeed.
 
 ### Connecting to Airtable
-To use this Libraray you will need a Airtable Object. Simply create one! `Airtable airtable = new Airtable();`.
-This Object needs an API-Key or it won't work properly so `airtable.configure(AIRTABLE_API_KEY);`.
-Now the Airtable Object needs to know on which base you want access. This Method will return a Base Object which will be used in the Future.
+To use this libraray you will need an Airtable object. Simply create one: `Airtable airtable = new Airtable();`.
+This object needs an API-Key or it won't work properly so `airtable.configure(AIRTABLE_API_KEY);`.
+Now the Airtable object needs to know which base you want to access. This method will return a Base object which will be used in the future:
 `Base base = airtable.base(AIRTABLE_BASE);`
 
-With the Base object you can perform all kind of Operations see more [here](#crud-operations-on-table-records).
+With the Base object you can perform all kind of operations see more at [CRUD Operations on Table Records](#crud-operations-on-table-records).
 
 
 ## Object Mapping
-The Java implementation of the Airtable API provides automatic Object mapping. You can map any Table to your own Java Classes.
-But first you need to specify those Classes.
+The Java implementation of the Airtable API provides automatic object mapping. You can map any table to your own Java classes.
+But first you need to specify those classes.
 
 ### Create a Object
-The Java Objects represent records or 'values' in Airtable. So the Class attributes need to be adjusted to the Airtable Base.
+The Java objects represent records or 'values' in Airtable. So the class attributes need to be adjusted to the Airtable Base.
 
 #### Example
 
-In Aritable we got a Table Actor. The columns represent the Class attributes.
+In Airtable we got a table 'Actor'. The columns represent the class attributes.
 
-This is how our Actor Table looks like:
+This is how our 'Actor' table looks like:
 
 | Index |     Name      |    Photo    | Biography |         Filmography          |
 | :---: | :-----------: | :---------: | :-------: | :--------------------------: |
@@ -96,7 +96,7 @@ This is how our Actor Table looks like:
 |   3   |   Al Pacino   | Some Photos | Long Text | Reference to the Movie Table |
 |  ...  |      ...      |     ...     |    ...    |             ...              |
 
-Now our Java Class should look like this:
+Now our Java class should look like this:
 ```Java
   public class Actor {
 
@@ -156,9 +156,9 @@ and add Getters and Setters for each attribute. The attribute types can be eithe
 `String Array` for references on other Tables or `Attachment` for attached photos and files.
 
 
-Now we got everything we need to create our first Airtable Table Object.
-We use the Java class we just wrote to specify what kind of Object should be saved in our Table. Then we tell our `base`-Object which Table we want to access.
-All the Records saved in our Airtable DB now should be in our local Table<JAVA CLASS> Object.
+Now we got everything we need to create our first Airtable table object.
+We use the Java class we just wrote to specify what kind of Object should be saved in our table. Then we tell our `base`-object which table we want to access.
+All the records saved in our Airtable Base now should be in our local Table<JAVA CLASS> Object.
 
 Example:
 
@@ -171,11 +171,11 @@ Example:
 ```
 
 ### Basic Objects
-The Java implementation of the Airtable-API provides an implementation of basic Airtable objects such as attachments and Thumbnails.  
+The Java implementation of the Airtable-API provides an implementation of basic Airtable objects such as attachments and thumbnails.  
 Photos and attached files in Airtable are retrieved as `Attachment`s. Photos furthermore contain `Thumbnail`-Objects for different sizes.
 
 #### Attachment
-All the `Attachment`-Objects got the following attributes:
+All the `Attachment`-objects got the following attributes:
 
 * String `id`
 * String `url`
@@ -188,10 +188,10 @@ Photos additionally have:
 * Map<String,Thumbnail> `thumbnails`
 
 #### Thumbnails
-A Thumbnail is generated for image files in Airtable. Thumbnails are bound to an Attachment Object as a key/value Map.
-The Keys are `small` and `large` for the different sizes. The Value is a `Thumbnail`-Object.
+A Thumbnail is generated for image files in Airtable. Thumbnails are bound to an `Attachment`-object as a key/value Map.
+The keys are `small` and `large` for the different sizes. The value is a `Thumbnail`-object.
 
-A `Thumbnail`-Object got the following Attributes:
+A `Thumbnail`-object got the following Attributes:
 
 * String `name`
 * String `url`
@@ -202,7 +202,7 @@ Note: The `name` of a Thumbnail Object is identical with it´s key ( `small` or 
 
 ### Annotations
 
-Use the Java Annotation `@SerializedName` of [Gson](https://github.com/google/gson) to annotate column names containing `-`, empty characters or other not in Java mappable characters.
+Use the annotation `@SerializedName` of [Gson](https://github.com/google/gson) to annotate column names containing `-`, empty characters or other not in Java mappable characters.
 The airtable.java API will respect these mappings automatically.
 
 #### Example
@@ -215,7 +215,7 @@ The airtable.java API will respect these mappings automatically.
     private String name;
 ```
 ### Sort
-With the integrated Sort element you can retrieve a list of sort objects that specifies how the records will be ordered. 
+With the integrated `Sort` element you can retrieve a list of sorted objects that specifies how the records will be ordered. 
 Each sort object must have a field key specifying the name of the field to sort on, and an optional direction key that is either "asc" or "desc".
 The default direction is "asc".
 
@@ -227,7 +227,7 @@ List<Movie> listMovies = movieTable.select(sort);
 ```
 If you set the view parameter, the returned records in that view will be sorted by these fields.
 
-Detailed Example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableParameterTest.java)
+Detailed example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableParameterTest.java)
 
 
 ## CRUD-Operations on Table Records
@@ -312,6 +312,7 @@ Use `update` to update a record of table:
 // detailed Example see TableCreateTest.java
 
 Actor marlonBrando = ...;
+
 marlonBrando.setName("Marlon Brando");
 Actor updated = actorTable.update(marlonBrando);
 ```
