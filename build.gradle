@@ -175,3 +175,6 @@ bintray {
         }
     }
 }
+
+integrationTest.mustRunAfter test 
+
