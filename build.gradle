@@ -24,6 +24,7 @@ def getVersionName = { ->
 
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
    }
 
@@ -70,6 +71,7 @@ sourceSets {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -78,19 +80,8 @@ repositories {
 
 configurations {
     codacy
-}
-configurations {
-  itestCompile.extendsFrom testCompile
-  itestRuntime.extendsFrom testRuntime
-}
-
-task itest(type: Test) {
-  testClassesDir = sourceSets.itest.output.classesDir
-  classpath = sourceSets.itest.runtimeClasspath
-  // This is not needed, but I like to see which tests have run
-  testLogging {
-    events "passed", "skipped", "failed"
-  }
+    itestCompile.extendsFrom testCompile
+    itestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -135,6 +126,15 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
             "-r",
             "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     ]
+}
+
+task itest(type: Test) {
+  testClassesDir = sourceSets.itest.output.classesDir
+  classpath = sourceSets.itest.runtimeClasspath
+  // This is not needed, but I like to see which tests have run
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
 }
 
 
