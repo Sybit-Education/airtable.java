@@ -5,7 +5,7 @@ before_install:
 - chmod +x ./gradlew
 script:
 - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./gradlew test; fi'
-- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew itest check sendCoverageToCodacy; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew integrationTest sendCoverageToCodacy; fi'
 deploy:
 - provider: releases
   api_key:
