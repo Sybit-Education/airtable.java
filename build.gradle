@@ -53,13 +53,13 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets {
-  itest {
-    compileClasspath += main.output + test.output
-    runtimeClasspath += main.output + test.output
-    // You can add other directories to the classpath like this:
-    //runtimeClasspath += files('src/itest/resources/com/buransky')
-    // Use "java" if you don't use Scala as a programming language
-    java.srcDir file('src/itest/java')
+    integrationTest {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        // You can add other directories to the classpath like this:
+        //runtimeClasspath += files('src/itest/resources/com/buransky')
+        // Use "java" if you don't use Scala as a programming language
+        java.srcDir file('src/itest/java')
   }
   // This is just to trick IntelliJ IDEA to add integration test
   // resources to classpath when running integration tests from
@@ -80,8 +80,8 @@ repositories {
 
 configurations {
     codacy
-    itestCompile.extendsFrom testCompile
-    itestRuntime.extendsFrom testRuntime
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -128,9 +128,9 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     ]
 }
 
-task itest(type: Test) {
-  testClassesDir = sourceSets.itest.output.classesDir
-  classpath = sourceSets.itest.runtimeClasspath
+task integrationTest(type: Test) {
+  testClassesDir = sourceSets.integrationTest.output.classesDir
+  classpath = sourceSets.integrationTest.runtimeClasspath
   // This is not needed, but I like to see which tests have run
   testLogging {
     events "passed", "skipped", "failed"
