@@ -99,6 +99,7 @@ public class Airtable {
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
+
         return configure(apiKey, new GsonObjectMapper());
     }
 
@@ -123,6 +124,7 @@ public class Airtable {
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config, ObjectMapper objectMapper) throws AirtableException {
+
         if(config.getApiKey() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
@@ -140,23 +142,21 @@ public class Airtable {
         setProxy(config.getEndpointUrl());
 
         // Only one time
-        Unirest.setObjectMapper(objectMapper);
-
-
+        Unirest.setObjectMapper(new GsonObjectMapper());
+                
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
         ListConverter lConverter = new ListConverter();
         MapConverter thConverter = new MapConverter();
-
+        
         lConverter.setListClass(Attachment.class);
         thConverter.setMapClass(Thumbnail.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
+        
         ConvertUtils.register(dtConverter, Date.class);
         ConvertUtils.register(lConverter, List.class);
         ConvertUtils.register(thConverter, Map.class);
-
-
+        
         return this;
     }
 
