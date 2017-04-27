@@ -55,7 +55,7 @@ public class CustomObjectMapperTest {
     
         listConverter.setListClass(Attachment.class);
         
-        Class type = java.util.List.class;
+        Class type = List.class;
         List value = new ArrayList();
         
         LinkedTreeMap ltm = new LinkedTreeMap();
@@ -95,7 +95,7 @@ public class CustomObjectMapperTest {
     
         mapConverter.setMapClass(Thumbnail.class);
         
-        Class type = java.util.Map.class;
+        Class type = Map.class;
         
         LinkedTreeMap<String, Object> value = new LinkedTreeMap<>();
         LinkedTreeMap<String, Object> innerMap = new LinkedTreeMap<>();

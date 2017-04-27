@@ -17,14 +17,13 @@ import org.junit.Test;
  */
 public class TableTest {
     
-    private Airtable airtable;
     private Base base;
     
     @Before
     public void before() throws AirtableException{
     
-        this.airtable = new Airtable().configure(new Configuration("123","url"));
-        this.base = new Base("base", this.airtable);
+        Airtable airtable = new Airtable().configure(new Configuration("123","url"));
+        this.base = new Base("base", airtable);
         
     }
     
