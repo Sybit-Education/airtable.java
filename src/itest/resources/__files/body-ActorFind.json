@@ -1,0 +1,28 @@
+{
+  "id": "rec514228ed76ced1",
+  "fields": {
+    "Name": "Marlon Brando",
+    "Filmography": [
+      "rec6733da527dd0f1"
+    ],
+    "Photo": [
+      {
+        "id": "att1b7c05d697c0c1",
+        "url": "https://www.filepicker.io/api/file/xlhctgHEQiSGNc0ieMec",
+        "filename": "220px-Marlon_Brando_-_The_Wild_One.jpg",
+        "size": 13845,
+        "type": "image/jpeg",
+        "thumbnails": {
+          "small": {
+            "url": "https://www.filepicker.io/api/file/Rh3L1DL7QAe8nleanQVV"
+          },
+          "large": {
+            "url": "https://www.filepicker.io/api/file/hcrLCStVRX6LNVEHqtXA"
+          }
+        }
+      }
+    ],
+    "Biography": "Marlon Brando, Jr. (April 3, 1924 – July 1, 2004) was an American actor. He is hailed for bringing a gripping realism to film acting, and is widely co..."
+  },
+  "createdTime": "2014-07-18T04:48:25.000Z"
+}
