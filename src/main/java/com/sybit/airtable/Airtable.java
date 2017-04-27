@@ -122,6 +122,19 @@ public class Airtable {
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
+    public Airtable configure(Configuration config) throws AirtableException {
+        return configure(config, new GsonObjectMapper());
+    }
+
+
+    /**
+     *
+     * @param config
+     * @param objectMapper A custom ObjectMapper implementation
+     * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
+     */
+    @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config, ObjectMapper objectMapper) throws AirtableException {
         if(config.getApiKey() == null) {
             throw new AirtableException("Missing Airtable API-Key");
@@ -140,7 +153,7 @@ public class Airtable {
         setProxy(config.getEndpointUrl());
 
         // Only one time
-        Unirest.setObjectMapper(new GsonObjectMapper());
+        Unirest.setObjectMapper(objectMapper);
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
