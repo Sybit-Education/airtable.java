@@ -27,23 +27,18 @@ buildscript {
         jcenter()
    }
 
-   dependencies {
-       classpath 'com.palantir:jacoco-coverage:0.4.0'
-       classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
-       classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-   }
+    dependencies {
+        classpath 'com.palantir:jacoco-coverage:0.4.0'
+        classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+	}
 }
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.palantir.jacoco-coverage'
-    apply plugin: 'com.jfrog.bintray'
-}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.palantir.jacoco-coverage'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 group = 'com.sybit'
 version = getVersionName()
@@ -69,10 +64,9 @@ configurations {
 
 dependencies {
     compile group: 'com.mashape.unirest', name: 'unirest-java', version:'1.4.9'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.2'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.3'
     compile group: 'org.json', name: 'json', version:'20160810'
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.5'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.0'
     compile group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.3'
     compile group: 'commons-io', name: 'commons-io', version:'2.5'
     compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.25'
@@ -101,7 +95,6 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-//task to send coverage data to Codacy
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     main = "com.codacy.CodacyCoverageReporter"
     classpath = configurations.codacy
@@ -116,30 +109,16 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
 
 publishing {
     publications {
-
-        MyPublication(MavenPublication) {
-            //we have to change scope from runtime to compile. Especially for Gson-lib.
-            pom.withXml {
-                asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
-                    }
-                }.each { it.scope*.value = 'compile' }
-            }
-
+        mavenJava(MavenPublication) {
             if (plugins.hasPlugin('war')) {
                 from components.web
             } else {
                 from components.java
             }
-            groupId group
-            artifactId rootProject.name
-            version getVersionName()
 
             artifact sourcesJar
             artifact javadocJar
         }
-
     }
 }
 
@@ -147,8 +126,8 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-    publications = ['MyPublication']
-    //configurations = ['archives']
+    //publications = ['mavenJava']
+    configurations = ['archives']
 
     dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
