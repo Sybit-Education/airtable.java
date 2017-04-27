@@ -6,18 +6,11 @@
  */
 package com.sybit.airtable.movies;
 
-import com.sybit.airtable.movies.*;
-import com.google.gson.annotations.SerializedName;
-
-public class ActorSerializedNames {
+public class Director {
 
     private String id;
 
-    @SerializedName("First- & Lastname")
     private String name;
-
-    @SerializedName("Biography of Actor")
-    private String biography;
 
     public String getId() {
         return id;
@@ -33,13 +26,5 @@ public class ActorSerializedNames {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getBiography() {
-        return biography;
-    }
-
-    public void setBiography(String biography) {
-        this.biography = biography;
     }
 }

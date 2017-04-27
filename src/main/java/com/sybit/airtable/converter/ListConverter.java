@@ -137,6 +137,14 @@ public class ListConverter extends AbstractConverter {
     public void setListClass(Class listClass) {
         this.listClass = listClass;
     }
+    
+    /**
+     * 
+     * @return this.listClass
+     */
+    public Class getListClass(){
+        return this.listClass;
+    }
    
     //TODO Default überlegen
     @Override

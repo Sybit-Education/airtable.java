@@ -5,10 +5,13 @@
  */
 package com.sybit.airtable;
 
+
+import com.sybit.airtable.Base;
+import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.movies.Movie;
-import com.sybit.airtable.test.WireMockBaseTest;
+import com.sybit.airtable.mock.WireMockBaseTest;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
 import java.util.List;

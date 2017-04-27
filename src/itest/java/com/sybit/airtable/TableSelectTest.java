@@ -6,10 +6,13 @@
  */
 package com.sybit.airtable;
 
+import com.sybit.airtable.Base;
+import com.sybit.airtable.Sort;
+import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.ActorSerializedNames;
 import com.sybit.airtable.movies.Movie;
-import com.sybit.airtable.test.WireMockBaseTest;
+import com.sybit.airtable.mock.WireMockBaseTest;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Test;
 
