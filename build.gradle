@@ -24,6 +24,7 @@ def getVersionName = { ->
 
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
    }
 
@@ -51,7 +52,26 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
+sourceSets {
+    integrationTest {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        // You can add other directories to the classpath like this:
+        //runtimeClasspath += files('src/itest/resources/com/buransky')
+        // Use "java" if you don't use Scala as a programming language
+        java.srcDir file('src/itest/java')
+  }
+  // This is just to trick IntelliJ IDEA to add integration test
+  // resources to classpath when running integration tests from
+  // the IDE. It's is not a good solution but I don't know about
+  // a better one.
+  test {
+    resources.srcDir file('src/itest/resources')
+  }
+}
+
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -60,6 +80,8 @@ repositories {
 
 configurations {
     codacy
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -106,6 +128,15 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     ]
 }
 
+task integrationTest(type: Test) {
+  testClassesDir = sourceSets.integrationTest.output.classesDir
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  // This is not needed, but I like to see which tests have run
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
+
 
 publishing {
     publications {
@@ -144,3 +175,6 @@ bintray {
         }
     }
 }
+
+integrationTest.mustRunAfter test 
+

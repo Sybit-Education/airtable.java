@@ -13,6 +13,9 @@ hs_err_pid*
 build/
 .gradle/
 src/test/resources/credentials.properties
+src/itest/resources/credentials.properties
+.nb-gradle-properties
+.nb-gradle/
 
 # IDE
 .idea

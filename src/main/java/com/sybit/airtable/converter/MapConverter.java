@@ -123,4 +123,13 @@ public class MapConverter extends AbstractConverter{
         this.mapClass = aClass;
     }
     
+    /**
+     * Get-Method for the MapClass
+     * 
+     * @return this.mapClass 
+     */
+    public Class getMapClass(){
+        return this.mapClass;
+    }
+    
 }
