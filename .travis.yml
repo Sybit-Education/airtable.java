@@ -4,7 +4,9 @@ jdk:
 before_install:
 - chmod +x ./gradlew
 script:
-- "./gradlew check sendCoverageToCodacy"
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./gradlew check; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew test integrationTest; fi'
+- "./gradlew sendCoverageToCodacy"
 deploy:
 - provider: releases
   api_key:
@@ -17,7 +19,7 @@ deploy:
     tags: true
 - provider: script
   skip_cleanup: true
-  script: "./gradlew install bintrayUpload"
+  script: "./gradlew -i bintrayUpload"
   on:
     repo: Sybit-Education/airtable.java
     tags: true

@@ -1,0 +1,10 @@
+{
+  "request" : {
+    "url" : "/v0/appe9941ff07fffcc/Actors/recapJ3Js8AEwt0Bf",
+    "method" : "DELETE"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "/body-ActorDelete.json"
+  }
+}

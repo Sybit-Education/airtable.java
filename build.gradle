@@ -24,21 +24,27 @@ def getVersionName = { ->
 
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
    }
 
-    dependencies {
-        classpath 'com.palantir:jacoco-coverage:0.4.0'
-        classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-	}
+   dependencies {
+       classpath 'com.palantir:jacoco-coverage:0.4.0'
+       classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
+       classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+   }
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'com.palantir.jacoco-coverage'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.palantir.jacoco-coverage'
+    apply plugin: 'com.jfrog.bintray'
+}
 
 group = 'com.sybit'
 version = getVersionName()
@@ -51,7 +57,26 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
+sourceSets {
+    integrationTest {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        // You can add other directories to the classpath like this:
+        //runtimeClasspath += files('src/itest/resources/com/buransky')
+        // Use "java" if you don't use Scala as a programming language
+        java.srcDir file('src/itest/java')
+  }
+  // This is just to trick IntelliJ IDEA to add integration test
+  // resources to classpath when running integration tests from
+  // the IDE. It's is not a good solution but I don't know about
+  // a better one.
+  test {
+    resources.srcDir file('src/itest/resources')
+  }
+}
+
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -60,6 +85,8 @@ repositories {
 
 configurations {
     codacy
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -95,6 +122,7 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
+//task to send coverage data to Codacy
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     main = "com.codacy.CodacyCoverageReporter"
     classpath = configurations.codacy
@@ -106,19 +134,41 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
     ]
 }
 
+task integrationTest(type: Test) {
+  testClassesDir = sourceSets.integrationTest.output.classesDir
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  // This is not needed, but I like to see which tests have run
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+
+        MyPublication(MavenPublication) {
+            //we have to change scope from runtime to compile. Especially for Gson-lib.
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each { it.scope*.value = 'compile' }
+            }
+
             if (plugins.hasPlugin('war')) {
                 from components.web
             } else {
                 from components.java
             }
+            groupId group
+            artifactId rootProject.name
+            version getVersionName()
 
             artifact sourcesJar
             artifact javadocJar
         }
+
     }
 }
 
@@ -126,8 +176,8 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-    //publications = ['mavenJava']
-    configurations = ['archives']
+    publications = ['MyPublication']
+    //configurations = ['archives']
 
     dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
@@ -144,3 +194,6 @@ bintray {
         }
     }
 }
+
+integrationTest.mustRunAfter test 
+
