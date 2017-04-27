@@ -16,3 +16,4 @@ src/test/resources/credentials.properties
 
 # IDE
 .idea
+src/itest/resources/credentials.properties
