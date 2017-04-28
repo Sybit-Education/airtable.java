@@ -143,7 +143,6 @@ task integrationTest(type: Test) {
   }
 }
 
-
 publishing {
     publications {
 
