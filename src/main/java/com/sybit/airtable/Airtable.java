@@ -136,6 +136,9 @@ public class Airtable {
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config, ObjectMapper objectMapper) throws AirtableException {
+        assert config != null : "config was null";
+        assert objectMapper != null : "objectMapper was null";
+
         if(config.getApiKey() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
@@ -157,17 +160,16 @@ public class Airtable {
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
-        ListConverter lConverter = new ListConverter();
-        MapConverter thConverter = new MapConverter();
-
-        lConverter.setListClass(Attachment.class);
-        thConverter.setMapClass(Thumbnail.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
         ConvertUtils.register(dtConverter, Date.class);
-        ConvertUtils.register(lConverter, List.class);
-        ConvertUtils.register(thConverter, Map.class);
 
+        ListConverter lConverter = new ListConverter();
+        lConverter.setListClass(Attachment.class);
+        ConvertUtils.register(lConverter, List.class);
+
+        MapConverter thConverter = new MapConverter();
+        thConverter.setMapClass(Thumbnail.class);
+        ConvertUtils.register(thConverter, Map.class);
 
         return this;
     }
@@ -235,6 +237,8 @@ public class Airtable {
     }
 
     public void setConfig(Configuration config) {
+        assert config != null : "config was null";
+
         this.config = config;
         setProxy(config.getEndpointUrl());
     }

@@ -9,6 +9,8 @@ package com.sybit.airtable;
 /**
  * Configuration settings for Airtable.
  * Used by class <code>Airtable</code> to configure basic settings.
+ *
+ * @since 0.1
  */
 public class Configuration {
 

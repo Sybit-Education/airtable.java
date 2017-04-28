@@ -12,7 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Default mapper based on GSON.
  *
+ * @since 0.1
  * @author fzr
  */
 class GsonObjectMapper implements ObjectMapper {

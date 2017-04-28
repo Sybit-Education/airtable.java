@@ -7,17 +7,21 @@ package com.sybit.airtable.exception;/*
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
-import com.sybit.airtable.IOUtils;
 import com.sybit.airtable.vo.Error;
 
+/**
+ * Handle HTTP responses and create exceptions.
+ *
+ * @since 0.1
+ */
 public class HttpResponseExceptionHandler {
 
     public static void onResponse(HttpResponse response) throws AirtableException {
 
-        Integer statusCode = response.getStatus();
-        String message = IOUtils.convertStreamToString(response.getRawBody());
+        final Integer statusCode = response.getStatus();
+        String message = convertStreamToString(response.getRawBody());
 
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         Error err = gson.fromJson(message, Error.class);
         switch (statusCode) {
             case 401:
@@ -47,5 +51,10 @@ public class HttpResponseExceptionHandler {
             default:
                 throw new AirtableException("UNDEFINED_ERROR", message, statusCode);
         }
+    }
+
+    public static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 }

@@ -24,19 +24,22 @@ public class Base {
 
     private final Map<String, Table> tableMap = new HashMap<>();
 
-    private final String base;
+    private final String baseName;
 
     private final Airtable parent;
 
 
     /**
-     * Create Airtable Base with given base ID.
+     * Create Airtable Base with given baseName ID.
      *
-     * @param base base ID could be found at https://airtable.com if you select your current base.
+     * @param name base ID could be found at https://airtable.com if you select your current baseName.
      * @param airtable parent airtable object
      */
-    public Base(String base, Airtable airtable) {
-        this.base = base;
+    public Base(String name, Airtable airtable) {
+        assert name != null : "baseName was null";
+        assert airtable != null : "airtable was null";
+
+        this.baseName = name;
         this.parent = airtable;
     }
     
@@ -54,7 +57,6 @@ public class Base {
      * @return Object to access table.
      */
     public Table table(String name) {
-
         return table(name, Records.class);
     }
 
@@ -65,6 +67,8 @@ public class Base {
      * @return Object to access table.
      */
     public Table table(String name, Class clazz) {
+        assert name != null : "name was null";
+        assert clazz != null : "clazz was null";
 
         if(!tableMap.containsKey(name)) {
             LOG.debug("Create new instance for table [" + name + "]");
@@ -77,10 +81,10 @@ public class Base {
     }
 
     /**
-     * Get base id of base.
-     * @return base id
+     * Get baseName id of baseName.
+     * @return baseName id
      */
     public String name() {
-        return base;
+        return baseName;
     }
 }
