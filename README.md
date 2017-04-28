@@ -296,6 +296,7 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor newActor = new Actor();
 newActor.setName("Neuer Actor");
 Actor test = actorTable.create(newActor);
+
 ```
 
 Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableCreateRecordTest.java)
@@ -370,6 +371,7 @@ We use [Gradle](https://gradle.org) to compile and package project:
 + build jar: `./gradlew jar` (The built JARs will be placed under `build/libs`.)
 
 ## Testing
+
 There are JUnit tests and integration tests to verify the API.
 The integration tests are based on the Airtable template [Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies) which could be created in your account.
 For testing, the JSON-responses are mocked by [WireMock](http://wiremock.org/). 

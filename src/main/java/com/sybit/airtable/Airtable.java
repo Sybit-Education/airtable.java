@@ -7,6 +7,7 @@
 package com.sybit.airtable;
 
 
+import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.converter.ListConverter;
 import com.sybit.airtable.converter.MapConverter;
@@ -54,11 +55,24 @@ public class Airtable {
      * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property, enviroment variable
      * or within credentials.properties.
      *
-     * @return configured Airtable object.
+     * @return An Airtable instance configured with GsonObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure() throws AirtableException {
+        return this.configure(new GsonObjectMapper());
+    }
+
+    /**
+     * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property, enviroment variable
+     * or within credentials.properties.
+     *
+     * @param objectMapper A custom ObjectMapper implementation
+     * @return An Airtable instance configured with supplied ObjectMapper
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
         LOG.info( "System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
         String airtableApi = System.getProperty(AIRTABLE_API_KEY);
@@ -71,7 +85,7 @@ public class Airtable {
             airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
         }
 
-        return this.configure(airtableApi);
+        return this.configure(airtableApi, objectMapper);
     }
 
 
@@ -80,12 +94,25 @@ public class Airtable {
      * Configure Airtable.
      *
      * @param apiKey API-Key of Airtable.
-     * @return
+     * @return An Airtable instance configured with GsonObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(String apiKey) throws AirtableException {
-        return configure(new Configuration(apiKey, Configuration.ENDPOINT_URL));
+        return configure(apiKey, new GsonObjectMapper());
+    }
+
+    /**
+     * Configure Airtable.
+     *
+     * @param apiKey API-Key of Airtable.
+     * @param objectMapper A custom ObjectMapper implementation
+     * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
+     */
+    @SuppressWarnings("WeakerAccess")
+    public Airtable configure(String apiKey, ObjectMapper objectMapper) throws AirtableException {
+        return configure(new Configuration(apiKey, Configuration.ENDPOINT_URL), objectMapper);
     }
 
     /**
@@ -96,6 +123,19 @@ public class Airtable {
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config) throws AirtableException {
+        return configure(config, new GsonObjectMapper());
+    }
+
+
+    /**
+     *
+     * @param config
+     * @param objectMapper A custom ObjectMapper implementation
+     * @return
+     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or Endpoint
+     */
+    @SuppressWarnings("WeakerAccess")
+    public Airtable configure(Configuration config, ObjectMapper objectMapper) throws AirtableException {
         if(config.getApiKey() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
@@ -113,22 +153,21 @@ public class Airtable {
         setProxy(config.getEndpointUrl());
 
         // Only one time
-        Unirest.setObjectMapper(new GsonObjectMapper());
+        Unirest.setObjectMapper(objectMapper);
 
-                
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
         ListConverter lConverter = new ListConverter();
         MapConverter thConverter = new MapConverter();
-        
+
         lConverter.setListClass(Attachment.class);
         thConverter.setMapClass(Thumbnail.class);
         dtConverter.setPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        
+
         ConvertUtils.register(dtConverter, Date.class);
         ConvertUtils.register(lConverter, List.class);
         ConvertUtils.register(thConverter, Map.class);
-        
+
 
         return this;
     }
@@ -142,8 +181,8 @@ public class Airtable {
     private void setProxy(String endpointUrl) {
         final String httpProxy = System.getenv("http_proxy");
         if(httpProxy != null
-                && (endpointUrl.contains("127.0.0.1")
-                || endpointUrl.contains("localhost"))) {
+            && (endpointUrl.contains("127.0.0.1")
+            || endpointUrl.contains("localhost"))) {
             LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
             Unirest.setProxy(null);
         } else if(httpProxy != null) {

@@ -131,5 +131,4 @@ public class MapConverter extends AbstractConverter{
     public Class getMapClass(){
         return this.mapClass;
     }
-    
 }
