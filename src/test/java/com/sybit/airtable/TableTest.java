@@ -23,7 +23,7 @@ public class TableTest {
     @Before
     public void before() throws AirtableException{
     
-        Airtable airtable = new Airtable().configure(new Configuration("123","url"));
+        Airtable airtable = new Airtable().configure(new Configuration("123","url",null));
         this.base = new Base("base", airtable);
         
     }
