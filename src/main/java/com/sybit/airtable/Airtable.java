@@ -175,6 +175,17 @@ public class Airtable {
     }
 
     /**
+     * Set Proxy Manually.
+     * 
+     * @param proxy 
+     */
+    public void setProxyManual(String proxy){
+        if(proxy != null && !proxy.isEmpty() && !proxy.equals(" ")){
+            Unirest.setProxy(HttpHost.create(proxy));
+        }
+    }
+    
+    /**
      * Set Proxy environment for Unirest.
      *
      * Proxy will be ignored for endpointUrls containing <code>localhost</code> or <code>127.0.0.1,/code>
@@ -182,14 +193,20 @@ public class Airtable {
      */
     private void setProxy(String endpointUrl) {
         final String httpProxy = System.getenv("http_proxy");
+        final String httpsProxy = System.getenv("https_proxy");
         if(httpProxy != null
             && (endpointUrl.contains("127.0.0.1")
             || endpointUrl.contains("localhost"))) {
             LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
             Unirest.setProxy(null);
-        } else if(httpProxy != null) {
+        } else if(httpsProxy != null
+                    && (endpointUrl.contains("https"))) {
+            LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: " + httpsProxy);
+            Unirest.setProxy(HttpHost.create(httpsProxy));
+        } else if(httpProxy != null
+                    && (endpointUrl.contains("http"))){
             LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-            Unirest.setProxy(HttpHost.create(httpProxy));
+            Unirest.setProxy(HttpHost.create(httpProxy));      
         } else {
             Unirest.setProxy(null);
         }
