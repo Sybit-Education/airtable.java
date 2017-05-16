@@ -16,17 +16,18 @@ public class Configuration {
 
     public static final String ENDPOINT_URL = "https://api.airtable.com/v0";
 
-    private String  endpointUrl;
+    private String endpointUrl;
     private String apiKey;
+    private String proxy;
     private Long timeout;
 
     /**
-     * Configure API using given API Key and default endpoint.
+     * Configure API using given API Key ,default endpoint and no Proxy.
      *
      * @param apiKey
      */
     public Configuration(String apiKey) {
-        this(apiKey, ENDPOINT_URL);
+        this(apiKey, ENDPOINT_URL,null);
 
     }
     /**
@@ -35,9 +36,10 @@ public class Configuration {
      * @param apiKey
      * @param endpointUrl
      */
-    public Configuration(String apiKey, String endpointUrl) {
+    public Configuration(String apiKey, String endpointUrl, String proxy) {
         this.apiKey = apiKey;
         this.endpointUrl = endpointUrl;
+        this.proxy = proxy;
     }
 
     public String getEndpointUrl() {
@@ -71,4 +73,20 @@ public class Configuration {
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
     }
+
+    /**
+     * @return the proxy
+     */
+    public String getProxy() {
+        return proxy;
+    }
+
+    /**
+     * @param proxy the proxy to set
+     */
+    public void setProxy(String proxy) {
+        this.proxy = proxy;
+    }
+
+
 }
