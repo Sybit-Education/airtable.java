@@ -156,6 +156,7 @@ public class Airtable {
 
         // Only one time
         Unirest.setObjectMapper(objectMapper);
+        Unirest.setProxy(HttpHost.create(this.config.getProxy()));
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
@@ -182,6 +183,7 @@ public class Airtable {
         if (proxy != null && !proxy.isEmpty() && !proxy.equals(" ")) {
             this.config.setProxy(proxy);
         }
+        Unirest.setProxy(HttpHost.create(this.config.getProxy()));
     }
 
     /**
