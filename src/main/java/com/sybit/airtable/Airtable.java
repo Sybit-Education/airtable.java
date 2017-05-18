@@ -180,10 +180,15 @@ public class Airtable {
      * @param proxy
      */
     public void setProxy(String proxy) {
-        if (proxy != null && !proxy.isEmpty() && !proxy.equals(" ")) {
+
+        if (proxy == null) {
             this.config.setProxy(proxy);
+            Unirest.setProxy(null);
+        } else {
+            this.config.setProxy(proxy);
+            Unirest.setProxy(HttpHost.create(this.config.getProxy()));
         }
-        Unirest.setProxy(HttpHost.create(this.config.getProxy()));
+
     }
 
     /**
@@ -202,18 +207,22 @@ public class Airtable {
                     && (endpointUrl.contains("127.0.0.1")
                     || endpointUrl.contains("localhost"))) {
                 LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
-                this.config.setProxy(null);
+                setProxy(null);
             } else if (httpsProxy != null
                     && (endpointUrl.contains("https"))) {
                 LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: " + httpsProxy);
-                this.config.setProxy(httpProxy);
+                setProxy(httpProxy);
             } else if (httpProxy != null
                     && (endpointUrl.contains("http"))) {
                 LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
-                this.config.setProxy(httpsProxy);
+                setProxy(httpsProxy);
             } else {
-                this.config.setProxy(null);
+                setProxy(null);
             }
+        } else if ((endpointUrl.contains("127.0.0.1")
+                || endpointUrl.contains("localhost"))) {
+            LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
+            setProxy(null);
         }
     }
 
