@@ -41,7 +41,7 @@ public class AirtableTest {
         
         Airtable airtable = new Airtable();
         assertNull(airtable.getConfig());
-        airtable.configure(new Configuration("KEY","URL"));
+        airtable.configure(new Configuration("KEY","URL","PROXY"));
         assertEquals(airtable.apiKey(),"KEY");
         assertEquals(airtable.endpointUrl(),"URL");
         

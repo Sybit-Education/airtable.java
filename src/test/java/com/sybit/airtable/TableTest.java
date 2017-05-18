@@ -7,9 +7,10 @@ package com.sybit.airtable;
 
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -22,11 +23,17 @@ public class TableTest {
     @Before
     public void before() throws AirtableException{
     
-        Airtable airtable = new Airtable().configure(new Configuration("123","url"));
+        Airtable airtable = new Airtable().configure(new Configuration("123","url",null));
         this.base = new Base("base", airtable);
         
     }
-    
+
+    @Test(expected = java.lang.AssertionError.class )
+    public void testTableAssertions(){
+        Table table = new Table(null, null);
+
+    }
+
     @Test
     public void testTable(){
     

@@ -6,10 +6,11 @@
 package com.sybit.airtable;
 
 import com.sybit.airtable.exception.AirtableException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -22,7 +23,7 @@ public class BaseTest {
     @Before
     public void before() throws AirtableException{
     
-        this.airtable = new Airtable().configure(new Configuration("123","url"));
+        this.airtable = new Airtable().configure(new Configuration("123","url",null));
         
         
     }
@@ -48,7 +49,10 @@ public class BaseTest {
         Base base = new Base("base", this.airtable);
         assertEquals(base.name(),"base");
     }
-    
-    
+
+    @Test(expected = java.lang.AssertionError.class )
+    public void baseAssertationTest() {
+        Base base = new Base(null,null);
+    }
     
 }

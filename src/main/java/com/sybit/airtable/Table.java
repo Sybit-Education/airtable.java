@@ -13,12 +13,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
-import com.sybit.airtable.vo.Attachment;
-import com.sybit.airtable.vo.Delete;
-import com.sybit.airtable.vo.PostRecord;
-import com.sybit.airtable.vo.RecordItem;
-import com.sybit.airtable.vo.Records;
+import com.sybit.airtable.vo.*;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.client.HttpResponseException;
 import org.slf4j.Logger;
@@ -27,11 +24,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtilsBean;
 
 /**
  * Representation Class of Airtable Tables.
@@ -49,12 +43,15 @@ public class Table<T> {
 
     /**
      *
-     * @param name
-     * @param type
+     * @param name name of table.
+     * @param type class to represent table row
      */
     public Table(String name, Class<T> type) {
-        this.type = type;
+        assert name != null : "name was null";
+        assert type != null : "type was null";
+
         this.name = name;
+        this.type = type;
     }
 
     /**
@@ -78,10 +75,9 @@ public class Table<T> {
     }
 
     /**
-     * 
-     * If no Parameter ser all querys to null.
+     * Select all rows of table.
      *
-     * @return
+     * @return List of all items.
      * @throws AirtableException
      */
     public List<T> select() throws AirtableException, HttpResponseException {
@@ -122,8 +118,8 @@ public class Table<T> {
     /**
      * Select List of data of table with defined Query Parameters.
      *
-     * @param query
-     * @return
+     * @param query defined query
+     * @return list of table items
      * @throws AirtableException
      */
     @SuppressWarnings("WeakerAccess")
@@ -311,10 +307,10 @@ public class Table<T> {
     }
     
     /**
-     * select only Table data with defined Fields
-     * 
-     * @param fields
-     * @return
+     * Select only Table data with defined fields.
+     *
+     * @param fields array of requested fields.
+     * @return list of item using only requested fields.
      * @throws AirtableException
      * @throws HttpResponseException 
      */
@@ -385,7 +381,7 @@ public class Table<T> {
      */
     public T find(String id) throws AirtableException {
 
-        RecordItem body = null;
+        RecordItem body;
 
         HttpResponse<RecordItem> response;
         try {
@@ -402,15 +398,14 @@ public class Table<T> {
             body = response.getBody();
         } else {
             HttpResponseExceptionHandler.onResponse(response);
+            body = null;
         }
 
         try {
             return transform(body, this.type.newInstance() );
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            LOG.error(e.getMessage(), e);
+            throw new AirtableException(e);
         }
-
-        return null;
     }
     
     /**

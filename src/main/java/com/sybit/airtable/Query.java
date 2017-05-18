@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Interface for specific queries.
+ *
+ * @since 0.1
  */
 @SuppressWarnings("WeakerAccess")
 public interface Query {

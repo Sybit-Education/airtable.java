@@ -7,7 +7,9 @@
 package com.sybit.airtable;
 
 /**
- * Sortation helper.
+ * Sorting of query results.
+ *
+ * @since 0.1
  */
 public class Sort {
 
