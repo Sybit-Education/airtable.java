@@ -202,12 +202,7 @@ public class Airtable {
         if (this.config.getProxy() == null) {
             final String httpProxy = System.getenv("http_proxy");
             final String httpsProxy = System.getenv("https_proxy");
-            if (httpProxy != null
-                    && (endpointUrl.contains("127.0.0.1")
-                    || endpointUrl.contains("localhost"))) {
-                LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
-                setProxy(null);
-            } else if (httpsProxy != null
+            if (httpsProxy != null
                     && (endpointUrl.contains("https"))) {
                 LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: " + httpsProxy);
                 setProxy(httpProxy);
@@ -220,8 +215,10 @@ public class Airtable {
             }
         } else if ((endpointUrl.contains("127.0.0.1")
                 || endpointUrl.contains("localhost"))) {
-            LOG.info("Use Proxy: ignored for 'localhost' ann '127.0.0.1'");
+            LOG.info("Use Proxy: ignored for 'localhost' and '127.0.0.1'");
             setProxy(null);
+        } else {
+            setProxy(this.config.getProxy());
         }
     }
 
