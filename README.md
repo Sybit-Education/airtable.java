@@ -363,6 +363,7 @@ For testing, the JSON-responses are mocked by [WireMock](http://wiremock.org/).
 - [Airtable Ruby Client](https://github.com/Airtable/airtable-ruby): Ruzby Client
 - [Airtable Phyton](https://github.com/nicocanali/airtable-python): Phyton Client
 - [Airtabler](https://github.com/bergant/airtabler): R interface to the Airtable API
+- [Airtable.cs](https://github.com/alphamax/AirTable.cs): AirTable API .Net client.
 
 More Github-Projects using topic *[Airtable](https://github.com/search?q=topic%3Aairtable&type=Repositories)*
 
