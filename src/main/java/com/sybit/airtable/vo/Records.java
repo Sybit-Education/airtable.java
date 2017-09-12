@@ -15,6 +15,8 @@ import java.util.Map;
 public class Records {
 
     private List<Map<String, Object>> records;
+    
+    private String offset;
 
     public List<Map<String, Object>> getRecords() {
         return records;
@@ -24,4 +26,11 @@ public class Records {
         this.records = records;
     }
 
+    public String getOffset() {
+        return offset;
+    }
+
+    public void setOffset(String offset) {
+        this.offset = offset;
+    }    
 }

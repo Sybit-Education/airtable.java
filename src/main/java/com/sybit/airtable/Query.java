@@ -47,4 +47,12 @@ public interface Query {
      * @return get the filter formula.
      */
     String filterByFormula();
+    
+    /**
+     * Offset to get more than 100 records.
+     * 
+     * The offset is provided by previous result.
+     * @return 
+     */
+    String getOffset();
 }
