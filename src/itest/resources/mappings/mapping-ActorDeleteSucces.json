@@ -5,6 +5,6 @@
   },
   "response" : {
     "status" : 200,
-    "bodyFileName" : "/body-ActorDelete.json"
+    "bodyFileName" : "/body-ActorDeleteSucess.json"
   }
 }
