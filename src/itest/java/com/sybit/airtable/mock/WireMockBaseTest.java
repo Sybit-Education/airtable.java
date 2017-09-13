@@ -14,6 +14,7 @@ import org.junit.Rule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import com.sybit.airtable.Base;
 
 /**
  * Base Class to test using WireMock.
@@ -23,22 +24,25 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
  */
 public class WireMockBaseTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8080));
+//    @Rule
+//    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8080));
 
     protected Airtable airtable = new Airtable();
+    protected Base base;
 
     @Before
     public void setup() throws AirtableException {
+        
         airtable.configure();
-        airtable.setEndpointUrl("http://localhost:8080/v0");
+        this.base = airtable.base("appTtHA5PfJnVfjdu");
+        airtable.setEndpointUrl("http://airtable.mocklab.io");
 
         //set 404 as default
-        stubFor(any(anyUrl())
-                .atPriority(10)
-                .willReturn(aResponse()
-                        .withStatus(404)
-                        .withBody("{\"error\":{\"type\":\"NOT_FOUND\",\"message\":\"Not found\"}}")));
+//        stubFor(any(anyUrl())
+//                .atPriority(10)
+//                .willReturn(aResponse()
+//                        .withStatus(404)
+//                        .withBody("{\"error\":{\"type\":\"NOT_FOUND\",\"message\":\"Not found\"}}")));
 
     }
 

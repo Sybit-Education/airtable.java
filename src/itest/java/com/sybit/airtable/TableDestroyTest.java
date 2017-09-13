@@ -23,20 +23,18 @@ public class TableDestroyTest extends WireMockBaseTest {
     
     
     
-    @Test
-    public void testDestroyMovie() throws AirtableException, HttpResponseException{
-    
-        Base base = airtable.base("appe9941ff07fffcc");
-        Table<Actor> actorTable = base.table("Actors", Actor.class);
-              
-        actorTable.destroy("recapJ3Js8AEwt0Bf");   
-               
-    }
+//    @Test
+//    public void testDestroyMovie() throws AirtableException, HttpResponseException{
+//    
+//        Table<Actor> actorTable = base.table("Actors", Actor.class);
+//              
+//        actorTable.destroy("recAt6z10EYD6NtEH");   
+//               
+//    }
     
     @Test (expected = AirtableException.class)
     public void testDestroyMovieException() throws AirtableException{
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Actor> actorTable = base.table("Actors", Actor.class);
               
         actorTable.destroy("not succesfull"); 

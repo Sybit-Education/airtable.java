@@ -24,11 +24,10 @@ public class TableUpdateTest extends WireMockBaseTest {
     @Test
     public void testUpdateActor() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
         
-        Base base = airtable.base("appe9941ff07fffcc");
         
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor marlonBrando = new Actor();
-        marlonBrando.setId("rec514228ed76ced1");
+        marlonBrando.setId("recEtUIW6FWtbEDKz");
         marlonBrando.setName("Neuer Name");
                    
         Actor updated = actorTable.update(marlonBrando);

@@ -24,30 +24,77 @@ import org.junit.Test;
  * @author fzr
  */
 public class TableParameterTest extends WireMockBaseTest {
-    
+
+    @Test
+    public void offsetParamTest() throws AirtableException, HttpResponseException {
+
+        Table<Movie> movieTable = base.table("Movies", Movie.class);
+
+        
+        Query query = new Query() {
+            @Override
+            public String[] getFields() {
+                return null;
+            }
+
+            @Override
+            public Integer getPageSize() {
+                return 3;
+            }
+
+            @Override
+            public Integer getMaxRecords() {
+                return null;
+            }
+
+            @Override
+            public String getView() {
+                return null;
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return null;
+            }
+
+            @Override
+            public String filterByFormula() {
+                return null;
+            }
+
+            @Override
+            public String getOffset() {
+                return null;
+            }
+        };
+
+        List<Movie> listMovies = movieTable.select(query);
+        System.out.println(listMovies);
+
+    }
+
     @Test
     public void fieldsParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        
+
         String[] fields = new String[1];
         fields[0] = "Name";
-        
+
         List<Movie> listMovies = movieTable.select(fields);
         assertNotNull(listMovies);
+        assertNotNull(listMovies.get(0).getName());
         assertNull(listMovies.get(0).getDirector());
         assertNull(listMovies.get(0).getActors());
         assertNull(listMovies.get(0).getDescription());
-    
+
     }
-    
+
     @Test
     public void formulaParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        
+
         Query query = new Query() {
             @Override
             public String[] getFields() {
@@ -78,35 +125,36 @@ public class TableParameterTest extends WireMockBaseTest {
             public String filterByFormula() {
                 return "NOT({Name} = '')";
             }
+
+            @Override
+            public String getOffset() {
+                return null;
+            }
         };
-         
+
         List<Movie> listMovies = movieTable.select(query);
         assertNotNull(listMovies);
-        assertEquals(listMovies.size(),2);
-  
-    
+        assertEquals(listMovies.size(), 9);
     }
-    
+
     @Test
     public void maxRecordsParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        
+
         int maxRecords = 2;
-         
+
         List<Movie> listMovies = movieTable.select(maxRecords);
         assertNotNull(listMovies);
-        assertEquals(listMovies.size(),2);
-        
+        assertEquals(listMovies.size(), 2);
+
     }
-    
+
     @Test
     public void pageSizeParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        
+
         Query query = new Query() {
             @Override
             public String[] getFields() {
@@ -137,42 +185,42 @@ public class TableParameterTest extends WireMockBaseTest {
             public String filterByFormula() {
                 return null;
             }
+
+            @Override
+            public String getOffset() {
+                return null;
+            }
         };
-         
+
         List<Movie> listMovies = movieTable.select(query);
         assertNotNull(listMovies);
-      
+        assertEquals(listMovies.size(), 9);
+
     }
-    
+
     @Test
     public void sortParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Sort sort = new Sort("Name", Sort.Direction.desc);
-         
+
         List<Movie> listMovies = movieTable.select(sort);
         assertNotNull(listMovies);
-        assertEquals(listMovies.get(9).getName(),"Billy Madison");
-     
-    
+        assertEquals(listMovies.get(8).getName(), "Billy Madison");
+
     }
-    
+
     @Test
     public void viewParamTest() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
+
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        
+
         String view = "Dramas";
-         
-        
+
         List<Movie> listMovies = movieTable.select(view);
         assertNotNull(listMovies);
-        assertEquals(listMovies.size(),5);
-        
+        assertEquals(listMovies.size(), 5);
+
     }
-    
-    
-    
+
 }

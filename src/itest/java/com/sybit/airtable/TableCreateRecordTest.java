@@ -29,7 +29,6 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     @Test(expected = AirtableException.class)
     public void createMovieWithPhotoIdTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         
-        Base base = airtable.base("appe9941ff07fffcc");
         
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Movie newMovie = new Movie();       
@@ -51,9 +50,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     
     @Test(expected = AirtableException.class)
     public void createMovieWithIdTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Movie newMovie = new Movie();       
         newMovie.setName("Neuer Film");       
@@ -64,9 +61,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     
     @Test(expected = AirtableException.class)
     public void createMovieWithCreatedTimeTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Movie newMovie = new Movie();       
         newMovie.setName("Neuer Film");       
@@ -77,23 +72,19 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     
     @Test
     public void createActorTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor newActor = new Actor();
         newActor.setName("Neuer Actor");
         Actor test = actorTable.create(newActor);
         assertEquals(test.getName(),newActor.getName());
-        assertEquals(test.getId(),"rec123456789");
-        
+        assertNotNull(test.getId());
+                
     }
     
     @Test
     public void createMovieWithAttachementTest() throws AirtableException, IllegalAccessException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InvocationTargetException, NoSuchFieldException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Movie newMovie = new Movie();
         
@@ -121,20 +112,18 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
     
     @Test
     public void createMovieTest() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException, NoSuchFieldException{
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Movie> movieTable = base.table("Movies", Movie.class);
         Movie newMovie = new Movie();
         
         newMovie.setName("Neuer Film");
         newMovie.setDescription("Irgendwas");
         List<String> director = new ArrayList<>();
-        director.add("recfaf64fe0db19a9");
+        director.add("recPxOZblV8yJU4mY");
         newMovie.setDirector(director);
         List<String> actors = new ArrayList<>();
-        actors.add("recc8841a14245b0b");
-        actors.add("rec514228ed76ced1");
+        actors.add("recEtUIW6FWtbEDKz");
+        actors.add("recInYFZ1DQpeCuSz");
         newMovie.setActors(actors);
         List<String> genre = new ArrayList<>();
         genre.add("Drama");
@@ -146,7 +135,7 @@ public class TableCreateRecordTest extends WireMockBaseTest  {
         assertEquals(newMovie.getActors(),test.getActors());
         assertEquals(newMovie.getGenre(),test.getGenre());
         assertEquals(newMovie.getDescription(),test.getDescription());
-        assertEquals("rec987654321",test.getId());
+        assertNotNull(test.getId());
         assertNotNull(test.getCreatedTime());
         
         

@@ -32,15 +32,13 @@ public class TableConverterTest extends WireMockBaseTest {
     @Test
     public void testConvertMovie() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
         
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        Movie movie = movieTable.find("rec6733da527dd0f1");
+        Movie movie = movieTable.find("recFj9J78MLtiFFMz");
         assertNotNull(movie);
         
-        assertEquals(movie.getId(),"rec6733da527dd0f1");
+        assertEquals(movie.getId(),"recFj9J78MLtiFFMz");
         assertEquals(movie.getName(),"The Godfather");
-        assertEquals(movie.getDescription(),"The Godfather is a 1972 American crime film film directed by Francis Ford Coppola and produced by Albert S. Ruddy and based on Mario Puzo's best-selli...");
         assertEquals(movie.getPhotos().size(),2);
         assertEquals(movie.getDirector().size(),1);
         assertEquals(movie.getActors().size(),2);
@@ -53,10 +51,8 @@ public class TableConverterTest extends WireMockBaseTest {
     public void testConvertAttachement() throws AirtableException, HttpResponseException {
     
         
-        Base base = airtable.base("appe9941ff07fffcc");
-        
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        Movie movie = movieTable.find("rec6733da527dd0f1");
+        Movie movie = movieTable.find("recFj9J78MLtiFFMz");
         assertNotNull(movie);
         
         assertEquals(movie.getPhotos().size(),2);
@@ -66,10 +62,10 @@ public class TableConverterTest extends WireMockBaseTest {
         Attachment photo2 = movie.getPhotos().get(0);
         assertNotNull(photo2);
         
-        assertEquals(photo1.getId(),"att6dba4af5786df1");
-        assertEquals(photo1.getUrl(),"https://www.filepicker.io/api/file/akW7wUX7QM66a2hjxb9k");
-        assertEquals(photo1.getFilename(),"220px-TheGodfatherAlPacinoMarlonBrando.jpg");
-        assertEquals(photo1.getSize(),16420.0,0);
+        assertEquals(photo1.getId(),"attk3WY5B28GVcFGU");
+        assertEquals(photo1.getUrl(),"https://dl.airtable.com/9UhUUeAtSym1PzBdA0q0_AlPacinoandMarlonBrando.jpg");
+        assertEquals(photo1.getFilename(),"AlPacinoandMarlonBrando.jpg");
+        assertEquals(photo1.getSize(),35698,0);
         assertEquals(photo1.getType(),"image/jpeg");
         assertEquals(photo1.getThumbnails().size(),2);
         
@@ -77,20 +73,18 @@ public class TableConverterTest extends WireMockBaseTest {
     
     @Test
     public void testConvertThumbnails() throws AirtableException, HttpResponseException {
-        
-        Base base = airtable.base("appe9941ff07fffcc");
-        
+                
         Table<Movie> movieTable = base.table("Movies", Movie.class);
-        Movie movie = movieTable.find("rec6733da527dd0f1");
+        Movie movie = movieTable.find("recFj9J78MLtiFFMz");
         assertNotNull(movie);
         
         assertEquals(movie.getPhotos().get(0).getThumbnails().size(),2);
         assertEquals(movie.getPhotos().get(1).getThumbnails().size(),2);
         Map<String, Thumbnail> thumbnails = movie.getPhotos().get(1).getThumbnails();
         Thumbnail thumb = thumbnails.get("small");
-        assertEquals(thumb.getUrl(),"https://dl.airtable.com/MbdRAn4ZQLuNyUqrHONp_small_Lighthouse.jpg");
+        assertEquals(thumb.getUrl(),"https://dl.airtable.com/rlQ8MyQ4RuqN7rT03ALq_small_The%20Godfather%20poster.jpg");
         assertEquals(thumb.getHeight(),36.0, 0);
-        assertEquals(thumb.getWidth(),48.0, 0);
+        assertEquals(thumb.getWidth(),24.0, 0);
         
     }
     
