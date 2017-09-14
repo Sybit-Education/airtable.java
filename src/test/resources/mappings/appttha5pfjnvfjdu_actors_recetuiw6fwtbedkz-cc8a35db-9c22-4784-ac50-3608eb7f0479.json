@@ -1,0 +1,39 @@
+{
+  "id" : "cc8a35db-9c22-4784-ac50-3608eb7f0479",
+  "name" : "appttha5pfjnvfjdu_actors_recetuiw6fwtbedkz",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Actors/recEtUIW6FWtbEDKz",
+    "method" : "PATCH",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      }
+    },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"fields\":{\"Name\":\"Neuer Name\"}}",
+      "ignoreArrayOrder" : false,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "appttha5pfjnvfjdu_actors_recetuiw6fwtbedkz-cc8a35db-9c22-4784-ac50-3608eb7f0479.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:09:49 GMT",
+      "ETag" : "W/\"58b-EX4YxFerjhFAbJKAQmHQt7IMjAY\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "cc8a35db-9c22-4784-ac50-3608eb7f0479",
+  "persistent" : true
+}

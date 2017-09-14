@@ -1,0 +1,30 @@
+{
+  "id" : "cf88d9f4-0663-4a23-a485-1700111e0476",
+  "name" : "faviconico",
+  "request" : {
+    "url" : "/favicon.ico",
+    "method" : "GET",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "image/webp,image/apng,image/*,*/*;q=0.8"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "bodyFileName" : "faviconico-cf88d9f4-0663-4a23-a485-1700111e0476.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:00:19 GMT",
+      "ETag" : "W/\"15-tcRCab2ZDkTZ4I9Oh2TI8Kt8AAg\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "cf88d9f4-0663-4a23-a485-1700111e0476",
+  "persistent" : true
+}

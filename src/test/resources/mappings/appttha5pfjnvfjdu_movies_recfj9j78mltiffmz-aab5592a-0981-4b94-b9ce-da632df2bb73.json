@@ -1,0 +1,30 @@
+{
+  "id" : "aab5592a-0981-4b94-b9ce-da632df2bb73",
+  "name" : "appttha5pfjnvfjdu_movies_recfj9j78mltiffmz",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Movies/recFj9J78MLtiFFMz",
+    "method" : "GET",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "appttha5pfjnvfjdu_movies_recfj9j78mltiffmz-aab5592a-0981-4b94-b9ce-da632df2bb73.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:06:14 GMT",
+      "ETag" : "W/\"67b-1DcxsW1zMTbzZlI64cGdbpdBvs4\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "aab5592a-0981-4b94-b9ce-da632df2bb73",
+  "persistent" : true
+}
