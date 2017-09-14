@@ -49,7 +49,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
                 }
             }
         });
-        airtable.setEndpointUrl("http://airtable.mocklab.io");
+        airtable.setEndpointUrl("http://localhost:8080");
         this.base = airtable.base("appTtHA5PfJnVfjdu");
 
         //set 404 as default
