@@ -69,7 +69,7 @@ public class TableParameterTest extends WireMockBaseTest {
         };
 
         List<Movie> listMovies = movieTable.select(query);
-        System.out.println(listMovies);
+        assertEquals(listMovies.size(),9);
 
     }
 

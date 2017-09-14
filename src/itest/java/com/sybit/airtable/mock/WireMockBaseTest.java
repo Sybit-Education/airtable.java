@@ -7,15 +7,12 @@
 package com.sybit.airtable.mock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.sybit.airtable.Airtable;
 import com.sybit.airtable.exception.AirtableException;
 import org.junit.Before;
-import org.junit.Rule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import com.sybit.airtable.Base;
@@ -23,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * Base Class to test using WireMock.
