@@ -141,6 +141,7 @@ public class Table<T> {
                 String[] fields = query.getFields();
                 for (String field : fields) {
                     request.queryString("fields[]", field);
+
                 }
             }
             if (query.getMaxRecords() != null) {
@@ -590,7 +591,9 @@ public class Table<T> {
      * @param id
      * @throws AirtableException
      */
-    public void destroy(String id) throws AirtableException {
+
+    public boolean destroy(String id) throws AirtableException {
+
 
         Delete body = null;
 
@@ -611,9 +614,11 @@ public class Table<T> {
             HttpResponseExceptionHandler.onResponse(response);
         }
 
-        if (!body.isDeleted()) {
-            throw new AirtableException("Record id: " + body.getId() + " could not be deleted.");
-        }
+//        if (!body.isDeleted()) {
+//            throw new AirtableException("Record id: " + body.getId() + " could not be deleted.");
+//        }
+
+        return body.isDeleted();
     }
 
     /**
