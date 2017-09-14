@@ -299,7 +299,7 @@ Actor test = actorTable.create(newActor);
 
 ```
 
-Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableCreateRecordTest.java)
+Detailed example see [TableCreateRecordTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableCreateRecordTest.java)
 
 ## Update
 Use `update` to update a record of table:
