@@ -216,8 +216,8 @@ public class WireMockBaseTest {
 
     public static void cleanExistingRecords() {
 
-        File mappings = new File("src/itest/resources/mappings");
-        File bodyFiles = new File("src/itest/resources/__files");
+        File mappings = new File("src/test/resources/mappings");
+        File bodyFiles = new File("src/test/resources/__files");
 
         try {
             FileUtils.cleanDirectory(mappings);
