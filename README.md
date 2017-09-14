@@ -227,7 +227,7 @@ List<Movie> listMovies = movieTable.select(sort);
 ```
 If you set the view parameter, the returned records in that view will be sorted by these fields.
 
-Detailed example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableParameterTest.java)
+Detailed example see [TableParameterTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableParameterTest.java)
 
 
 ## CRUD-Operations on Table Records
@@ -249,7 +249,7 @@ Base base = new Airtable().base("AIRTABLE_BASE");
 List<Movie> retval = base.table("Movies", Movie.class).select();
 ```
 
-Detailed example see [TableSelectTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableSelectTest.java)
+Detailed example see [TableSelectTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableSelectTest.java)
 
 ## Find
 Use `find` to get specific records of table:
@@ -263,7 +263,7 @@ Table<Actor> actorTable = base.table("Actors", Actor.class);
 Actor actor = actorTable.find("rec514228ed76ced1");
 ```
 
-Detailed example see [TableFindTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableFindTest.java)
+Detailed example see [TableFindTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableFindTest.java)
 
 ## Destroy
 Use `destroy` to delete a specific records of table:
@@ -276,7 +276,7 @@ Base base = airtable.base("AIRTABLE_BASE");
 Table<Actor> actorTable = base.table("Actors", Actor.class);
 actorTable.destroy("recapJ3Js8AEwt0Bf");   
 ```
-Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableDestroyTest.java)
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableDestroyTest.java)
 
 ## Create
 First build your record. Then use `create` to generate a specific records of table:
@@ -299,7 +299,7 @@ Actor test = actorTable.create(newActor);
 
 ```
 
-Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableCreateRecordTest.java)
+Detailed example see [TableDestroyTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableCreateRecordTest.java)
 
 ## Update
 Use `update` to update a record of table:
@@ -318,7 +318,7 @@ marlonBrando.setName("Marlon Brando");
 Actor updated = actorTable.update(marlonBrando);
 ```
 
-Detailed example see [TableUpdateTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/test/java/com/sybit/airtable/TableUpdateTest.java)
+Detailed example see [TableUpdateTest](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableUpdateTest.java)
 
 # Roadmap
 
