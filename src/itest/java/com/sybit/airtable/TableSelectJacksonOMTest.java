@@ -49,69 +49,63 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
                 }
             }
         });
-        airtable.setEndpointUrl("http://localhost:8080/v0");
+        airtable.setEndpointUrl("http://localhost:8080");
+        this.base = airtable.base("appTtHA5PfJnVfjdu");
 
         //set 404 as default
-        stubFor(any(anyUrl())
-            .atPriority(10)
-            .willReturn(aResponse()
-                .withStatus(404)
-                .withBody("{\"error\":{\"type\":\"NOT_FOUND\",\"message\":\"Not found\"}}")));
+//        stubFor(any(anyUrl())
+//            .atPriority(10)
+//            .willReturn(aResponse()
+//                .withStatus(404)
+//                .withBody("{\"error\":{\"type\":\"NOT_FOUND\",\"message\":\"Not found\"}}")));
 
     }
 
     @Test
     public void testSelectTable() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
 
         List<Movie> retval = base.table("Movies", Movie.class).select();
         assertNotNull(retval);
-        assertEquals(10, retval.size());
-        Movie mov = retval.get(0);
-        assertEquals("Sister Act", mov.getName());
+        assertEquals(9, retval.size());
+
     }
 
     @Test
     public void testSelectTableMaxRecords() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
 
         List<Movie> retval = base.table("Movies", Movie.class).select(2);
         assertNotNull(retval);
         assertEquals(2, retval.size());
-        Movie mov = retval.get(0);
-        assertEquals("Sister Act", mov.getName());
+
     }
 
     @Test
     public void testSelectTableSorted() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
         Table table = base.table("Movies", Movie.class);
 
         List<Movie> retval = table.select(new Sort("Name", Sort.Direction.asc));
         assertNotNull(retval);
-        assertEquals(10, retval.size());
+        assertEquals(9, retval.size());
         Movie mov = retval.get(0);
         assertEquals("Billy Madison", mov.getName());
 
         retval = table.select(new Sort("Name", Sort.Direction.desc));
         assertNotNull(retval);
-        assertEquals(10, retval.size());
+        assertEquals(9, retval.size());
         mov = retval.get(0);
-        assertEquals("You've got Mail", mov.getName());
+        assertEquals("You've Got Mail", mov.getName());
 
     }
 
     @Test
     public void testSelectTableView() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
-
         List<Movie> retval = base.table("Movies", Movie.class).select("Main View");
         assertNotNull(retval);
-        assertEquals(10, retval.size());
+        assertEquals(9, retval.size());
         Movie mov = retval.get(0);
         assertEquals("The Godfather", mov.getName());
     }
@@ -119,20 +113,10 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     @Test(expected = AirtableException.class)
     public void testSelectNonExistingTable() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
 
         List<Movie> retval = base.table("NotExists", Movie.class).select();
         assertNotNull(retval);
     }
 
-    @Test
-    public void testSelectWithSerializedNames() throws AirtableException, HttpResponseException {
-
-        Base base = airtable.base("appe9941ff07fffcc");
-
-        List<ActorSerializedNames> retval = base.table("SerializedNames", ActorSerializedNames.class).select();
-        assertNotNull(retval);
-        assertEquals("Marlon Brando", retval.get(0).getName());
-    }
 
 }

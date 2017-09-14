@@ -79,6 +79,7 @@ public class Table<T> {
      *
      * @return List of all items.
      * @throws AirtableException
+     * @throws org.apache.http.client.HttpResponseException
      */
     public List<T> select() throws AirtableException, HttpResponseException {
         return select(new Query() {
@@ -111,6 +112,11 @@ public class Table<T> {
             public Integer getPageSize() {
                 return null;
             }
+
+            @Override
+            public String getOffset() {
+                return null;
+            }
         });
 
     }
@@ -123,16 +129,19 @@ public class Table<T> {
      * @throws AirtableException
      */
     @SuppressWarnings("WeakerAccess")
-    public List<T> select(Query query) throws AirtableException {
+    public List<T> select(final Query query) throws AirtableException {
         HttpResponse<Records> response;
         try {
-            GetRequest request = Unirest.get(getTableEndpointUrl())
+            final GetRequest request = Unirest.get(getTableEndpointUrl())
                     .header("accept", "application/json")
-                    .header("Authorization", getBearerToken());
+                    .header("Authorization", getBearerToken())
+                    .header("Content-type" , "application/json");
+
             if (query.getFields() != null && query.getFields().length > 0) {
                 String[] fields = query.getFields();
-                for (int i = 0; i < fields.length; i++) {
-                    request.queryString("fields[]", fields[i]);
+                for (String field : fields) {
+                    request.queryString("fields[]", field);
+
                 }
             }
             if (query.getMaxRecords() != null) {
@@ -158,6 +167,9 @@ public class Table<T> {
                     request.queryString("sort[" + i + "][direction]", sort.getDirection());
                 }
             }
+            if (query.getOffset()!= null) {
+                request.queryString("offset", query.getOffset());
+            }
 
             LOG.debug("URL=" + request.getUrl());
 
@@ -170,11 +182,64 @@ public class Table<T> {
         List<T> list = null;
         if (200 == code) {
             list = getList(response);
+
+            final String offset = response.getBody().getOffset();
+
+            if (offset != null) {
+                list.addAll(this.select(query, offset));
+            }
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }
 
         return list;
+    }
+
+    /**
+     * Get List with offset.
+     *
+     * @param query
+     * @param offset
+     * @return
+     * @throws AirtableException
+     */
+    private List<T> select(Query query, String offset) throws AirtableException {
+        return select(new Query() {
+            @Override
+            public Integer getMaxRecords() {
+                return query.getMaxRecords();
+            }
+
+            @Override
+            public String getView() {
+                return query.getView();
+            }
+
+            @Override
+            public List<Sort> getSort() {
+                return query.getSort();
+            }
+
+            @Override
+            public String filterByFormula() {
+                return query.filterByFormula();
+            }
+
+            @Override
+            public String[] getFields() {
+                return query.getFields();
+            }
+
+            @Override
+            public Integer getPageSize() {
+                return query.getPageSize();
+            }
+
+            @Override
+            public String getOffset() {
+                return offset;
+            }
+        });
     }
 
     /**
@@ -214,6 +279,11 @@ public class Table<T> {
 
             @Override
             public Integer getPageSize() {
+                return null;
+            }
+
+            @Override
+            public String getOffset() {
                 return null;
             }
         });
@@ -256,6 +326,11 @@ public class Table<T> {
 
             @Override
             public Integer getPageSize() {
+                return null;
+            }
+
+            @Override
+            public String getOffset() {
                 return null;
             }
         });
@@ -303,6 +378,11 @@ public class Table<T> {
             public Integer getPageSize() {
                 return null;
             }
+
+            @Override
+            public String getOffset() {
+                return null;
+            }
         });
     }
 
@@ -344,6 +424,11 @@ public class Table<T> {
 
             @Override
             public Integer getPageSize() {
+                return null;
+            }
+
+            @Override
+            public String getOffset() {
                 return null;
             }
         });
@@ -506,7 +591,9 @@ public class Table<T> {
      * @param id
      * @throws AirtableException
      */
+
     public boolean destroy(String id) throws AirtableException {
+
 
         Delete body = null;
 
@@ -737,8 +824,6 @@ public class Table<T> {
      */
     private T filterFields(T item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        System.out.println(item);
-
         Field[] attributes = item.getClass().getDeclaredFields();
 
         for (Field attribute : attributes) {
@@ -750,4 +835,5 @@ public class Table<T> {
 
         return item;
     }
+
 }
