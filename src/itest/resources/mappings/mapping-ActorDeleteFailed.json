@@ -1,0 +1,10 @@
+{
+  "request" : {
+    "url" : "/v0/appe9941ff07fffcc/Actors/failed",
+    "method" : "DELETE"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "/body-ActorDeleteFailed.json"
+  }
+}
