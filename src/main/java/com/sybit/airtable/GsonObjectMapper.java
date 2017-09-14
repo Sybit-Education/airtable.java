@@ -26,13 +26,15 @@ class GsonObjectMapper implements ObjectMapper {
      
     }
 
+    @Override
     public <T> T readValue(String value, Class<T> valueType) {
-        LOG.log(Level.FINE, "readValue: \n" + value);
+        LOG.log(Level.FINE, "readValue: \n{0}", value);
         return gson.fromJson(value, valueType);
     }
 
+    @Override
     public String writeValue(Object value) {
-        LOG.log(Level.FINE, "writeValue: \n" + value);
+        LOG.log(Level.FINE, "writeValue: \n{0}", value);
         return gson.toJson(value);
     }
 
