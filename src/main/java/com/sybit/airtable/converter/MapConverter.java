@@ -14,7 +14,7 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 
 /**
  *
- * org.apache.commons.beanutils.Converter implementaion
+ * Implementaion of <code>org.apache.commons.beanutils.Converter</code>
  * that handles conversion to and from Map&lt;String,T&gt; objects.
  *
  * <p>This implementation converts Map&lt;String,T&gt; to Map&lt;String,mapClass&gt;.
@@ -27,7 +27,7 @@ public class MapConverter extends AbstractConverter{
     private Class mapClass;
 
     /**
-     * Converts the Input Object into a Map.
+     * Converts the Input Object into a <code>Map</code>.
      * 
      *  
      * @param type The type of the Input Object
@@ -38,7 +38,7 @@ public class MapConverter extends AbstractConverter{
     @Override
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
               
-        Class<T> sourceType = (Class<T>) value.getClass();
+        final Class<T> sourceType = (Class<T>) value.getClass();
         Map<String, Object> returnMap = new HashMap<>();
             
         if(value instanceof LinkedTreeMap){
@@ -67,9 +67,8 @@ public class MapConverter extends AbstractConverter{
         return (T) toStringMap(sourceType,stringValue,returnMap);
     }
     
-    /**
-     * 
-     * Default Conversion to specified Class.
+    /** 
+     * Default Conversion to specified <code>Class</code>.
      * 
      * @param type The Class of the type
      * @param value The value of the Object
@@ -89,7 +88,6 @@ public class MapConverter extends AbstractConverter{
     }
     
     /**
-     * 
      * Default toString Conversion.
      * 
      * @param type The Class of the type

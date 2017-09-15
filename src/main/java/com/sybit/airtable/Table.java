@@ -55,10 +55,11 @@ public class Table<T> {
     }
 
     /**
-     *
-     * @param name
-     * @param type
-     * @param base
+     * Constructor of Table.
+     * 
+     * @param name Name of Table
+     * @param type Class to map the rows.
+     * @param base Base containing table.
      */
     @SuppressWarnings("WeakerAccess")
     public Table(String name, Class<T> type, Base base) {
@@ -67,8 +68,9 @@ public class Table<T> {
     }
 
     /**
-     *
-     * @param parent
+     * Set the parent base.
+     * 
+     * @param parent parent base of table.
      */
     public void setParent(Base parent) {
         this.parent = parent;
@@ -494,7 +496,7 @@ public class Table<T> {
     }
 
     /**
-     * Create Record of given Item
+     * Create Record of given Item.
      *
      * @param item the item to be created
      * @return the created item
@@ -588,7 +590,8 @@ public class Table<T> {
     /**
      * Delete Record by given id
      *
-     * @param id
+     * @param id Id of the row to delete.
+     * @return true if success.
      * @throws AirtableException
      */
 
