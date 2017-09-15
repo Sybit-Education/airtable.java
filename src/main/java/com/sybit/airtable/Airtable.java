@@ -180,11 +180,10 @@ public class Airtable {
      */
     public void setProxy(String proxy) {
 
+        this.config.setProxy(proxy);
         if (proxy == null) {
-            this.config.setProxy(proxy);
             Unirest.setProxy(null);
         } else {
-            this.config.setProxy(proxy);
             Unirest.setProxy(HttpHost.create(this.config.getProxy()));
         }
 
