@@ -44,6 +44,7 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.palantir.jacoco-coverage'
     apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'org.sonarqube'
 }
 
 group = 'com.sybit'
