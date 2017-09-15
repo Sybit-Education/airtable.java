@@ -10,6 +10,7 @@ package com.sybit.airtable.vo;
 /**
  *
  * @author fzr
+ * @param <T>
  */
 public class PostRecord<T> {
     

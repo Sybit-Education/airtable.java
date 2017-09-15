@@ -30,11 +30,17 @@ import java.util.Map;
 /**
  * Representation Class of Airtable Tables.
  *
+ * @param <T>
  * @since 0.1
  */
 public class Table<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Table.class);
+    
+    private static final String MIME_TYPE_JSON = "application/json";
+    
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_CREATED_TIME = "createdTime";
 
     private final String name;
     private final Class<T> type;
@@ -135,9 +141,9 @@ public class Table<T> {
         HttpResponse<Records> response;
         try {
             final GetRequest request = Unirest.get(getTableEndpointUrl())
-                    .header("accept", "application/json")
+                    .header("accept", MIME_TYPE_JSON)
                     .header("Authorization", getBearerToken())
-                    .header("Content-type" , "application/json");
+                    .header("Content-type" , MIME_TYPE_JSON);
 
             if (query.getFields() != null && query.getFields().length > 0) {
                 String[] fields = query.getFields();
@@ -198,9 +204,9 @@ public class Table<T> {
     }
 
     /**
-     * Get List with offset.
+     * Get <code>List</code> by given offset.
      *
-     * @param query
+     * @param query 
      * @param offset
      * @return
      * @throws AirtableException
@@ -245,9 +251,9 @@ public class Table<T> {
     }
 
     /**
-     * select with Parameter maxRecords
+     * Select with parameter maxRecords
      *
-     * @param maxRecords
+     * @param maxRecords maximum of records per request.
      * @return
      * @throws AirtableException
      * @throws HttpResponseException
@@ -466,14 +472,14 @@ public class Table<T> {
      * @return searched record.
      * @throws AirtableException
      */
-    public T find(String id) throws AirtableException {
+    public T find(final String id) throws AirtableException {
 
         RecordItem body;
 
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.get(getTableEndpointUrl() + "/" + id)
-                    .header("accept", "application/json")
+                    .header("accept", MIME_TYPE_JSON)
                     .header("Authorization", getBearerToken())
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
@@ -505,21 +511,21 @@ public class Table<T> {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
-    public T create(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public T create(final T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         RecordItem responseBody = null;
 
         checkProperties(item);
 
-        PostRecord body = new PostRecord<T>();
+        PostRecord body = new PostRecord<>();
         body.setFields(item);
 
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.post(getTableEndpointUrl())
-                    .header("accept", "application/json")
+                    .header("accept", MIME_TYPE_JSON)
                     .header("Authorization", getBearerToken())
-                    .header("Content-type", "application/json")
+                    .header("Content-type", MIME_TYPE_JSON)
                     .body(body)
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
@@ -543,21 +549,31 @@ public class Table<T> {
         return null;
     }
 
-    public T update(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    /**
+     * Update given <code>item</code> in storage.
+     * 
+     * @param item Item to update.
+     * @return updated <code>item</code> returned by airtable.
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
+    public T update(final T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         RecordItem responseBody = null;
 
         String id = getIdOfItem(item);
 
-        PostRecord body = new PostRecord<T>();
+        PostRecord body = new PostRecord<>();
         body.setFields(filterFields(item));
 
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.patch(getTableEndpointUrl() + "/" + id)
-                    .header("accept", "application/json")
+                    .header("accept", MIME_TYPE_JSON)
                     .header("Authorization", getBearerToken())
-                    .header("Content-type", "application/json")
+                    .header("Content-type", MIME_TYPE_JSON)
                     .body(body)
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
@@ -572,16 +588,22 @@ public class Table<T> {
             HttpResponseExceptionHandler.onResponse(response);
         }
 
+        T result;
         try {
-            return transform(responseBody, this.type.newInstance());
+            result = transform(responseBody, this.type.newInstance());
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.error(e.getMessage(), e);
+            result = null;
         }
 
-        return null;
-
+        return result;
     }
 
+    /**
+     * 
+     * @param item
+     * @return 
+     */
     public T replace(T item) {
 
         throw new UnsupportedOperationException("not yet implemented");
@@ -598,12 +620,12 @@ public class Table<T> {
     public boolean destroy(String id) throws AirtableException {
 
 
-        Delete body = null;
+        boolean isDeleted;
 
         HttpResponse<Delete> response;
         try {
             response = Unirest.delete(getTableEndpointUrl() + "/" + id)
-                    .header("accept", "application/json")
+                    .header("accept", MIME_TYPE_JSON)
                     .header("Authorization", getBearerToken())
                     .asObject(Delete.class);
         } catch (UnirestException e) {
@@ -612,8 +634,10 @@ public class Table<T> {
         int code = response.getStatus();
 
         if (200 == code) {
-            body = response.getBody();
+            Delete body = response.getBody();
+            isDeleted = body.isDeleted();
         } else {
+            isDeleted = false;
             HttpResponseExceptionHandler.onResponse(response);
         }
 
@@ -621,7 +645,7 @@ public class Table<T> {
 //            throw new AirtableException("Record id: " + body.getId() + " could not be deleted.");
 //        }
 
-        return body.isDeleted();
+        return isDeleted;
     }
 
     /**
@@ -681,8 +705,8 @@ public class Table<T> {
      * @throws IllegalAccessException
      */
     private T transform(RecordItem record, T retval) throws InvocationTargetException, IllegalAccessException {
-        setProperty(retval, "id", record.getId());
-        setProperty(retval, "createdTime", record.getCreatedTime());
+        setProperty(retval, FIELD_ID, record.getId());
+        setProperty(retval, FIELD_CREATED_TIME, record.getCreatedTime());
 
         retval = transform(record.getFields(), retval);
 
@@ -700,7 +724,7 @@ public class Table<T> {
     private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException {
         String property = key2property(key);
 
-        for (Field f : this.type.getDeclaredFields()) {
+        for (final Field f : this.type.getDeclaredFields()) {
             final SerializedName annotation = f.getAnnotation(SerializedName.class);
 
             if (annotation != null && property.equalsIgnoreCase(annotation.value())) {
@@ -722,7 +746,11 @@ public class Table<T> {
      * @param key
      * @return
      */
-    private String key2property(final String key) {
+    String key2property(final String key) {
+        
+        if(key == null || key.isEmpty()) {
+            throw new IllegalArgumentException("Key was null or empty.");
+        }
 
         if (key.contains(" ") || key.contains("-")) {
             LOG.warn("Annotate columns having special characters by using @SerializedName for property: [" + key + "]");
@@ -756,11 +784,11 @@ public class Table<T> {
      */
     private void checkProperties(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        if (propertyExists(item, "id") || propertyExists(item, "createdTime")) {
+        if (propertyExists(item, FIELD_ID) || propertyExists(item, FIELD_CREATED_TIME)) {
             Field[] attributes = item.getClass().getDeclaredFields();
             for (Field attribute : attributes) {
                 String attrName = attribute.getName();
-                if ("id".equals(attrName) || "createdTime".equals(attrName)) {
+                if (FIELD_ID.equals(attrName) || FIELD_CREATED_TIME.equals(attrName)) {
                     if (BeanUtils.getProperty(item, attribute.getName()) != null) {
                         throw new AirtableException("Property " + attrName + " should be null!");
                     }
@@ -773,15 +801,27 @@ public class Table<T> {
 
     }
 
+    /**
+     * Check properties of Attachement objects.
+     * 
+     * @param attachements
+     * @throws AirtableException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException 
+     */
     private void checkPropertiesOfAttachement(List<Attachment> attachements) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if (attachements != null) {
             for (int i = 0; i < attachements.size(); i++) {
-                if (propertyExists(attachements.get(i), "id") || propertyExists(attachements.get(i), "size") || propertyExists(attachements.get(i), "type") || propertyExists(attachements.get(i), "filename")) {
-                    Field[] attributesPhotos = attachements.getClass().getDeclaredFields();
+                if (propertyExists(attachements.get(i), FIELD_ID) || propertyExists(attachements.get(i), "size") 
+                        || propertyExists(attachements.get(i), "type") || propertyExists(attachements.get(i), "filename")) {
+                    
+                    final Field[] attributesPhotos = attachements.getClass().getDeclaredFields();
                     for (Field attributePhoto : attributesPhotos) {
-                        String namePhotoAttribute = attributePhoto.getName();
-                        if (namePhotoAttribute.equals("id") || namePhotoAttribute.equals("size") || namePhotoAttribute.equals("Tpye") || namePhotoAttribute.equals("filename")) {
+                        final String namePhotoAttribute = attributePhoto.getName();
+                        if (FIELD_ID.equals(namePhotoAttribute) || "size".equals(namePhotoAttribute) 
+                                || "type".equals(namePhotoAttribute) || "filename".equals(namePhotoAttribute)) {
                             if (BeanUtils.getProperty(attachements.get(i), namePhotoAttribute) != null) {
                                 throw new AirtableException("Property " + namePhotoAttribute + " should be null!");
                             }
@@ -793,7 +833,6 @@ public class Table<T> {
     }
 
     /**
-     *
      * Get the String Id from the item.
      *
      * @param item
@@ -805,8 +844,8 @@ public class Table<T> {
      */
     private String getIdOfItem(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        if (propertyExists(item, "id")) {
-            final String id = BeanUtils.getProperty(item, "id");
+        if (propertyExists(item, FIELD_ID)) {
+            final String id = BeanUtils.getProperty(item, FIELD_ID);
             if (id != null) {
                 return id;
             }
@@ -831,7 +870,7 @@ public class Table<T> {
 
         for (Field attribute : attributes) {
             String attrName = attribute.getName();
-            if (("id".equals(attrName) || "createdTime".equals(attrName)) 
+            if ((FIELD_ID.equals(attrName) || FIELD_CREATED_TIME.equals(attrName)) 
                     && (BeanUtils.getProperty(item, attrName) != null)) {
                 BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, attrName, null);
             }
