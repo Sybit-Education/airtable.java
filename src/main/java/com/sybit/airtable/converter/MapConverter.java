@@ -38,7 +38,11 @@ public class MapConverter extends AbstractConverter{
      */
     @Override
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
-              
+
+        if(mapClass == null) {
+            throw new IllegalAccessException("mapClass is not initialized by setListClass().");
+        }
+        
         final Class<T> sourceType = (Class<T>) value.getClass();
         Map<String, Object> returnMap = new HashMap<>();
             

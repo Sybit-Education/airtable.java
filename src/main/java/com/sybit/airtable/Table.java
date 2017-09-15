@@ -722,7 +722,7 @@ public class Table<T> {
      * @param key
      * @return
      */
-    private String key2property(String key) {
+    private String key2property(final String key) {
 
         if (key.contains(" ") || key.contains("-")) {
             LOG.warn("Annotate columns having special characters by using @SerializedName for property: [" + key + "]");
@@ -759,12 +759,12 @@ public class Table<T> {
         if (propertyExists(item, "id") || propertyExists(item, "createdTime")) {
             Field[] attributes = item.getClass().getDeclaredFields();
             for (Field attribute : attributes) {
-                String name = attribute.getName();
-                if (name.equals("id") || name.equals("createdTime")) {
+                String attrName = attribute.getName();
+                if ("id".equals(attrName) || "createdTime".equals(attrName)) {
                     if (BeanUtils.getProperty(item, attribute.getName()) != null) {
-                        throw new AirtableException("Property " + name + " should be null!");
+                        throw new AirtableException("Property " + attrName + " should be null!");
                     }
-                } else if (name.equals("photos")) {
+                } else if ("photos".equals(attrName)) {
                     List<Attachment> obj = (List<Attachment>) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(item, "photos");
                     checkPropertiesOfAttachement(obj);
                 }
@@ -806,7 +806,7 @@ public class Table<T> {
     private String getIdOfItem(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if (propertyExists(item, "id")) {
-            String id = BeanUtils.getProperty(item, "id");
+            final String id = BeanUtils.getProperty(item, "id");
             if (id != null) {
                 return id;
             }
@@ -827,12 +827,13 @@ public class Table<T> {
      */
     private T filterFields(T item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        Field[] attributes = item.getClass().getDeclaredFields();
+        final Field[] attributes = item.getClass().getDeclaredFields();
 
         for (Field attribute : attributes) {
-            String name = attribute.getName();
-            if ((name.equals("id") || name.equals("createdTime")) && (BeanUtils.getProperty(item, name) != null)) {
-                BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, name, null);
+            String attrName = attribute.getName();
+            if (("id".equals(attrName) || "createdTime".equals(attrName)) 
+                    && (BeanUtils.getProperty(item, attrName) != null)) {
+                BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, attrName, null);
             }
         }
 

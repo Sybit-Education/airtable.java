@@ -58,12 +58,16 @@ public class ListConverter extends AbstractConverter {
     @Override
     protected <T> T convertToType(final Class<T> type, Object value) throws InstantiationException, IllegalAccessException, InvocationTargetException  {
         
+        if(listClass == null) {
+            throw new IllegalAccessException("listClass is not initialized by setListClass().");
+        }
+        
         List<T> returnList = new ArrayList<>();
           
         if(value instanceof List){
             for (T item: ((List<T>) value)){
                 if(item instanceof LinkedTreeMap){
-                    Object instanz = this.listClass.newInstance();
+                    Object instanz = listClass.newInstance();
                     for (String key : ((LinkedTreeMap<String, Object>) item).keySet()) {
                         Object val = ((LinkedTreeMap) item).get(key);            
                         BeanUtils.setProperty(instanz,key,val);     
