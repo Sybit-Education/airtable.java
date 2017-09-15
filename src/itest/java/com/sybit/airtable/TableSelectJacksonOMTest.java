@@ -1,9 +1,14 @@
+/*
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ */
 package com.sybit.airtable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.sybit.airtable.exception.AirtableException;
-import com.sybit.airtable.movies.ActorSerializedNames;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.mock.WireMockBaseTest;
 import org.apache.http.client.HttpResponseException;
@@ -13,10 +18,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.any;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

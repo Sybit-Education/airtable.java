@@ -6,8 +6,6 @@
  */
 package com.sybit.airtable.movies;
 
-import com.sybit.airtable.movies.*;
-
 public class Director {
 
     private String id;

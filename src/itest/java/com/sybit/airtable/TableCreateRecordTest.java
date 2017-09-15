@@ -1,12 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 package com.sybit.airtable;
 
-import com.sybit.airtable.Base;
-import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.movies.Movie;

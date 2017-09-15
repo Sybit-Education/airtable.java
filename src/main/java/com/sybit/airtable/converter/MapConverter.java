@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 package com.sybit.airtable.converter;
 
@@ -27,13 +28,13 @@ public class MapConverter extends AbstractConverter{
     private Class mapClass;
 
     /**
-     * Converts the Input Object into a <code>Map</code>.
-     * 
+     * Converts the input object into a <code>Map</code> object.
      *  
-     * @param type The type of the Input Object
-     * @param value The value of the Input Object
-     * @return A Map
-     * @throws Throwable 
+     * @param <T> Target type of the conversion.
+     * @param type Data type to which this value should be converted.
+     * @param value TThe input value to be converted.
+     * @return The converted <code>Map</code>
+     * @throws Throwable if an error occurs converting to the specified type 
      */
     @Override
     protected <T> T convertToType(Class<T> type, Object value) throws Throwable {
