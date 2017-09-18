@@ -29,101 +29,101 @@ import org.junit.After;
  */
 public class WireMockBaseTest {
 
-    private static class WiremockProp {
+    private class WiremockProp {
 
-        private static boolean recording;
+        private boolean recording;
 
-        private static boolean cleanDirectorys;
+        private boolean cleanDirectorys;
 
-        private static String targetUrl;
+        private String targetUrl;
 
-        private static String proxyBase;
+        private String proxyBase;
 
-        private static int proxyPort;
+        private int proxyPort;
 
-        private static int serverPort;
+        private int serverPort;
 
         /**
          * @return the recording
          */
-        public static boolean isRecording() {
+        public boolean isRecording() {
             return recording;
         }
 
         /**
          * @param aRecording the recording to set
          */
-        public static void setRecording(boolean aRecording) {
+        public void setRecording(boolean aRecording) {
             recording = aRecording;
         }
 
         /**
          * @return the cleanDirectorys
          */
-        public static boolean isCleanDirectorys() {
+        public boolean isCleanDirectorys() {
             return cleanDirectorys;
         }
 
         /**
          * @param aCleanDirectorys the cleanDirectorys to set
          */
-        public static void setCleanDirectorys(boolean aCleanDirectorys) {
+        public void setCleanDirectorys(boolean aCleanDirectorys) {
             cleanDirectorys = aCleanDirectorys;
         }
 
         /**
          * @return the targetUrl
          */
-        public static String getTargetUrl() {
+        public String getTargetUrl() {
             return targetUrl;
         }
 
         /**
          * @param aTargetUrl the targetUrl to set
          */
-        public static void setTargetUrl(String aTargetUrl) {
+        public void setTargetUrl(String aTargetUrl) {
             targetUrl = aTargetUrl;
         }
 
         /**
          * @return the proxyBase
          */
-        public static String getProxyBase() {
+        public String getProxyBase() {
             return proxyBase;
         }
 
         /**
          * @param aProxyBase the proxyBase to set
          */
-        public static void setProxyBase(String aProxyBase) {
+        public void setProxyBase(String aProxyBase) {
             proxyBase = aProxyBase;
         }
 
         /**
          * @return the proxyPort
          */
-        public static int getProxyPort() {
+        public int getProxyPort() {
             return proxyPort;
         }
 
         /**
          * @param aProxyPort the proxyPort to set
          */
-        public static void setProxyPort(int aProxyPort) {
+        public void setProxyPort(int aProxyPort) {
             proxyPort = aProxyPort;
         }
 
         /**
          * @return the serverPort
          */
-        public static int getServerPort() {
+        public int getServerPort() {
             return serverPort;
         }
 
         /**
          * @param aServerPort the serverPort to set
          */
-        public static void setServerPort(int aServerPort) {
+        public void setServerPort(int aServerPort) {
             serverPort = aServerPort;
         }
     };
@@ -142,26 +142,26 @@ public class WireMockBaseTest {
         airtable.setEndpointUrl("http://localhost:8080");
         base = airtable.base("appTtHA5PfJnVfjdu");
         
-        WiremockProp.setRecording(false);
-        WiremockProp.setCleanDirectorys(false);
-        WiremockProp.setProxyBase("192.168.1.254");
-        WiremockProp.setProxyPort(8080);
-        WiremockProp.setServerPort(8080);
-        WiremockProp.setTargetUrl("https://api.airtable.com/v0");
+        prop.setRecording(false);
+        prop.setCleanDirectorys(false);
+        prop.setProxyBase("192.168.1.254");
+        prop.setProxyPort(8080);
+        prop.setServerPort(8080);
+        prop.setTargetUrl("https://api.airtable.com/v0");
 
-        if (WiremockProp.getProxyBase() != null && WiremockProp.getProxyPort() != 0) {
-            wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(WiremockProp.getServerPort()).proxyVia(WiremockProp.getProxyBase(), WiremockProp.getProxyPort()));
+        if (prop.getProxyBase() != null && prop.getProxyPort() != 0) {
+            wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(prop.getServerPort()).proxyVia(prop.getProxyBase(), prop.getProxyPort()));
         } else {
-            wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(WiremockProp.getServerPort()));
+            wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(prop.getServerPort()));
         }
 
         //start the Wiremock-Server
         startServer();
 
         //check if record 
-        if (WiremockProp.isRecording()) {
+        if (prop.isRecording()) {
             //check if cleanDirectorys
-            if (WiremockProp.isCleanDirectorys()) {
+            if (prop.isCleanDirectorys()) {
                 cleanExistingRecords();
                 startRecording();
             } else {
