@@ -163,6 +163,7 @@ public class Table<T> {
             }
             if (query.getPageSize() != null) {
                 if (query.getPageSize() > 100) {
+                    LOG.warn("pageSize is limited to max 100 but was " + query.getPageSize());
                     request.queryString("pageSize", 100);
                 } else {
                     request.queryString("pageSize", query.getPageSize());
@@ -187,7 +188,7 @@ public class Table<T> {
         }
 
         int code = response.getStatus();
-        List<T> list = null;
+        List<T> list;
         if (200 == code) {
             list = getList(response);
 
@@ -198,6 +199,7 @@ public class Table<T> {
             }
         } else {
             HttpResponseExceptionHandler.onResponse(response);
+            list = null;
         }
 
         return list;
