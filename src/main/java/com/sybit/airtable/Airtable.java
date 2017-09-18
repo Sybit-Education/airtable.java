@@ -114,11 +114,11 @@ public class Airtable {
     }
 
     /**
-     *
-     * @param config
+     * Configure the Airtable client by given config.
+     * 
+     * @param config Configuration of client.
      * @return
-     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or
-     * Endpoint
+     * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config) throws AirtableException {
@@ -126,12 +126,12 @@ public class Airtable {
     }
 
     /**
-     *
-     * @param config
+     * Configure the Airtable client by given config.
+     * 
+     * @param config Configuration of client.
      * @param objectMapper A custom ObjectMapper implementation
      * @return
-     * @throws com.sybit.airtable.exception.AirtableException Missing API-Key or
-     * Endpoint
+     * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
     public Airtable configure(Configuration config, ObjectMapper objectMapper) throws AirtableException {
@@ -174,17 +174,16 @@ public class Airtable {
     }
 
     /**
-     * Set Proxy Manually.
+     * Set Proxy manually.
      *
-     * @param proxy
+     * @param proxy the proxy.
      */
     public void setProxy(String proxy) {
 
+        this.config.setProxy(proxy);
         if (proxy == null) {
-            this.config.setProxy(proxy);
             Unirest.setProxy(null);
         } else {
-            this.config.setProxy(proxy);
             Unirest.setProxy(HttpHost.create(this.config.getProxy()));
         }
 
@@ -194,7 +193,7 @@ public class Airtable {
      * Set Proxy environment in Configuration.
      *
      * Proxy will be ignored for endpointUrls containing <code>localhost</code>
-     * or <code>127.0.0.1,/code>
+     * or <code>127.0.0.1</code>.
      *
      * @param endpointUrl
      */

@@ -1,12 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 package com.sybit.airtable;
 
-import com.sybit.airtable.Base;
-import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.mock.WireMockBaseTest;
@@ -24,11 +23,10 @@ public class TableUpdateTest extends WireMockBaseTest {
     @Test
     public void testUpdateActor() throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
         
-        Base base = airtable.base("appe9941ff07fffcc");
         
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor marlonBrando = new Actor();
-        marlonBrando.setId("rec514228ed76ced1");
+        marlonBrando.setId("recEtUIW6FWtbEDKz");
         marlonBrando.setName("Neuer Name");
                    
         Actor updated = actorTable.update(marlonBrando);

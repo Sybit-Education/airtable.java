@@ -1,0 +1,39 @@
+{
+  "id" : "bb5553df-2eee-4dae-8916-1a292290f92b",
+  "name" : "appttha5pfjnvfjdu_movies",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Movies",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      }
+    },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"fields\":{\"Name\":\"Neuer Film\",\"Photos\":[{\"url\":\"https://www.example.imgae.file1.de\"},{\"url\":\"https://www.example.imgae.file2.de\"}]}}",
+      "ignoreArrayOrder" : false,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "appttha5pfjnvfjdu_movies-bb5553df-2eee-4dae-8916-1a292290f92b.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:09:26 GMT",
+      "ETag" : "W/\"139-NxJexOkTTnujok9tSJlCo7bvj3M\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "bb5553df-2eee-4dae-8916-1a292290f92b",
+  "persistent" : true
+}

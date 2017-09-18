@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License (MIT)
+ * Copyright (c) 2017 Sybit GmbH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 package com.sybit.airtable;
 
@@ -26,13 +27,15 @@ class GsonObjectMapper implements ObjectMapper {
      
     }
 
+    @Override
     public <T> T readValue(String value, Class<T> valueType) {
-        LOG.log(Level.FINE, "readValue: \n" + value);
+        LOG.log(Level.FINE, "readValue: \n{0}", value);
         return gson.fromJson(value, valueType);
     }
 
+    @Override
     public String writeValue(Object value) {
-        LOG.log(Level.FINE, "writeValue: \n" + value);
+        LOG.log(Level.FINE, "writeValue: \n{0}", value);
         return gson.toJson(value);
     }
 

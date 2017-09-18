@@ -6,8 +6,6 @@
  */
 package com.sybit.airtable;
 
-import com.sybit.airtable.Base;
-import com.sybit.airtable.Table;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.mock.WireMockBaseTest;
@@ -25,19 +23,15 @@ public class TableFindTest extends WireMockBaseTest {
     @Test
     public void testFind() throws AirtableException, HttpResponseException {
 
-        Base base = airtable.base("appe9941ff07fffcc");
-
         Table<Actor> actorTable = base.table("Actors", Actor.class);
-        Actor actor = actorTable.find("rec514228ed76ced1");
+        Actor actor = actorTable.find("recEtUIW6FWtbEDKz");
         assertNotNull(actor);
-        assertEquals("rec514228ed76ced1", actor.getId());
+        assertEquals("recEtUIW6FWtbEDKz", actor.getId());
         assertEquals("Marlon Brando", actor.getName());
     }
 
     @Test(expected = AirtableException.class)
     public void testFindNotFound() throws AirtableException, HttpResponseException {
-
-        Base base = airtable.base("appe9941ff07fffcc");
 
         Table<Actor> actorTable = base.table("Actors", Actor.class);
         Actor actor = actorTable.find("notexistend");
