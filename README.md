@@ -7,7 +7,9 @@
 
 # Airtable.java
 
-Java API for Airtable (http://www.airtable.com). The Airtable API provides a simple way of accessing your data within your Java project.
+This is a Java API client for Airtable (http://www.airtable.com). 
+
+The Airtable API provides a simple way of accessing data within Java projects.
 
 More information about the Airtable API could be found at [https://airtable.com/api](https://airtable.com/api). 
 The documentation will provide detailed information about your created base.
@@ -251,6 +253,10 @@ List<Movie> retval = base.table("Movies", Movie.class).select();
 
 Detailed example see [TableSelectTest.java](https://github.com/Sybit-Education/airtable.java/blob/develop/src/itest/java/com/sybit/airtable/TableSelectTest.java)
 
+### API Result Limitation
+The REST-API of Airtable is limited to return max. 100 records. If the select has more than 100 records in result an `offest` is added to
+returned data. The Airtable.java client will solve this and tries to load the offset data automatically. 
+
 ## Find
 Use `find` to get specific records of table:
 
@@ -333,12 +339,13 @@ Short overview of features, which are supported:
   + [x] SelectAll
   + [x] Queries (`maxRecords`, `sort` & `view` )
   + [x] Support of `filterByFormula`
-  + [x] Support of Paging
+  + [x] Support of `paging`
+  + [x] Support of appending `offset` data
 
 + [x] Find Record
-
 + [x] Create Record
 + [x] Update Record
++ [ ] Replace Record (could be done by update)
 + [x] Delete/Destroy Record
 + General requirements
     + [x] Automatic ObjectMapping
