@@ -24,10 +24,16 @@ import org.junit.After;
 /**
  * Base Class to test using WireMock.
  *
- * Config files for the requests are stored at
- * 'src/test/resources/__files' and 'src/test/resources/mappings'.
+ * Config files for the requests are stored at 'src/test/resources/__files' and
+ * 'src/test/resources/mappings'.
  */
 public class WireMockBaseTest {
+
+    private static WireMockServer wireMockServer;
+    private static WiremockProp prop;
+
+    protected static Airtable airtable = new Airtable();
+    protected static Base base;
 
     private class WiremockProp {
 
@@ -128,20 +134,14 @@ public class WireMockBaseTest {
         }
     };
 
-    private static WireMockServer wireMockServer;
-    private static WiremockProp prop;
-    
-    protected static Airtable airtable = new Airtable();
-    protected static Base base;
-
     @Before
     public void setUp() throws AirtableException {
-        
+
         airtable.configure();
         airtable.setProxy("127.0.0.1");
         airtable.setEndpointUrl("http://localhost:8080");
         base = airtable.base("appTtHA5PfJnVfjdu");
-        
+
         prop.setRecording(false);
         prop.setCleanDirectorys(false);
         prop.setProxyBase("192.168.1.254");
@@ -223,4 +223,3 @@ public class WireMockBaseTest {
     }
 
 }
-
