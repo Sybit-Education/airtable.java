@@ -142,6 +142,7 @@ public class WireMockBaseTest {
         airtable.setEndpointUrl("http://localhost:8080");
         base = airtable.base("appTtHA5PfJnVfjdu");
 
+        prop = new WiremockProp();
         prop.setRecording(false);
         prop.setCleanDirectorys(false);
         prop.setProxyBase("192.168.1.254");
