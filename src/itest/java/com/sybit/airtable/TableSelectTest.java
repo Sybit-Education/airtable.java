@@ -79,6 +79,19 @@ public class TableSelectTest extends WireMockBaseTest {
         assertNotNull(retval);
     }
 
+    @Test
+    public void testSelectNonExistingTableExceptionMessage() throws HttpResponseException {
+
+        String message;
+        try {
+            List<Movie> retval = base.table("NotExists", Movie.class).select();
+            message = "Success";
+        } catch (AirtableException e) {
+            message = e.getMessage();
+        }
+        assertEquals("Could not find table NotExists in application " + base.name() + " (TABLE_NOT_FOUND) [Http code 404]", message);
+    }
+
 //    @Test
 //    public void testSelectWithSerializedNames() throws AirtableException, HttpResponseException {
 //

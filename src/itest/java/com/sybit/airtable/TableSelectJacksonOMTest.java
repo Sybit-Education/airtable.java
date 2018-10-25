@@ -7,6 +7,7 @@
 package com.sybit.airtable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
@@ -36,6 +37,15 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
             public <T> T readValue(final String value, final Class<T> valueType) {
                 try {
                     return objectMapper.readValue(value, valueType);
+                } catch (UnrecognizedPropertyException e) {
+                    try {
+                        // dummy instance to follow code flow and execute HttpResponseExceptionHandler.onResponse
+                        T instance = valueType.newInstance();
+                        return instance;
+                    }
+                    catch (IllegalAccessException | InstantiationException e1) {
+                        throw new RuntimeException(e);
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -120,4 +130,16 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
 
+    @Test
+    public void testSelectNonExistingExceptionMessageTable() throws HttpResponseException {
+
+        String message;
+        try {
+            List<Movie> retval = base.table("NotExists", Movie.class).select();
+            message = "Success";
+        } catch (AirtableException e) {
+            message = e.getMessage();
+        }
+        assertEquals("Could not find table NotExists in application " + base.name() + " (TABLE_NOT_FOUND) [Http code 404]", message);
+    }
 }
