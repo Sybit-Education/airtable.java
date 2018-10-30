@@ -135,7 +135,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
 
         String message;
         try {
-            List<Movie> retval = base.table("NotExists", Movie.class).select();
+            base.table("NotExists", Movie.class).select();
             message = "Success";
         } catch (AirtableException e) {
             message = e.getMessage();
