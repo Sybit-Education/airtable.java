@@ -20,3 +20,5 @@ src/itest/resources/credentials.properties
 # IDE
 .idea
 src/itest/resources/credentials.properties
+out/
+*.iml
