@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Representation Class of Airtable Tables.
@@ -197,12 +199,26 @@ public class Table<T> {
             if (offset != null) {
                 list.addAll(this.select(query, offset));
             }
+        } else if (429 == code) {
+            randomWait();
+            return select(query);
         } else {
             HttpResponseExceptionHandler.onResponse(response);
             list = null;
         }
 
         return list;
+    }
+
+    /**
+     * Performs a sleep for random time period between 30 and 35 seconds
+     */
+    private void randomWait() {
+        try {
+            TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(30, 36));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
@@ -491,6 +507,9 @@ public class Table<T> {
 
         if (200 == code) {
             body = response.getBody();
+        } else if (429 == code) {
+            randomWait();
+            return find(id);
         } else {
             HttpResponseExceptionHandler.onResponse(response);
             body = null;
@@ -538,6 +557,9 @@ public class Table<T> {
 
         if (200 == code) {
             responseBody = response.getBody();
+        } else if (429 == code) {
+            randomWait();
+            return create(item);
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }
@@ -586,6 +608,9 @@ public class Table<T> {
 
         if (200 == code) {
             responseBody = response.getBody();
+        } else if (429 == code) {
+            randomWait();
+            return update(item);
         } else {
             HttpResponseExceptionHandler.onResponse(response);
         }
@@ -638,6 +663,9 @@ public class Table<T> {
         if (200 == code) {
             Delete body = response.getBody();
             isDeleted = body.isDeleted();
+        } else if (429 == code) {
+            randomWait();
+            return destroy(id);
         } else {
             isDeleted = false;
             HttpResponseExceptionHandler.onResponse(response);
