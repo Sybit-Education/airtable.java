@@ -117,6 +117,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+task fatJar(type: Jar) {
+    baseName = 'airtable.java-fat'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
 // add javadoc/source jar tasks as artifacts
 artifacts {
     archives sourcesJar, javadocJar
