@@ -135,7 +135,7 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
 }
 
 task integrationTest(type: Test) {
-  testClassesDir = sourceSets.integrationTest.output.classesDir
+  testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
   // This is not needed, but I like to see which tests have run
   testLogging {
