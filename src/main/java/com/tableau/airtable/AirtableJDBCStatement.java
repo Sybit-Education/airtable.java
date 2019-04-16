@@ -2,7 +2,6 @@ package com.tableau.airtable;
 
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Table;
-import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.RecordItem;
 
 import java.sql.*;
