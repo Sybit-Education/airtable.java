@@ -1,4 +1,4 @@
-package com.sybit.airtable;
+package com.tableau.airtable;
 
 import com.sybit.airtable.exception.AirtableException;
 

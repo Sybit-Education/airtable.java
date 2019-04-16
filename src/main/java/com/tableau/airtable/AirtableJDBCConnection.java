@@ -1,25 +1,97 @@
-package com.sybit.airtable;
+package com.tableau.airtable;
 
+import com.sybit.airtable.Airtable;
+import com.sybit.airtable.Base;
+import com.sybit.airtable.Configuration;
 import com.sybit.airtable.exception.AirtableException;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 public class AirtableJDBCConnection implements Connection {
 
     private Airtable at;
     private Base base;
+    private String baseName;
+    private boolean connected = false;
 
-    public AirtableJDBCConnection(String url, String base, String apiKey) throws AirtableException {
+    public AirtableJDBCConnection(String url, String baseName, String apiKey) throws AirtableException {
         at = new Airtable();
         at.configure(new Configuration(apiKey, url, null));
-        this.base = new Base(base, at);
+        this.baseName = baseName;
+        this.base = new Base(baseName, at);
+        this.connected = true;
     }
 
     @Override
     public Statement createStatement() throws SQLException {
+        if (!this.connected)
+            throw new SQLException("Not Connected");
+        return new AirtableJDBCStatement(base, this);
+    }
+
+    @Override
+    public void close() throws SQLException {
+        this.connected = false;
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return this.connected;
+    }
+
+    @Override
+    public boolean isReadOnly() throws SQLException {
+        return true;
+    }
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
         return null;
+    }
+
+    @Override
+    public void setCatalog(String database) throws SQLException {
+        this.base = new Base(database, at);
+    }
+
+    @Override
+    public String getCatalog() throws SQLException {
+        return this.baseName;
+
+    }
+
+    @Override
+    public boolean isValid(int i) throws SQLException {
+        return this.connected;
+    }
+
+    ////////////////////////////////////////////////////////////////
+
+    public void setNetworkTimeout(Executor executor,
+                           int milliseconds)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public int getNetworkTimeout()
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void abort(Executor executor)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public String getSchema() {
+        return null;
+    }
+
+    public void setSchema(String schema) {
+
     }
 
     @Override
@@ -58,39 +130,10 @@ public class AirtableJDBCConnection implements Connection {
     }
 
     @Override
-    public void close() throws SQLException {
-
-    }
-
-    @Override
-    public boolean isClosed() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
     public void setReadOnly(boolean b) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
-    @Override
-    public boolean isReadOnly() throws SQLException {
-        return true;
-    }
-
-    @Override
-    public void setCatalog(String database) throws SQLException {
-        this.base = new Base(database, at);
-    }
-
-    @Override
-    public String getCatalog() throws SQLException {
-        return null;
-    }
 
     @Override
     public void setTransactionIsolation(int i) throws SQLException {
@@ -215,11 +258,6 @@ public class AirtableJDBCConnection implements Connection {
     @Override
     public SQLXML createSQLXML() throws SQLException {
         throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public boolean isValid(int i) throws SQLException {
-        return false;
     }
 
     @Override
