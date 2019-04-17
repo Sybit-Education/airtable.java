@@ -13,18 +13,18 @@ public class AirtableJDBCStatement implements Statement {
     private Connection connection;
     private boolean poolable = true;
     private boolean closeOnCompletion = false;
+    private ResultSet currentResultSet;
 
-    public AirtableJDBCStatement(Base base, Connection connection) {
+    AirtableJDBCStatement(Base base, Connection connection) {
         this.base = base;
         this.connection = connection;
     }
 
-    @Override
     public ResultSet executeQuery(String s) throws SQLException {
         Table<RecordItem> table = new Table<RecordItem>(s, RecordItem.class, base);
         try {
             List<RecordItem> results = table.select();
-            return new AirtableJDBCResultSet(results);
+            return new AirtableJDBCResultSet(results, this);
         } catch (Exception ae) {
             throw new SQLException(ae);
         }
@@ -32,22 +32,32 @@ public class AirtableJDBCStatement implements Statement {
 
     @Override
     public boolean execute(String s) throws SQLException {
-        return false;
+        currentResultSet = executeQuery(s);
+        return true;
     }
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        return null;
+        if (currentResultSet == null) {
+            throw new SQLException("No query executed");
+        }
+        if (cancelled) throw new SQLException("Statement cancelled");
+        return currentResultSet;
+    }
+
+    @Override
+    public void close() throws SQLException {
+        currentResultSet = null;
+    }
+
+    @Override
+    public void cancel() throws SQLException {
+        cancelled = true;
     }
 
     @Override
     public int executeUpdate(String s) throws SQLException {
         throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void close() throws SQLException {
-
     }
 
     @Override
@@ -83,11 +93,6 @@ public class AirtableJDBCStatement implements Statement {
     @Override
     public void setQueryTimeout(int i) throws SQLException {
         throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void cancel() throws SQLException {
-        cancelled = true;
     }
 
     @Override

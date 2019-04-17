@@ -8,15 +8,28 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AirtableJDBCResultSet implements ResultSet {
     private List<RecordItem> results;
+    private Map<Integer, String> fieldMap = new HashMap<>();
+    private Map<Integer, Class<?>> typeMap = new HashMap<>();
+    private Statement statement;
     private int row = 0;
 
-    AirtableJDBCResultSet(List<RecordItem> results) {
+    AirtableJDBCResultSet(List<RecordItem> results, Statement statement) {
         this.results = results;
+        this.statement = statement;
+        if (results.size() > 0) {
+            int i = 0;
+            RecordItem firstItem = results.get(0);
+            firstItem.getFields().forEach((k, v)-> {
+                fieldMap.put(i, k);
+                typeMap.put(i, v.getClass());
+            });
+        }
     }
 
     @Override
@@ -30,6 +43,16 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public void close() throws SQLException {
 
+    }
+
+    @Override
+    public Statement getStatement() throws SQLException {
+        return statement;
+    }
+
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return new AirtableJDBCResultSetMetadata(fieldMap, typeMap);
     }
 
     @Override
@@ -209,11 +232,6 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public String getCursorName() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
         return null;
     }
 
@@ -580,11 +598,6 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public void moveToCurrentRow() throws SQLException {
         throw new SQLFeatureNotSupportedException("In place updates not supported");
-    }
-
-    @Override
-    public Statement getStatement() throws SQLException {
-        return null;
     }
 
     @Override

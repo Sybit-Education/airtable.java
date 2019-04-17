@@ -4,17 +4,22 @@ import com.sybit.airtable.vo.RecordItem;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
-    private RecordItem firstItem;
+    private Map<Integer, String> fieldMap = new HashMap<>();
+    private Map<Integer, Class<?>> typeMap = new HashMap<>();
 
-    public AirtableJDBCResultSetMetadata(RecordItem firstItem) {
-        this.firstItem = firstItem;
+    AirtableJDBCResultSetMetadata(Map<Integer, String> fieldMap, Map<Integer, Class<?>> typeMap) {
+        this.fieldMap = fieldMap;
+        this.typeMap = typeMap;
     }
 
     @Override
     public int getColumnCount() throws SQLException {
-        return firstItem.getFields().size();
+        return fieldMap.size();
     }
 
     @Override
@@ -24,7 +29,7 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public boolean isCaseSensitive(int column) throws SQLException {
-        return false;
+        return true;
     }
 
     @Override
@@ -54,12 +59,13 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        return null;
+        return getColumnName(column);
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return null;
+        if (column > fieldMap.size()) throw new SQLException("Invalid column");
+        return fieldMap.get(column);
     }
 
     @Override
@@ -89,12 +95,28 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        return 0;
+        if (column > typeMap.size()) throw new SQLException("Invalid column");
+
+        Class<?> aClass = typeMap.get(column);
+        if (Integer.class.equals(aClass)) {
+            return Types.INTEGER;
+        } else if (String.class.equals(aClass)) {
+            return Types.VARCHAR;
+        } else if (Float.class.equals(aClass)) {
+            return Types.FLOAT;
+        }
+        return Types.OTHER;
     }
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        return null;
+        return getColumnClassName(column);
+    }
+
+    @Override
+    public String getColumnClassName(int column) throws SQLException {
+        if (column > typeMap.size()) throw new SQLException("Invalid column");
+        return typeMap.get(column).getName();
     }
 
     @Override
@@ -112,10 +134,6 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
         return false;
     }
 
-    @Override
-    public String getColumnClassName(int column) throws SQLException {
-        return null;
-    }
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {

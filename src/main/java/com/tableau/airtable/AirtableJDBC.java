@@ -30,7 +30,7 @@ public class AirtableJDBC implements Driver {
     public DriverPropertyInfo[] getPropertyInfo(String url,
                                                 Properties info)
             throws SQLException {
-        return new DriverPropertyInfo[]{new DriverPropertyInfo("apiKey", null),
+        return new DriverPropertyInfo[]{new DriverPropertyInfo("key", null),
                                         new DriverPropertyInfo("base", null)};
     }
 
@@ -52,7 +52,8 @@ public class AirtableJDBC implements Driver {
         try {
             return new AirtableJDBCConnection(apiEndpoint, base, apiKey);
         } catch (AirtableException e) {
-            throw new SQLException(e);
+            e.printStackTrace();
+            throw new SQLException("Invalid airtable parameters", e);
         }
     }
 }
