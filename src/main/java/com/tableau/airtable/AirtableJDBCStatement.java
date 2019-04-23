@@ -24,7 +24,8 @@ public class AirtableJDBCStatement implements Statement {
         Table<RecordItem> table = new Table<RecordItem>(s, RecordItem.class, base);
         try {
             List<RecordItem> results = table.select();
-            return new AirtableJDBCResultSet(results, this);
+            currentResultSet = new AirtableJDBCResultSet(results, this);
+            return currentResultSet;
         } catch (Exception ae) {
             throw new SQLException(ae);
         }
@@ -32,7 +33,7 @@ public class AirtableJDBCStatement implements Statement {
 
     @Override
     public boolean execute(String s) throws SQLException {
-        currentResultSet = executeQuery(s);
+        executeQuery(s);
         return true;
     }
 
@@ -217,7 +218,7 @@ public class AirtableJDBCStatement implements Statement {
 
     @Override
     public boolean isClosed() throws SQLException {
-        return connection.isClosed();
+        return currentResultSet == null;
     }
 
     @Override

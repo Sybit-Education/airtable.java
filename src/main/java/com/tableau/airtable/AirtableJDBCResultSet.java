@@ -23,26 +23,84 @@ public class AirtableJDBCResultSet implements ResultSet {
         this.results = results;
         this.statement = statement;
         if (results.size() > 0) {
-            int i = 0;
-            RecordItem firstItem = results.get(0);
-            firstItem.getFields().forEach((k, v)-> {
+            int i = 1;
+            fieldMap.put(i, "id");
+            typeMap.put(i++, String.class);
+            fieldMap.put(i, "createdTime");
+            typeMap.put(i++, String.class);
+
+
+            RecordItem firstItem = results.get(0).getFields()
+
+            for (Map.Entry<String, Object> entry : firstItem.getFields().entrySet()) {
+                String k = entry.getKey();
+                Object v = entry.getValue();
+                System.out.println("FIELD: " + k + " index: " + i + " class: " + v.getClass());
                 fieldMap.put(i, k);
                 typeMap.put(i, v.getClass());
-            });
+                i++;
+            }
         }
     }
 
     @Override
     public boolean next() throws SQLException {
-        if (results.size() >= row)
+        if (row >= results.size())
             return false;
         row++;
         return true;
     }
 
     @Override
-    public void close() throws SQLException {
+    public boolean first() throws SQLException {
+        row = 0;
+        return true;
+    }
 
+    @Override
+    public boolean last() throws SQLException {
+        row = results.size() - 1;
+        return true;
+    }
+
+    @Override
+    public boolean isBeforeFirst() throws SQLException {
+        return row < 0;
+    }
+
+    @Override
+    public boolean isAfterLast() throws SQLException {
+        return row >= results.size();
+    }
+
+    @Override
+    public boolean isFirst() throws SQLException {
+        return row == 0;
+    }
+
+    @Override
+    public boolean isLast() throws SQLException {
+        return row == results.size() - 1;
+    }
+
+    @Override
+    public void beforeFirst() throws SQLException {
+        row = -1;
+    }
+
+    @Override
+    public void afterLast() throws SQLException {
+        row = results.size();
+    }
+
+    @Override
+    public int getRow() throws SQLException {
+        return row;
+    }
+
+    @Override
+    public void close() throws SQLException {
+        statement.close();
     }
 
     @Override
@@ -62,7 +120,23 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        return null;
+        return getObject(columnIndex).toString();
+    }
+
+    @Override
+    public Object getObject(int columnIndex) throws SQLException {
+        if (isAfterLast() || isBeforeFirst())
+            throw new SQLException("No data");
+        if (columnIndex < 1 || columnIndex > fieldMap.size())
+            throw new SQLException("Invalid Column");
+        if (statement.isClosed())
+            throw new SQLException("Result Set Closed");
+        RecordItem record = results.get(row);
+        String fieldName = fieldMap.get(columnIndex);
+        if (fieldName == null)
+            throw new SQLException("Invalid field index " + columnIndex);
+        Map<String, Object> fields = record.getFields();
+        return fields.get(fieldName);
     }
 
     @Override
@@ -236,11 +310,6 @@ public class AirtableJDBCResultSet implements ResultSet {
     }
 
     @Override
-    public Object getObject(int columnIndex) throws SQLException {
-        return null;
-    }
-
-    @Override
     public Object getObject(String columnLabel) throws SQLException {
         return null;
     }
@@ -268,51 +337,6 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
         return null;
-    }
-
-    @Override
-    public boolean isBeforeFirst() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean isAfterLast() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean isFirst() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean isLast() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public void beforeFirst() throws SQLException {
-
-    }
-
-    @Override
-    public void afterLast() throws SQLException {
-
-    }
-
-    @Override
-    public boolean first() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean last() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public int getRow() throws SQLException {
-        return 0;
     }
 
     @Override
