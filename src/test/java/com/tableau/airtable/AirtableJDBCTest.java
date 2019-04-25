@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+
 
 import java.sql.*;
 import java.util.Properties;
@@ -38,9 +40,23 @@ public class AirtableJDBCTest {
     public void testExecuteQuery() throws SQLException {
         Statement stmt = createStatement();
         ResultSet rs = stmt.executeQuery("Breeding%20Plants");
+        ResultSetMetaData rsm = rs.getMetaData();
+        assertTrue(rsm.getColumnCount() == 17);
         while(!rs.isLast()) {
-            System.out.println(rs.getString(1));
+            for (int col = 1; col <= rsm.getColumnCount(); col++) {
+                Object obj = rs.getObject(col);
+                if (obj != null)
+                    System.out.print(obj.toString() + "\t");
+                else
+                    System.out.print("NULL\t");
+            }
+            System.out.println();
             rs.next();
         }
+    }
+
+    @Test
+    public void testResultSetMetadata() throws SQLException {
+
     }
 }

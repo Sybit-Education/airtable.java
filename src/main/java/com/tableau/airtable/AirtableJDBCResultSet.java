@@ -23,24 +23,31 @@ public class AirtableJDBCResultSet implements ResultSet {
         this.results = results;
         this.statement = statement;
         if (results.size() > 0) {
-            int i = 1;
-            fieldMap.put(i, "id");
-            typeMap.put(i++, String.class);
-            fieldMap.put(i, "createdTime");
-            typeMap.put(i++, String.class);
+            RecordItem firstItem = results.get(0);
+            importMetadata(firstItem.getFields());
+        }
+    }
 
+    private int importMetadata(Map<String, Object> columns) {
+        return importMetadata(columns, 1);
+    }
 
-            RecordItem firstItem = results.get(0).getFields()
-
-            for (Map.Entry<String, Object> entry : firstItem.getFields().entrySet()) {
-                String k = entry.getKey();
-                Object v = entry.getValue();
+    private int importMetadata(Map<String, Object> columns, int column) {
+        int i = column;
+        for (Map.Entry<String, Object> entry : columns.entrySet()) {
+            String k = entry.getKey();
+            Object v = entry.getValue();
+            if ("fields".equals(k) && Map.class.isAssignableFrom(v.getClass())) {
+                //noinspection unchecked
+                i = importMetadata((Map<String, Object>)v, i);
+            } else {
                 System.out.println("FIELD: " + k + " index: " + i + " class: " + v.getClass());
                 fieldMap.put(i, k);
                 typeMap.put(i, v.getClass());
-                i++;
             }
+            i++;
         }
+        return i - 1;
     }
 
     @Override
@@ -120,7 +127,50 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        return getObject(columnIndex).toString();
+        Object obj = getObject(columnIndex);
+        if (obj.getClass() == String.class) {
+            return (String) obj;
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        Object obj = getObject(columnIndex);
+        return (T) obj;
+    }
+
+    @Override
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+        Object obj = getObject(columnLabel);
+        return (T) obj;
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Object getObject(String fieldName) throws SQLException {
+        if (fieldName == null)
+            throw new SQLException("Invalid field " + fieldName);
+        RecordItem record = results.get(row);
+        Map<String, Object> fields = record.getFields();
+        if (fields.containsKey(fieldName)) {
+            return fields.get(fieldName);
+        }
+        if (fields.containsKey("fields")) {
+            Map<String, Object> innerFields = (Map<String, Object>)fields.get("fields");
+            if (innerFields != null)
+                return innerFields.get(fieldName);
+        }
+        return null;
     }
 
     @Override
@@ -131,167 +181,216 @@ public class AirtableJDBCResultSet implements ResultSet {
             throw new SQLException("Invalid Column");
         if (statement.isClosed())
             throw new SQLException("Result Set Closed");
-        RecordItem record = results.get(row);
         String fieldName = fieldMap.get(columnIndex);
-        if (fieldName == null)
-            throw new SQLException("Invalid field index " + columnIndex);
-        Map<String, Object> fields = record.getFields();
-        return fields.get(fieldName);
+        return getObject(fieldName);
     }
 
     @Override
     public boolean getBoolean(int columnIndex) throws SQLException {
-        return false;
+        return getObject(columnIndex, Boolean.class);
     }
 
     @Override
     public byte getByte(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Byte.class);
     }
 
     @Override
     public short getShort(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Short.class);
     }
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Integer.class);
     }
 
     @Override
     public long getLong(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Long.class);
     }
 
     @Override
     public float getFloat(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Float.class);
     }
 
     @Override
     public double getDouble(int columnIndex) throws SQLException {
-        return 0;
+        return getObject(columnIndex, Double.class);
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-        return null;
+        return getObject(columnIndex, BigDecimal.class);
     }
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
+        Object obj = getObject(columnIndex);
+        if (Byte[].class.isAssignableFrom(obj.getClass())) {
+            return (byte[]) obj;
+        }
         return new byte[0];
     }
 
     @Override
     public Date getDate(int columnIndex) throws SQLException {
-        return null;
+        return getObject(columnIndex, Date.class);
     }
 
     @Override
     public Time getTime(int columnIndex) throws SQLException {
-        return null;
+        return getObject(columnIndex, Time.class);
     }
 
     @Override
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
-        return null;
+        return getObject(columnIndex, Timestamp.class);
+
     }
 
     @Override
     public InputStream getAsciiStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLException("Ascii stream type not supported");
     }
 
     @Override
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLException("Unicode stream type not supported");
     }
 
     @Override
     public InputStream getBinaryStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLException("Binary stream type not supported");
     }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == String.class) {
+            return (String) obj;
+        }
         return null;
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Boolean.class) {
+            return (Boolean) obj;
+        }
         return false;
     }
 
     @Override
     public byte getByte(String columnLabel) throws SQLException {
-        return 0;
+        return getObject(columnLabel, Byte.class);
     }
 
     @Override
     public short getShort(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Short.class) {
+            return (short) obj;
+        }
         return 0;
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Integer.class) {
+            return (int) obj;
+        }
         return 0;
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Long.class) {
+            return (long) obj;
+        }
         return 0;
     }
 
     @Override
     public float getFloat(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Float.class) {
+            return (float) obj;
+        }
         return 0;
     }
 
     @Override
     public double getDouble(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Double.class) {
+            return (double) obj;
+        }
         return 0;
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == BigDecimal.class) {
+            return (BigDecimal) obj;
+        }
         return null;
     }
 
     @Override
     public byte[] getBytes(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Byte[].class) {
+            return (byte[]) obj;
+        }
         return new byte[0];
     }
 
     @Override
     public Date getDate(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Date.class) {
+            return (Date) obj;
+        }
         return null;
     }
 
     @Override
     public Time getTime(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Time.class) {
+            return (Time) obj;
+        }
         return null;
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel) throws SQLException {
+        Object obj = getObject(columnLabel);
+        if (obj.getClass() == Timestamp.class) {
+            return (Timestamp) obj;
+        }
         return null;
     }
 
     @Override
     public InputStream getAsciiStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLException("Ascii stream not supported");
     }
 
     @Override
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLException("Unicode stream not supported");
     }
 
     @Override
     public InputStream getBinaryStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLException("Binary stream not supported");
     }
 
     @Override
@@ -306,37 +405,36 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public String getCursorName() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Object getObject(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Cursors not supported");
     }
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        return 0;
+        for (Map.Entry<Integer, String> entry : fieldMap.entrySet()) {
+            if (entry.getValue() == columnLabel)
+                return entry.getKey();
+        }
+        throw new SQLException("No such column " + columnLabel);
     }
 
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Character streams not supported");
     }
 
     @Override
     public Reader getCharacterStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Character streams not supported");
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-        return null;
+        return getBigDecimal(columnIndex, 0);
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-        return null;
+        return getBigDecimal(columnLabel, 0);
     }
 
     @Override
@@ -994,23 +1092,5 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     }
 
-    @Override
-    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        return null;
-    }
 
-    @Override
-    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
-    }
 }
