@@ -795,7 +795,7 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public int getDatabaseMajorVersion() throws SQLException {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -805,7 +805,7 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public int getJDBCMajorVersion() throws SQLException {
-        return 0;
+        return 4;
     }
 
     @Override

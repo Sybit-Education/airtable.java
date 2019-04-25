@@ -107,6 +107,14 @@ dependencies {
     codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.13'
 }
 
+jar {
+    metaInf { from ('src/main/resources/META-INF/services/java.sql.Driver') into 'META-INF' }
+    manifest {
+        attributes("Implementation-Title": "Gradle",
+                "Implementation-Version": version)
+    }
+}
+
 // custom tasks for creating source jar
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

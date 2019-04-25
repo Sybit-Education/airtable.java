@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
-    private Map<Integer, String> fieldMap = new HashMap<>();
-    private Map<Integer, Class<?>> typeMap = new HashMap<>();
+    private Map<Integer, String> fieldMap;
+    private Map<Integer, Class<?>> typeMap;
 
     AirtableJDBCResultSetMetadata(Map<Integer, String> fieldMap, Map<Integer, Class<?>> typeMap) {
         this.fieldMap = fieldMap;
@@ -70,7 +70,7 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public String getSchemaName(int column) throws SQLException {
-        return null;
+        return "AirtableSchema";
     }
 
     @Override
@@ -85,12 +85,12 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public String getTableName(int column) throws SQLException {
-        return null;
+        return "AirtableTable";
     }
 
     @Override
     public String getCatalogName(int column) throws SQLException {
-        return null;
+        return "AirTableCatalog";
     }
 
     @Override

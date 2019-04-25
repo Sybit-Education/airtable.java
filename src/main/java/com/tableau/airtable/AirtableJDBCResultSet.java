@@ -137,13 +137,21 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         Object obj = getObject(columnIndex);
-        return (T) obj;
+        if (obj.getClass().isAssignableFrom(type)) {
+            //noinspection unchecked
+            return (T) obj;
+        }
+        return null;
     }
 
     @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
         Object obj = getObject(columnLabel);
-        return (T) obj;
+        if (obj.getClass().isAssignableFrom(type)) {
+            //noinspection unchecked
+            return (T) obj;
+        }
+        return null;
     }
 
     @Override
@@ -166,6 +174,7 @@ public class AirtableJDBCResultSet implements ResultSet {
             return fields.get(fieldName);
         }
         if (fields.containsKey("fields")) {
+            //noinspection unchecked
             Map<String, Object> innerFields = (Map<String, Object>)fields.get("fields");
             if (innerFields != null)
                 return innerFields.get(fieldName);
@@ -250,37 +259,17 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     }
 
-    @Override
-    public InputStream getAsciiStream(int columnIndex) throws SQLException {
-        throw new SQLException("Ascii stream type not supported");
-    }
 
-    @Override
-    public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-        throw new SQLException("Unicode stream type not supported");
-    }
-
-    @Override
-    public InputStream getBinaryStream(int columnIndex) throws SQLException {
-        throw new SQLException("Binary stream type not supported");
-    }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == String.class) {
-            return (String) obj;
-        }
-        return null;
+        return getObject(columnLabel, String.class);
+
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Boolean.class) {
-            return (Boolean) obj;
-        }
-        return false;
+        return getObject(columnLabel, Boolean.class);
     }
 
     @Override
@@ -290,56 +279,35 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public short getShort(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Short.class) {
-            return (short) obj;
-        }
-        return 0;
+        return getObject(columnLabel, Short.class);
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Integer.class) {
-            return (int) obj;
-        }
-        return 0;
+        return getObject(columnLabel, Integer.class);
+
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Long.class) {
-            return (long) obj;
-        }
-        return 0;
+        return getObject(columnLabel, Long.class);
     }
 
     @Override
     public float getFloat(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Float.class) {
-            return (float) obj;
-        }
-        return 0;
+        return getObject(columnLabel, Float.class);
     }
 
     @Override
     public double getDouble(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Double.class) {
-            return (double) obj;
-        }
-        return 0;
+        return getObject(columnLabel, Double.class);
+
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == BigDecimal.class) {
-            return (BigDecimal) obj;
-        }
-        return null;
+        return getObject(columnLabel, BigDecimal.class);
+
     }
 
     @Override
@@ -353,29 +321,45 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public Date getDate(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Date.class) {
-            return (Date) obj;
-        }
-        return null;
+        return getObject(columnLabel, Date.class);
     }
 
     @Override
     public Time getTime(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Time.class) {
-            return (Time) obj;
-        }
-        return null;
+        return getObject(columnLabel, Time.class);
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel) throws SQLException {
-        Object obj = getObject(columnLabel);
-        if (obj.getClass() == Timestamp.class) {
-            return (Timestamp) obj;
+        return getObject(columnLabel, Timestamp.class);
+    }
+
+    @Override
+    public int findColumn(String columnLabel) throws SQLException {
+        for (Map.Entry<Integer, String> entry : fieldMap.entrySet()) {
+            if (entry.getValue() == columnLabel)
+                return entry.getKey();
         }
-        return null;
+        throw new SQLException("No such column " + columnLabel);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ////  UNSUPPORTED FUNCTIONS
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public InputStream getAsciiStream(int columnIndex) throws SQLException {
+        throw new SQLException("Ascii stream type not supported");
+    }
+
+    @Override
+    public InputStream getUnicodeStream(int columnIndex) throws SQLException {
+        throw new SQLException("Unicode stream type not supported");
+    }
+
+    @Override
+    public InputStream getBinaryStream(int columnIndex) throws SQLException {
+        throw new SQLException("Binary stream type not supported");
     }
 
     @Override
@@ -408,14 +392,7 @@ public class AirtableJDBCResultSet implements ResultSet {
         throw new SQLFeatureNotSupportedException("Cursors not supported");
     }
 
-    @Override
-    public int findColumn(String columnLabel) throws SQLException {
-        for (Map.Entry<Integer, String> entry : fieldMap.entrySet()) {
-            if (entry.getValue() == columnLabel)
-                return entry.getKey();
-        }
-        throw new SQLException("No such column " + columnLabel);
-    }
+
 
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
@@ -724,157 +701,157 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Ref getRef(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Blob getBlob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Clob getClob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Array getArray(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Ref getRef(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Blob getBlob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Clob getClob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Array getArray(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Date getDate(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Time getTime(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public URL getURL(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public URL getURL(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateRef(int columnIndex, Ref x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateRef(String columnLabel, Ref x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBlob(int columnIndex, Blob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBlob(String columnLabel, Blob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(int columnIndex, Clob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(String columnLabel, Clob x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateArray(int columnIndex, Array x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateArray(String columnLabel, Array x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public RowId getRowId(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public RowId getRowId(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateRowId(int columnIndex, RowId x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateRowId(String columnLabel, RowId x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public int getHoldability() throws SQLException {
-        return 0;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
@@ -884,212 +861,215 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public void updateNString(int columnIndex, String nString) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNString(String columnLabel, String nString) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(String columnLabel, NClob nClob) throws SQLException {
+        throw new SQLFeatureNotSupportedException("Function not supported");
 
     }
 
     @Override
     public NClob getNClob(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public NClob getNClob(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateSQLXML(int columnIndex, SQLXML xmlObject) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateSQLXML(String columnLabel, SQLXML xmlObject) throws SQLException {
+        throw new SQLFeatureNotSupportedException("Function not supported");
 
     }
 
     @Override
     public String getNString(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public String getNString(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public Reader getNCharacterStream(String columnLabel) throws SQLException {
-        return null;
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, InputStream x, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException("Function not supported");
 
     }
 
     @Override
     public void updateBlob(int columnIndex, InputStream inputStream, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(int columnIndex, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(int columnIndex, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNCharacterStream(int columnIndex, Reader x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNCharacterStream(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, Reader x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, InputStream x) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBlob(int columnIndex, InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateBlob(String columnLabel, InputStream inputStream) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(int columnIndex, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateClob(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(int columnIndex, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
     @Override
     public void updateNClob(String columnLabel, Reader reader) throws SQLException {
-
+        throw new SQLFeatureNotSupportedException("Function not supported");
     }
 
 

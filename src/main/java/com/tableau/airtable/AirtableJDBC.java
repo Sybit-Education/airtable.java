@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import java.util.Properties;
 
 public class AirtableJDBC implements Driver {
-    private static final String AIRTABLE_SCHEME = "airtable:";
+    private static final String AIRTABLE_SCHEME = "jdbc:airtable:";
     private static final Logger LOG = Logger.getLogger(AirtableJDBC.class.getName());
 
 

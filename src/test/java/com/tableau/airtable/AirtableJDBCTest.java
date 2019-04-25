@@ -17,7 +17,7 @@ public class AirtableJDBCTest {
         Properties props = new Properties();
         props.put("key", System.getenv("AIRTABLE_API_KEY"));
         props.put("base", "appOQS45OT1iBFN9l");
-        return DriverManager.getConnection("airtable:https://api.airtable.com/v0", props);
+        return DriverManager.getConnection("jdbc:airtable:https://api.airtable.com/v0", props);
     }
 
     public Statement createStatement() throws SQLException {
