@@ -28,6 +28,7 @@ public class AirtableJDBCStatement implements Statement {
             return currentResultSet;
         } catch (Exception ae) {
             throw new SQLException(ae);
+            // return new AirtableJDBCResultSet();
         }
     }
 

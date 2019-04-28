@@ -1,8 +1,23 @@
 package com.tableau.airtable;
 
+import com.sybit.airtable.vo.RecordItem;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
+    private String base;
+    private String defaultTable;
+
+    AirtableJDBCDatabaseMetadata(String base, String defaultTable) {
+        this.base = base;
+        this.defaultTable = defaultTable;
+    }
+
     @Override
     public boolean allProceduresAreCallable() throws SQLException {
         return false;
@@ -130,42 +145,42 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public String getIdentifierQuoteString() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getSQLKeywords() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getNumericFunctions() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getStringFunctions() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getSystemFunctions() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getTimeDateFunctions() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getSearchStringEscape() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getExtraNameCharacters() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
@@ -305,17 +320,17 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public String getSchemaTerm() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getProcedureTerm() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
     public String getCatalogTerm() throws SQLException {
-        return null;
+        return "";
     }
 
     @Override
@@ -595,87 +610,114 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getProcedures(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getProcedureColumns(String s, String s1, String s2, String s3) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getTables(String s, String s1, String s2, String[] strings) throws SQLException {
-        return null;
+/***
+ *
+ * TABLE_CAT String => table catalog (may be null)
+ * TABLE_SCHEM String => table schema (may be null)
+ * TABLE_NAME String => table name
+ * TABLE_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+ * REMARKS String => explanatory comment on the table
+ * TYPE_CAT String => the types catalog (may be null)
+ * TYPE_SCHEM String => the types schema (may be null)
+ * TYPE_NAME String => type name (may be null)
+ * SELF_REFERENCING_COL_NAME String => name of the designated "identifier" column of a typed table (may be null)
+ * REF_GENERATION String => specifies how values in SELF_REFERENCING_COL_NAME are created. Values are "SYSTEM", "USER", "DERIVED". (may be null)
+ */
+        RecordItem item = new RecordItem();
+        item.setFields(Stream.of(new String[][] {
+                { "TABLE_CAT", "Airtable" },
+                { "TABLE_SCHEM", base },
+                { "TABLE_NAME", defaultTable },
+                { "REMARKS", ""},
+                { "TYPE_CAT", null},
+                { "TYPE_SCHEM", null},
+                { "TYPE_NAME", null},
+                { "SELF_REFERENCING_COL_NAME", null},
+                { "REF_GENERATION", null},
+        }).collect(Collectors.toMap(data -> data[0], data -> data[1])));
+        item.setCreatedTime((new Timestamp(System.currentTimeMillis())).toString());
+        item.setId("1");
+        return new AirtableJDBCResultSet(Collections.singletonList(item), null);
     }
 
     @Override
     public ResultSet getSchemas() throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getCatalogs() throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getTableTypes() throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getColumns(String s, String s1, String s2, String s3) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getColumnPrivileges(String s, String s1, String s2, String s3) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getTablePrivileges(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getBestRowIdentifier(String s, String s1, String s2, int i, boolean b) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getVersionColumns(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getPrimaryKeys(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getImportedKeys(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getExportedKeys(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getCrossReference(String s, String s1, String s2, String s3, String s4, String s5) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getTypeInfo() throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getIndexInfo(String s, String s1, String s2, boolean b, boolean b1) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
@@ -770,17 +812,17 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getSuperTypes(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getSuperTables(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getAttributes(String s, String s1, String s2, String s3) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
@@ -835,7 +877,7 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getSchemas(String s, String s1) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
@@ -850,22 +892,22 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
 
     @Override
     public ResultSet getClientInfoProperties() throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getFunctions(String s, String s1, String s2) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getFunctionColumns(String s, String s1, String s2, String s3) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
-        return null;
+        return new AirtableJDBCResultSet();
     }
 
     @Override

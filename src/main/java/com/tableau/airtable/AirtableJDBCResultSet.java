@@ -7,10 +7,8 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 public class AirtableJDBCResultSet implements ResultSet {
     private List<RecordItem> results;
@@ -26,6 +24,11 @@ public class AirtableJDBCResultSet implements ResultSet {
             RecordItem firstItem = results.get(0);
             importMetadata(firstItem.getFields());
         }
+    }
+
+    AirtableJDBCResultSet() {
+        this.results = new ArrayList<RecordItem>();
+        this.statement = null;
     }
 
     private int importMetadata(Map<String, Object> columns) {
@@ -107,7 +110,8 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public void close() throws SQLException {
-        statement.close();
+        if (statement != null)
+            statement.close();
     }
 
     @Override
@@ -188,7 +192,7 @@ public class AirtableJDBCResultSet implements ResultSet {
             throw new SQLException("No data");
         if (columnIndex < 1 || columnIndex > fieldMap.size())
             throw new SQLException("Invalid Column");
-        if (statement.isClosed())
+        if (statement != null && statement.isClosed())
             throw new SQLException("Result Set Closed");
         String fieldName = fieldMap.get(columnIndex);
         return getObject(fieldName);

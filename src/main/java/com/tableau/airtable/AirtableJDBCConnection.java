@@ -15,12 +15,14 @@ public class AirtableJDBCConnection implements Connection {
     private Airtable at;
     private Base base;
     private String baseName;
+    private String defaultTable;
     private boolean connected = false;
 
-    public AirtableJDBCConnection(String url, String baseName, String apiKey) throws AirtableException {
+    public AirtableJDBCConnection(String url, String baseName, String apiKey, String defaultTable) throws AirtableException {
         at = new Airtable();
         at.configure(new Configuration(apiKey, url, null));
         this.baseName = baseName;
+        this.defaultTable = defaultTable;
         this.base = new Base(baseName, at);
         this.connected = true;
     }
@@ -29,7 +31,7 @@ public class AirtableJDBCConnection implements Connection {
     public Statement createStatement() throws SQLException {
         if (!this.connected)
             throw new SQLException("Not Connected");
-        return new AirtableJDBCStatement(base, this);
+        return new AirtableJDBCStatement(base,this);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class AirtableJDBCConnection implements Connection {
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        return null;
+        return new AirtableJDBCDatabaseMetadata(baseName, defaultTable);
     }
 
     @Override
