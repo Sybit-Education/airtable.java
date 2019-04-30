@@ -636,15 +636,11 @@ public class AirtableJDBCDatabaseMetadata implements DatabaseMetaData {
         RecordItem item = new RecordItem();
         item.setFields(Stream.of(new String[][] {
                 { "TABLE_CAT", "Airtable" },
-                { "TABLE_SCHEM", base },
-                { "TABLE_NAME", defaultTable },
+                { "TABLE_SCHEM", defaultTable },
+                { "TABLE_NAME", base },
+                { "TABLE_TYPE", "TABLE"},
                 { "REMARKS", ""},
-                { "TYPE_CAT", null},
-                { "TYPE_SCHEM", null},
-                { "TYPE_NAME", null},
-                { "SELF_REFERENCING_COL_NAME", null},
-                { "REF_GENERATION", null},
-        }).collect(Collectors.toMap(data -> data[0], data -> data[1])));
+         }).collect(Collectors.toMap(data -> data[0], data -> data[1])));
         item.setCreatedTime((new Timestamp(System.currentTimeMillis())).toString());
         item.setId("1");
         return new AirtableJDBCResultSet(Collections.singletonList(item), null);

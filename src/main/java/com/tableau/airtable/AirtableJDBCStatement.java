@@ -3,9 +3,16 @@ package com.tableau.airtable;
 import com.sybit.airtable.Base;
 import com.sybit.airtable.Table;
 import com.sybit.airtable.vo.RecordItem;
+import net.sf.jsqlparser.*;
+import net.sf.jsqlparser.parser.*;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 
+import java.io.StringReader;
+import java.net.URLEncoder;
 import java.sql.*;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AirtableJDBCStatement implements Statement {
     private Base base;
@@ -14,6 +21,7 @@ public class AirtableJDBCStatement implements Statement {
     private boolean poolable = true;
     private boolean closeOnCompletion = false;
     private ResultSet currentResultSet;
+    private final CCJSqlParserManager parserManager = new CCJSqlParserManager();
 
     AirtableJDBCStatement(Base base, Connection connection) {
         this.base = base;
@@ -21,8 +29,20 @@ public class AirtableJDBCStatement implements Statement {
     }
 
     public ResultSet executeQuery(String s) throws SQLException {
-        Table<RecordItem> table = new Table<RecordItem>(s, RecordItem.class, base);
+        if (s.equals("SELECT 1"))
+            return new AirtableJDBCResultSet();
         try {
+            net.sf.jsqlparser.statement.Statement statement = parserManager.parse(new StringReader(s));
+            if (! (statement instanceof net.sf.jsqlparser.statement.select.Select))
+                throw new SQLException("Only Select operations are supported");
+            net.sf.jsqlparser.statement.select.Select select = (net.sf.jsqlparser.statement.select.Select ) statement;
+            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+            if (! (plainSelect.getFromItem() instanceof net.sf.jsqlparser.schema.Table)) {
+                throw new SQLException("Now now, nothing complicated: " + plainSelect.getFromItem().toString() + " class: " + plainSelect.getFromItem().getClass().toString());
+            }
+            net.sf.jsqlparser.schema.Table tableSelected = (net.sf.jsqlparser.schema.Table)plainSelect.getFromItem();
+            String tableName = tableSelected.getName().replaceAll("^\"|\"$", "");
+            Table<RecordItem> table = new Table<RecordItem>(URLEncoder.encode(tableName, UTF_8.toString()), RecordItem.class, base);
             List<RecordItem> results = table.select();
             currentResultSet = new AirtableJDBCResultSet(results, this);
             return currentResultSet;

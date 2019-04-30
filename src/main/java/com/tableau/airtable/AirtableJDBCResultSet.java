@@ -15,7 +15,7 @@ public class AirtableJDBCResultSet implements ResultSet {
     private Map<Integer, String> fieldMap = new HashMap<>();
     private Map<Integer, Class<?>> typeMap = new HashMap<>();
     private Statement statement;
-    private int row = 0;
+    private int row = -1;
 
     AirtableJDBCResultSet(List<RecordItem> results, Statement statement) {
         this.results = results;
@@ -44,7 +44,7 @@ public class AirtableJDBCResultSet implements ResultSet {
                 //noinspection unchecked
                 i = importMetadata((Map<String, Object>)v, i);
             } else {
-                System.out.println("FIELD: " + k + " index: " + i + " class: " + v.getClass());
+                System.err.println("FIELD: " + k + " index: " + i + " class: " + v.getClass());
                 fieldMap.put(i, k);
                 typeMap.put(i, v.getClass());
             }
@@ -55,9 +55,8 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if (row >= results.size())
+        if (++row >= results.size())
             return false;
-        row++;
         return true;
     }
 
@@ -189,9 +188,9 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public Object getObject(int columnIndex) throws SQLException {
         if (isAfterLast() || isBeforeFirst())
-            throw new SQLException("No data");
+            throw new SQLException("No row data for row " + row);
         if (columnIndex < 1 || columnIndex > fieldMap.size())
-            throw new SQLException("Invalid Column");
+            throw new SQLException("Invalid Column: " + columnIndex + " Row: " + row);
         if (statement != null && statement.isClosed())
             throw new SQLException("Result Set Closed");
         String fieldName = fieldMap.get(columnIndex);
