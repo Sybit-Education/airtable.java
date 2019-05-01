@@ -29,8 +29,10 @@ public class AirtableJDBCStatement implements Statement {
     }
 
     public ResultSet executeQuery(String s) throws SQLException {
-        if (s.equals("SELECT 1"))
-            return new AirtableJDBCResultSet();
+        if (s.equals("SELECT 1")) {
+            currentResultSet = new AirtableJDBCResultSet();
+            return currentResultSet;
+        }
         try {
             net.sf.jsqlparser.statement.Statement statement = parserManager.parse(new StringReader(s));
             if (! (statement instanceof net.sf.jsqlparser.statement.select.Select))

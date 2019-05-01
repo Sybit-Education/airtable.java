@@ -5,6 +5,8 @@ import com.sybit.airtable.vo.RecordItem;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +46,12 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
 
     @Override
     public int isNullable(int column) throws SQLException {
-        return 0;
+        return columnNullable;
     }
 
     @Override
     public boolean isSigned(int column) throws SQLException {
-        return false;
+        return true;
     }
 
     @Override
@@ -104,6 +106,16 @@ public class AirtableJDBCResultSetMetadata implements ResultSetMetaData {
             return Types.VARCHAR;
         } else if (Float.class.equals(aClass)) {
             return Types.FLOAT;
+        } else if (Double.class.equals(aClass)) {
+            return Types.DOUBLE;
+        } else if (Float.class.equals(aClass)) {
+            return Types.FLOAT;
+        } else if (Date.class.equals(aClass)) {
+            return Types.DATE;
+        } else if (ArrayList.class.equals(aClass)) {
+            return Types.ARRAY;
+        } else if (Boolean.class.equals(aClass)) {
+            return Types.BOOLEAN;
         }
         return Types.OTHER;
     }
