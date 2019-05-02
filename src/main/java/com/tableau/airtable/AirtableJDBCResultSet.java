@@ -140,7 +140,9 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj.getClass().isAssignableFrom(type)) {
+        if (obj == null && type.isAssignableFrom(Number.class))
+            return (T) Integer.valueOf(0);
+        if (obj != null && obj.getClass().isAssignableFrom(type)) {
             //noinspection unchecked
             return (T) obj;
         }
@@ -194,6 +196,9 @@ public class AirtableJDBCResultSet implements ResultSet {
         if (statement != null && statement.isClosed())
             throw new SQLException("Result Set Closed");
         String fieldName = fieldMap.get(columnIndex);
+        if (fieldName == null) {
+            throw new SQLException("No field name for column index " + columnIndex);
+        }
         return getObject(fieldName);
     }
 

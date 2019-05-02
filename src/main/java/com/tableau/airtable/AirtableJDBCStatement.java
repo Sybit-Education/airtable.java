@@ -10,7 +10,10 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.sql.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -23,6 +26,14 @@ public class AirtableJDBCStatement implements Statement {
     private ResultSet currentResultSet;
     private final CCJSqlParserManager parserManager = new CCJSqlParserManager();
 
+    private static AirtableJDBCResultSet getSelectOneResultSet() {
+        RecordItem item = new RecordItem();
+        item.setFields(Collections.singletonMap("1", 1));
+        item.setCreatedTime((new Timestamp(System.currentTimeMillis())).toString());
+        item.setId("1");
+        return new AirtableJDBCResultSet(Collections.singletonList(item), null);
+    }
+
     AirtableJDBCStatement(Base base, Connection connection) {
         this.base = base;
         this.connection = connection;
@@ -30,7 +41,7 @@ public class AirtableJDBCStatement implements Statement {
 
     public ResultSet executeQuery(String s) throws SQLException {
         if (s.equals("SELECT 1")) {
-            currentResultSet = new AirtableJDBCResultSet();
+            currentResultSet = getSelectOneResultSet();
             return currentResultSet;
         }
         try {
