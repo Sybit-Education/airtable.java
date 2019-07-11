@@ -102,7 +102,7 @@ dependencies {
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version:'2.23.2'
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.26'
 
-    codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '1.0.13'
+    codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '6.0.0'
 }
 
 // custom tasks for creating source jar
