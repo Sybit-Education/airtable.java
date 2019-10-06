@@ -51,7 +51,7 @@ public class AirtableJDBCConnection implements Connection {
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        return new AirtableJDBCDatabaseMetadata(baseName, defaultTable);
+        return new AirtableJDBCDatabaseMetadata(baseName, defaultTable, this);
     }
 
     @Override

@@ -44,9 +44,12 @@ public class AirtableJDBCResultSet implements ResultSet {
                 //noinspection unchecked
                 i = importMetadata((Map<String, Object>)v, i);
             } else {
-                System.err.println("FIELD: " + k + " index: " + i + " class: " + v.getClass());
+                System.err.println("METADATA LOAD - FIELD: " + k + " index: " + i + " class: " + ((v != null) ? v.getClass() : "null"));
                 fieldMap.put(i, k);
-                typeMap.put(i, v.getClass());
+		if (v != null)
+		    typeMap.put(i, v.getClass());
+		else
+		    typeMap.put(i, Object.class);
             }
             i++;
         }
@@ -55,6 +58,7 @@ public class AirtableJDBCResultSet implements ResultSet {
 
     @Override
     public boolean next() throws SQLException {
+	System.err.println("   Current Row: " + row);
         if (++row >= results.size())
             return false;
         return true;
@@ -131,27 +135,43 @@ public class AirtableJDBCResultSet implements ResultSet {
     @Override
     public String getString(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
+	if (obj == null)
+	    return "";
         if (obj.getClass() == String.class) {
             return (String) obj;
         }
-        return null;
+        return "";
     }
 
     @Override
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         Object obj = getObject(columnIndex);
+        if (obj == null && type.isAssignableFrom(Double.class))
+            return (T) Double.valueOf(0.0);
         if (obj == null && type.isAssignableFrom(Number.class))
             return (T) Integer.valueOf(0);
+        if (obj == null && type.isAssignableFrom(String.class))
+            return (T) "";
         if (obj != null && obj.getClass().isAssignableFrom(type)) {
             //noinspection unchecked
             return (T) obj;
         }
+	if (type == Boolean.class)
+	    return (T) Boolean.valueOf(false);
+	if (type == Double.class)
+	    return (T) Double.valueOf(0.0);
         return null;
     }
 
     @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
         Object obj = getObject(columnLabel);
+        if (obj == null && type.isAssignableFrom(Double.class))
+            return (T) Double.valueOf(0.0);
+        if (obj == null && type.isAssignableFrom(Number.class))
+            return (T) Integer.valueOf(0);
+        if (obj == null && type.isAssignableFrom(String.class))
+            return (T) "";
         if (obj.getClass().isAssignableFrom(type)) {
             //noinspection unchecked
             return (T) obj;
@@ -174,7 +194,11 @@ public class AirtableJDBCResultSet implements ResultSet {
         if (fieldName == null)
             throw new SQLException("Invalid field " + fieldName);
         RecordItem record = results.get(row);
+	if (record == null)
+	    return null;
         Map<String, Object> fields = record.getFields();
+	if (fields == null)
+	    return null;
         if (fields.containsKey(fieldName)) {
             return fields.get(fieldName);
         }
@@ -266,8 +290,6 @@ public class AirtableJDBCResultSet implements ResultSet {
         return getObject(columnIndex, Timestamp.class);
 
     }
-
-
 
     @Override
     public String getString(String columnLabel) throws SQLException {

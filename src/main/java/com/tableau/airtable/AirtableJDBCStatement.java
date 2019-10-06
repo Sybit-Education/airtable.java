@@ -55,12 +55,13 @@ public class AirtableJDBCStatement implements Statement {
             }
             net.sf.jsqlparser.schema.Table tableSelected = (net.sf.jsqlparser.schema.Table)plainSelect.getFromItem();
             String tableName = tableSelected.getName().replaceAll("^\"|\"$", "");
+            tableName = tableName.replaceAll("%20", " ");
             Table<RecordItem> table = new Table<RecordItem>(URLEncoder.encode(tableName, UTF_8.toString()), RecordItem.class, base);
             List<RecordItem> results = table.select();
             currentResultSet = new AirtableJDBCResultSet(results, this);
             return currentResultSet;
         } catch (Exception ae) {
-            throw new SQLException(ae);
+            throw new SQLException("Error running query: " + s + " base: " + base.name() + "  key: " + base.airtable().apiKey(), ae);
             // return new AirtableJDBCResultSet();
         }
     }
