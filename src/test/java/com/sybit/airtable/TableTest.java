@@ -8,9 +8,14 @@ package com.sybit.airtable;
 
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
+import com.sybit.airtable.movies.ActorSerializedNames;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -39,7 +44,7 @@ public class TableTest {
     @Test
     public void testTable() {
 
-        Table table = new Table("table", Actor.class, this.base);
+        Table<Actor> table = new Table<>("table", Actor.class, this.base);
         assertNotNull(table);
 
     }
@@ -47,14 +52,14 @@ public class TableTest {
     @Test
     public void setParentTest() {
 
-        Table table = new Table("table", Actor.class);
+        Table<Actor> table = new Table<>("table", Actor.class);
         table.setParent(this.base);
         assertNotNull(table);
     }
 
     @Test
     public void key2properties() {
-        Table table = new Table("table", Actor.class);
+        Table<Actor> table = new Table<>("table", Actor.class);
 
         String actual = table.key2property("FirstName");
         Assert.assertEquals("firstName", actual);
@@ -65,16 +70,74 @@ public class TableTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void key2properties_EmptyArgument() {
-        Table table = new Table("table", Actor.class);
+        Table<Actor> table = new Table<>("table", Actor.class);
         String actual = table.key2property("");
         Assert.fail();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void key2properties_NullArgument() {
-        Table table = new Table("table", Actor.class);
+        Table<Actor> table = new Table<>("table", Actor.class);
         String actual = table.key2property(null);
         Assert.fail();
+    }
+
+    @Test
+    public void testSetPropertyExistingField()
+    {
+        Table<ActorSerializedNames> table = new Table<>("table", ActorSerializedNames.class);
+        ActorSerializedNames row = new ActorSerializedNames();
+
+        Method setPropertyMethod = null;
+
+        try {
+            setPropertyMethod = Table.class.getDeclaredMethod("setProperty", Object.class, String.class, Object.class);
+
+        } catch(NoSuchMethodException e) {
+            Assert.fail("Could not get setProperty method.");
+        }
+
+        setPropertyMethod.setAccessible(true);
+
+
+        try {
+            String val = "biographyData";
+            // test valid SerializedName
+            setPropertyMethod.invoke(table, row, "Biography of Actor", val);
+
+        } catch(IllegalAccessException | InvocationTargetException e) {
+            Assert.fail("Failed to set serializedName property");
+        }
+        Assert.assertSame(row.getBiography(), "biographyData");
+    }
+
+    @Test(expected = InvocationTargetException.class)
+    public void testSetPropertyNonexistentField() throws InvocationTargetException
+    {
+        Table<ActorSerializedNames> table = new Table<>("table", ActorSerializedNames.class);
+        ActorSerializedNames row = new ActorSerializedNames();
+
+        Method setPropertyMethod = null;
+
+        try {
+            setPropertyMethod = Table.class.getDeclaredMethod("setProperty", Object.class, String.class, Object.class);
+
+        } catch(NoSuchMethodException e) {
+            Assert.fail("Could not get setProperty method.");
+        }
+
+        setPropertyMethod.setAccessible(true);
+        // test invalid field name
+        try {
+            String val = "failMe";
+            setPropertyMethod.invoke(table,row, "schim", val);
+            Assert.fail("Calling setProperty on nonexistent property 'schim' did not result in exception as expected.");
+        }
+
+        catch(IllegalAccessException e) {
+            Assert.fail(String.format("%s: %s", "Failed to set serializedName property \n", e.getClass().getName()));
+        }
+
     }
 
 }
