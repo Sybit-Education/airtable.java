@@ -9,7 +9,6 @@ package com.sybit.airtable;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Actor;
 import com.sybit.airtable.movies.ActorSerializedNames;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
