@@ -21,6 +21,7 @@ import org.apache.http.client.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.lang.model.SourceVersion;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Representation Class of Airtable Tables.
@@ -584,7 +586,6 @@ public class Table<T> {
      * @throws NoSuchMethodException 
      */
     public T update(final T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
         RecordItem responseBody = null;
 
         String id = getIdOfItem(item);
@@ -745,20 +746,24 @@ public class Table<T> {
 
     /**
      *
-     * @param retval
-     * @param key
-     * @param value
+     * @param retval The object upon which to perform the setting operation
+     * @param key The name of the field on retval to set
+     * @param value The object representing the new value of field
      * @throws IllegalAccessException
      * @throws InvocationTargetException
+     * @throws IllegalArgumentException when key cannot be matched to any field of retval
      */
-    private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException {
+    private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException, IllegalArgumentException {
         String property = key2property(key);
+
+        boolean foundSerializedNameAnnotation = false;
 
         for (final Field f : this.type.getDeclaredFields()) {
             final SerializedName annotation = f.getAnnotation(SerializedName.class);
 
             if (annotation != null && property.equalsIgnoreCase(annotation.value())) {
                 property = f.getName();
+                foundSerializedNameAnnotation = true;
                 break;
             }
         }
@@ -766,7 +771,10 @@ public class Table<T> {
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
         } else {
-            LOG.warn(retval.getClass() + " does not support public setter for existing property [" + property + "]");
+            if(!foundSerializedNameAnnotation && !SourceVersion.isName(property))
+                LOG.error(String.format("Key '%s' contains illegal characters for a java identifier, but no field with a matching @SerializedName is present for type %s.", property, this.type.getName()));
+
+            throw new IllegalArgumentException(this.type.getName() + " does not have a property corresponding to [" + property + "]");
         }
     }
 
@@ -782,9 +790,6 @@ public class Table<T> {
             throw new IllegalArgumentException("Key was null or empty.");
         }
 
-        if (key.contains(" ") || key.contains("-")) {
-            LOG.warn("Annotate columns having special characters by using @SerializedName for property: [" + key + "]");
-        }
         String property = key.trim();
         property = property.substring(0, 1).toLowerCase() + property.substring(1, property.length());
 
