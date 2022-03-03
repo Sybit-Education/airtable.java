@@ -1,0 +1,39 @@
+{
+  "id" : "51338c9f-b2ed-4c09-8a13-a02fa88fcb99",
+  "name" : "appttha5pfjnvfjdu_movies",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Movies",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      }
+    },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"fields\":{\"Name\":\"Neuer Film\",\"Description\":\"Irgendwas\",\"Director\":[\"recPxOZblV8yJU4mY\"],\"Actors\":[\"recEtUIW6FWtbEDKz\",\"recInYFZ1DQpeCuSz\"],\"Genre\":[\"Drama\"]}}",
+      "ignoreArrayOrder" : false,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "appttha5pfjnvfjdu_movies-51338c9f-b2ed-4c09-8a13-a02fa88fcb99.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:09:25 GMT",
+      "ETag" : "W/\"e2-YrCOgb6ulCTkmGQewtAPiG3BrqQ\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "51338c9f-b2ed-4c09-8a13-a02fa88fcb99",
+  "persistent" : true
+}

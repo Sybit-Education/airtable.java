@@ -1,0 +1,30 @@
+{
+  "id" : "4bace684-7816-4a02-810d-cc1593ed8aad",
+  "name" : "appttha5pfjnvfjdu_actors_not-succesfull",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Actors/not%20succesfull",
+    "method" : "DELETE",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "bodyFileName" : "appttha5pfjnvfjdu_actors_not-succesfull-4bace684-7816-4a02-810d-cc1593ed8aad.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:09:38 GMT",
+      "ETag" : "W/\"15-tcRCab2ZDkTZ4I9Oh2TI8Kt8AAg\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "4bace684-7816-4a02-810d-cc1593ed8aad",
+  "persistent" : true
+}

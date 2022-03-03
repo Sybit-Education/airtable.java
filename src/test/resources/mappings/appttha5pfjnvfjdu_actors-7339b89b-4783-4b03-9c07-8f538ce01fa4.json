@@ -1,0 +1,39 @@
+{
+  "id" : "7339b89b-4783-4b03-9c07-8f538ce01fa4",
+  "name" : "appttha5pfjnvfjdu_actors",
+  "request" : {
+    "url" : "/appTtHA5PfJnVfjdu/Actors",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json"
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      }
+    },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"fields\":{\"Name\":\"Neuer Actor\"}}",
+      "ignoreArrayOrder" : false,
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "appttha5pfjnvfjdu_actors-7339b89b-4783-4b03-9c07-8f538ce01fa4.json",
+    "headers" : {
+      "access-control-allow-headers" : "content-type, authorization, content-length, x-requested-with, x-api-version, x-airtable-application-id",
+      "access-control-allow-methods" : "GET,PUT,POST,PATCH,DELETE,OPTIONS",
+      "access-control-allow-origin" : "*",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Date" : "Thu, 14 Sep 2017 10:09:24 GMT",
+      "ETag" : "W/\"63-2lUdJY5Bax/eu11jWcyAVPek29Q\"",
+      "Server" : "Tengine",
+      "Vary" : "Accept-Encoding",
+      "Connection" : "keep-alive"
+    }
+  },
+  "uuid" : "7339b89b-4783-4b03-9c07-8f538ce01fa4",
+  "persistent" : true
+}
