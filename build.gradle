@@ -8,6 +8,16 @@
 /*
  * Gets the version name from the latest Git tag
  */
+
+plugins {
+    id "maven-publish"
+    id "com.palantir.jacoco-coverage" version "0.4.0"
+    id 'com.github.jk1.dependency-license-report' version '2.0'
+    id "com.jfrog.bintray" version "1.8.5"
+}
+
+apply plugin: 'java'
+
 def getVersionName = { ->
     try {
         def stdout = new ByteArrayOutputStream()
@@ -22,42 +32,16 @@ def getVersionName = { ->
     }
 }
 
-plugins {
-    id "maven-publish"
-}
 
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.palantir:jacoco-coverage:0.4.0'
-        classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'java'
-    apply plugin: 'com.palantir.jacoco-coverage'
-    apply plugin: 'com.jfrog.bintray'
-}
-
-group = 'com.sybit'
+group = 'io.github.sybit-education.airtable'
 version = getVersionName()
 
 description = """com.sybit airtable"""
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 sourceSets {
@@ -79,8 +63,6 @@ sourceSets {
 }
 
 repositories {
-    mavenLocal()
-    jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url "http://dl.bintray.com/typesafe/maven-releases" }
@@ -93,13 +75,13 @@ configurations {
 }
 
 dependencies {
-    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.9'
-    compile group: 'org.json', name: 'json', version: '20160810'
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
-    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+    implementation  group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    implementation  group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.9'
+    implementation  group: 'org.json', name: 'json', version: '20160810'
+    implementation  group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+    implementation  group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+    implementation  group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation  group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.23.2'
@@ -148,7 +130,6 @@ task integrationTest(type: Test) {
 
 publishing {
     publications {
-
         MyPublication(MavenPublication) {
             //we have to change scope from runtime to compile. Especially for Gson-lib.
             pom.withXml {
@@ -172,16 +153,6 @@ publishing {
             artifact javadocJar
         }
 
-        repositories {
-            maven {
-                name = "OSSRH"
-                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
-                }
-            }
-        }
     }
 }
 
