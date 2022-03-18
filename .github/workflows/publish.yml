@@ -4,9 +4,8 @@
 # documentation.
 
 name: Publish package to the Maven Central Repository
-on:
-  release:
-    types: [created]
+
+on: [push]
 jobs:
   publish:
     runs-on: ubuntu-latest
