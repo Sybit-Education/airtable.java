@@ -137,7 +137,7 @@ publishing {
     repositories {
         maven {
             name = "OSSRH"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            url = "https://s01.oss.sonatype.org/"
             credentials {
                 username = System.getenv("MAVEN_USERNAME")
                 password = System.getenv("MAVEN_PASSWORD")
@@ -153,7 +153,7 @@ publishing {
                     it.scope.text() == 'runtime' && project.configurations.implementation.allDependencies.find { dep ->
                         dep.name == it.artifactId.text()
                     }
-                }.each { it.scope*.value = 'compile' }
+                }.each { it.scope*.value = 'implementation' }
             }
 
             if (plugins.hasPlugin('war')) {
