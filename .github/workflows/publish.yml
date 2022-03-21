@@ -20,6 +20,11 @@ jobs:
         run: chmod +x ./gradlew
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
+      - shell: cmd
+        env:
+          test: ${{ secrets.OSSRH_USERNAME }}
+        run: |
+          example-command "%test%"
       - name: Publish package
         uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
         with:
