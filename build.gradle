@@ -30,7 +30,7 @@ def getVersionName = { ->
     catch (ignored) {
         return version;
     }
-}
+} as Object
 
 
 group = 'io.github.sybit-education.airtable'
@@ -135,7 +135,17 @@ task integrationTest(type: Test) {
 publishing {
 
     publications {
-        MyPublication(MavenPublication) {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = rootProject.name
+            version getVersionName()
+
+            if (plugins.hasPlugin('war')) {
+                from components.web
+            } else {
+                from components.java
+            }
+
             //we have to change scope from runtime to compile. Especially for Gson-lib.
             pom.withXml {
                 asNode().dependencies.'*'.findAll() {
@@ -144,15 +154,6 @@ publishing {
                     }
                 }.each { it.scope*.value = 'implementation' }
             }
-
-            if (plugins.hasPlugin('war')) {
-                from components.web
-            } else {
-                from components.java
-            }
-            groupId group
-            artifactId rootProject.name
-            version getVersionName()
 
             artifact sourcesJar
             artifact javadocJar
@@ -170,30 +171,31 @@ publishing {
             }
         }
     }
-
 }
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-        publications = ['MyPublication']
-        //configurations = ['archives']
 
-        dryRun = false //Whether to run this as dry-run, without deploying
-        publish = true //If version should be auto published after an upload
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-        pkg {
-            repo = 'maven'
-            userOrg = 'sybit-education'
-            name = 'airtable.java'
-            licenses = ['MIT License']
-            vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
-            version {
-                name = getVersionName()
-                released = new Date()
-            }
+    publications = ['MyPublication']
+    //configurations = ['archives']
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+
+    pkg {
+        repo = 'maven'
+        userOrg = 'sybit-education'
+        name = 'airtable.java'
+        licenses = ['MIT License']
+        vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
+        version {
+            name = getVersionName()
+            released = new Date()
         }
     }
+}
 
-    integrationTest.mustRunAfter test
+integrationTest.mustRunAfter test
 
