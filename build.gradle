@@ -112,7 +112,7 @@ artifacts {
 
 //task to send coverage data to Codacy
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
-    main = "com.codacy.CodacyCoverageReporter"
+    mainClass = "com.codacy.CodacyCoverageReporter"
     classpath = configurations.codacy
     args = [
             "report",
@@ -150,7 +150,7 @@ publishing {
             //we have to change scope from runtime to compile. Especially for Gson-lib.
             pom.withXml {
                 asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                    it.scope.text() == 'runtime' && project.configurations.implementation.allDependencies.find { dep ->
                         dep.name == it.artifactId.text()
                     }
                 }.each { it.scope*.value = 'compile' }
