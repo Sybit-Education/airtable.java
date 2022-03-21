@@ -134,17 +134,6 @@ task integrationTest(type: Test) {
 
 publishing {
 
-    repositories {
-        maven {
-            name = "OSSRH"
-            url = "https://s01.oss.sonatype.org/"
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
-        }
-    }
-
     publications {
         MyPublication(MavenPublication) {
             //we have to change scope from runtime to compile. Especially for Gson-lib.
@@ -169,6 +158,17 @@ publishing {
             artifact javadocJar
         }
 
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
     }
 
 }
