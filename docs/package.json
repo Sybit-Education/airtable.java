@@ -1,0 +1,19 @@
+{
+  "name": "Airtable.java",
+  "version": "0.0.1",
+  "description": "This is a Java API client for Airtable (http://www.airtable.com).",
+  "main": "index.js",
+  "authors": {
+    "name": "Sybit-Education",
+    "email": ""
+  },
+  "repository": "https://github.com/Sybit-Education/airtable.java/Airtable.java",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
