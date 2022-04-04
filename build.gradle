@@ -94,6 +94,11 @@ dependencies {
     codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
 }
 
+
+test {
+    useJUnit()
+}
+
 // custom tasks for creating source jar
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -124,9 +129,6 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
 }
 
 task integrationTest(type: Test) {
-    testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    // This is not needed, but I like to see which tests have run
     testLogging {
         events "passed", "skipped", "failed"
     }
