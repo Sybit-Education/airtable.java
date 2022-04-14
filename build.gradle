@@ -159,6 +159,7 @@ publishing {
                         name = 'Stephan Strittmatter'
                         email = 'stephan.strittmatter@sybit.de'
                     }
+                }
                 scm {
                     connection = 'scm:git:git://Sybit-Education/airtable.java.git'
                     developerConnection = 'scm:git:ssh://Sybit-Education/airtable.java.git'
@@ -198,7 +199,6 @@ publishing {
         }
     }
 }
-
 
 
 bintray {
