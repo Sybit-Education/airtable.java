@@ -14,6 +14,8 @@ plugins {
     id "jacoco"
     id 'com.github.jk1.dependency-license-report' version '2.0'
     id "com.jfrog.bintray" version "1.8.5"
+    id 'signing'
+
 }
 
 apply plugin: 'java'
@@ -192,9 +194,6 @@ publishing {
     }
 }
 
-signing {
-    sign publishing.publications.maven
-}
 
 
 bintray {
