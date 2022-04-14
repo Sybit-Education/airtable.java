@@ -153,7 +153,12 @@ publishing {
                         url = 'https://opensource.org/licenses/MIT'
                     }
                 }
-
+                developers {
+                    developer {
+                        id = 'stritti'
+                        name = 'Stephan Strittmatter'
+                        email = 'stephan.strittmatter@sybit.de'
+                    }
                 scm {
                     connection = 'scm:git:git://Sybit-Education/airtable.java.git'
                     developerConnection = 'scm:git:ssh://Sybit-Education/airtable.java.git'
