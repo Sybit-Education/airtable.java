@@ -135,12 +135,29 @@ task integrationTest(type: Test) {
 }
 
 publishing {
-
     publications {
         maven(MavenPublication) {
-            groupId = group
             artifactId = rootProject.name
+            groupId = group
             version getVersionName()
+
+            pom {
+                name = 'Airtable.java'
+                description = 'This is a Java API client for Airtable'
+                url = 'https://github.com/Sybit-Education/airtable.java'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://Sybit-Education/airtable.java.git'
+                    developerConnection = 'scm:git:ssh://Sybit-Education/airtable.java.git'
+                    url = 'https://github.com/Sybit-Education/airtable.java'
+                }
+            }
 
             if (plugins.hasPlugin('war')) {
                 from components.web
@@ -173,6 +190,10 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 
