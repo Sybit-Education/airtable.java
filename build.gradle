@@ -187,7 +187,6 @@ publishing {
         }
 
     }
-
     repositories {
         maven {
             name = "OSSRH"
@@ -199,6 +198,14 @@ publishing {
         }
     }
 }
+
+signing {
+    def signingKey = System.getenv("PRIVATE_KEY")
+    def signingPassword = System.getenv("SIGNING_SECRET")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.maven
+}
+
 
 
 bintray {
