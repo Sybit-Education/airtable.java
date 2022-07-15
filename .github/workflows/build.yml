@@ -31,7 +31,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -Pversion=${{ github.event.release.tag_name || 'SNAPSHOT' }} build
+          arguments: -Pversion=${{ github.event.release.tag_name || '' }} build
       - name: Run Tests
         uses: gradle/gradle-build-action@v2
         with:
@@ -44,7 +44,7 @@ jobs:
       - name: Publish with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -Pversion=${{ github.event.release.tag_name || 'SNAPSHOT' }} publish
+          arguments: -Pversion=${{ github.event.release.tag_name || '' }} publish
         env:
           ACTION_DEPLOY_USER: ${{ secrets.ACTION_DEPLOY_USER }}   
           ACTION_DEPLOY_TOKEN: ${{ secrets.ACTION_DEPLOY_TOKEN }}
