@@ -194,8 +194,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/Sybit-Education/airtable.java")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GPG_SECRET_KEY")
-                password = project.findProperty("gpr.key") ?: System.getenv("GPG_SECRET_KEY_PASSWORD")
+                username = project.findProperty("gpr.user") ?: System.getenv("ACTION_DEPLOY_USER")
+                password = project.findProperty("gpr.key") ?: System.getenv("ACTION_DEPLOY_TOKEN")
             }
         }
     }
