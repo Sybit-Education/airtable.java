@@ -29,7 +29,7 @@ def getVersionName = { ->
 } as Object
 
 group = 'com.sybit.airtable'
-version = getVersionName()
+//version = getVersionName()
 description = """API to access Airtable"""
 
 tasks.withType(JavaCompile) {
