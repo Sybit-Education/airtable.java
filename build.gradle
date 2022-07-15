@@ -5,9 +5,6 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
-/*
- * Gets the version name from the latest Git tag
- */
 
 plugins {
     id "maven-publish"
@@ -31,10 +28,8 @@ def getVersionName = { ->
     }
 } as Object
 
-name = "airtable"
 group = 'com.sybit.airtable'
 version = getVersionName()
-
 description = """API to access Airtable"""
 
 tasks.withType(JavaCompile) {
