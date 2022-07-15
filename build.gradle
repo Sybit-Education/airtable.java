@@ -13,13 +13,9 @@ plugins {
     id "maven-publish"
     id "jacoco"
     id 'com.github.jk1.dependency-license-report' version '2.0'
-    id "com.jfrog.bintray" version "1.8.5"
-    id 'signing'
-
 }
 
 apply plugin: 'java'
-apply plugin: 'signing'
 
 def getVersionName = { ->
     try {
@@ -139,6 +135,10 @@ task integrationTest(type: Test) {
 
 publishing {
     publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+        /*        
         maven(MavenPublication) {
             artifactId = rootProject.name
             groupId = group
@@ -186,22 +186,19 @@ publishing {
             artifact sourcesJar
             artifact javadocJar
         }
+        */
 
     }
     repositories {
         maven {
-            name = "OSSRH"
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
             }
         }
     }
 }
 
-signing {
-    sign configurations.archives
-}
 integrationTest.mustRunAfter test
-
