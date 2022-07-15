@@ -24,7 +24,7 @@ def getVersionName = { ->
         return stdout.toString().trim()
     }
     catch (ignored) {
-        return version;
+        return "SNAPSHOT";
     }
 } as Object
 
