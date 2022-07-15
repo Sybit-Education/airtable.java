@@ -7,7 +7,11 @@
 
 name: Build & Publish
 
-on: [ push ]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
@@ -21,20 +25,26 @@ jobs:
         with:
           java-version: '18'
           distribution: 'temurin'
+          cache: gradle
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -Pversion=${{ github.event.release.tag_name }} build
+          arguments: -Pversion=${{ github.event.release.tag_name || 'SNAPSHOT' }} build
       - name: Run Tests
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test integrationTest
+      - name: Archive test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test report
+          path: build/reports/tests/test          
       - name: Publish with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: -Pversion=${{ github.event.release.tag_name }} publish
+          arguments: -Pversion=${{ github.event.release.tag_name || 'SNAPSHOT' }} publish
         env:
           ACTION_DEPLOY_USER: ${{ secrets.ACTION_DEPLOY_USER }}   
           ACTION_DEPLOY_TOKEN: ${{ secrets.ACTION_DEPLOY_TOKEN }}
