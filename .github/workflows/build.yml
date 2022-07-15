@@ -24,10 +24,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+        uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: -Pversion=${{ github.event.release.tag_name }} build
       - name: Run Tests
-        uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: test integrationTest
+      - name: Publish with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: -Pversion=${{ github.event.release.tag_name }} publish          
