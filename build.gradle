@@ -31,11 +31,11 @@ def getVersionName = { ->
     }
 } as Object
 
-
-group = 'io.github.sybit-education.airtable'
+name = "airtable"
+group = 'com.sybit.airtable'
 version = getVersionName()
 
-description = """com.sybit airtable"""
+description = """API to access Airtable"""
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
