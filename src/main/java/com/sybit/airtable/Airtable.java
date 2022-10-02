@@ -11,6 +11,7 @@ import com.sybit.airtable.converter.MapConverter;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
+import kong.unirest.CookieSpecs;
 import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
 
@@ -158,6 +159,7 @@ public class Airtable {
 
         // Only one time
         Unirest.config().setObjectMapper(objectMapper);
+        Unirest.config().cookieSpec(CookieSpecs.STANDARD);
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
