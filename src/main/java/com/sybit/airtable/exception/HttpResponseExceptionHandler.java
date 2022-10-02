@@ -7,10 +7,12 @@
 package com.sybit.airtable.exception;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
 import com.sybit.airtable.vo.Error;
+import kong.unirest.HttpResponse;
+import kong.unirest.UnirestParsingException;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Handle HTTP responses and create exceptions.
@@ -22,11 +24,15 @@ public class HttpResponseExceptionHandler {
     public static void onResponse(HttpResponse response) throws AirtableException {
 
         final Integer statusCode = response.getStatus();
-        String message = convertStreamToString(response.getRawBody());
+        Optional<UnirestParsingException> parsingError = response.getParsingError();
+        if (parsingError.isPresent()) {
+            UnirestParsingException unirestParsingException = parsingError.get();
+            String originalBody = unirestParsingException.getOriginalBody();
+            Error err = extractError(originalBody);
 
-        Error err = extractError(message);
-
-        throw new AirtableException(err.getType(), err.getMessage(), statusCode);
+            throw new AirtableException(err.getType(), err.getMessage(), statusCode);
+        }
+        throw new AirtableException(response.getStatusText(), "Unable to parse response: " + response.getBody(), statusCode);
     }
 
     private static Error extractError(String message) {
@@ -47,8 +53,4 @@ public class HttpResponseExceptionHandler {
         return err;
     }
 
-    public static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 }

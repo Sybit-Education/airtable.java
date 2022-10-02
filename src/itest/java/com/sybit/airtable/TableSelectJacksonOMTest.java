@@ -8,10 +8,10 @@ package com.sybit.airtable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.mashape.unirest.http.ObjectMapper;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.mock.WireMockBaseTest;
+import kong.unirest.ObjectMapper;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.Test;
