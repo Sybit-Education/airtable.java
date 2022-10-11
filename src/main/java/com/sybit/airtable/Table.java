@@ -201,6 +201,8 @@ public class Table<T> {
             if (offset != null) {
                 list.addAll(this.select(query, offset));
             }
+        } else if (404 == code) {
+            throw new AirtableException("Table not found: " + this.name );            
         } else if (429 == code) {
             randomWait();
             return select(query);
