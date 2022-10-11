@@ -1,4 +1,4 @@
-# Airtable.java - The Java API for Airtable.
+# Airtable.java - The Java API for Airtable
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/stritti/airtable-java?utm_source=github.com&utm_medium=referral&utm_content=Sybit-Education/airtable.java&utm_campaign=badger)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/Sybit-Education/airtable-java?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Sybit-Education/airtable.java&amp;utm_campaign=Badge_Coverage)
@@ -25,10 +25,10 @@ Also add repository to dependencies:
 
 ```
 repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/Sybit-Education/airtable.java")
-        ...
-    }
+  maven {
+    url = uri("https://maven.pkg.github.com/Sybit-Education/airtable.java")
+    ...
+  }
 }
 ```
 
@@ -39,7 +39,6 @@ access to Airtable:
 
 ```Java
 Airtable airtable = new Airtable().configure();
-
 ```
 
 ### API-Key
@@ -174,11 +173,10 @@ All the records saved in our Airtable Base now should be in our local Table<JAVA
 Example:
 
 ```Java
-
-        Base base = airtable.base('AIRTABLE_API_KEY');
-        Table<JAVA CLASS> actorTable = base.table("NAME OF THE TABLE", <JAVA_CLASS>);
-        //Example with the Actor Table
-        Table<Actor> actorTable = base.table("Actors", Actor.class);
+Base base = airtable.base('AIRTABLE_API_KEY');
+Table<JAVA CLASS> actorTable = base.table("NAME OF THE TABLE", <JAVA_CLASS>);
+//Example with the Actor Table
+Table<Actor> actorTable = base.table("Actors", Actor.class);
 ```
 
 ### Basic Objects
@@ -222,12 +220,11 @@ The airtable.java API will respect these mappings automatically.
 #### Example
 
 ```Java
+import com.google.gson.annotations.SerializedName;
 
-    import com.google.gson.annotations.SerializedName;
-
-    //Column in Airtable is named "First- & Lastname", which is mapped to field "name".
-    @SerializedName("First- & Lastname")
-    private String name;
+//Column in Airtable is named "First- & Lastname", which is mapped to field "name".
+@SerializedName("First- & Lastname")
+private String name;
 ```
 
 ### Sort
@@ -358,6 +355,7 @@ Short overview of features, which are supported:
 
 * [x] Airtable Configure
   * [x] configuration of `proxy`
+  * [ ] configure `user`/`password` for proxy
   * [x] configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE`
   * [x] configuration of `requestTimeout`
 
@@ -386,19 +384,21 @@ see: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Testing
 
-There are JUnit tests and integration tests to verify the API.
-The integration tests are based on the Airtable template [Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies) which could be created in your account.
-For testing, the JSON-responses are mocked by [WireMock](http://wiremock.org/).
+There are **JUnit tests** and integration tests to verify the API.
+
+For unit testing, the JSON-responses are mocked by [WireMock](http://wiremock.org/).
+
+The **integration tests** are based on the [Airtable template Movies](https://airtable.com/templates/groups-clubs-and-hobbies/exprTnrH3YV8Vv9BI/favorite-movies), which could be created in your own account to run integration tests. Add your configuration of `AIRTABLE_API_KEY` & `AIRTABLE_BASE` to the integration tests locally.
+
 
 # Other Airtable Projects
 
-* [Airtable.js](https://github.com/Airtable/airtable.js): JavaScript Client
+* [Airtable.js](https://github.com/Airtable/airtable.js): official JavaScript Client
 * [Airtable Ruby Client](https://github.com/Airtable/airtable-ruby): Ruzby Client
 * [Airtable Phyton](https://github.com/nicocanali/airtable-python): Phyton Client
 * [Airtabler](https://github.com/bergant/airtabler): R interface to the Airtable API
 * [Airtable.cs](https://github.com/alphamax/AirTable.cs): AirTable API .Net client.
-
-More Github-Projects using topic *[Airtable](https://github.com/search?q=topic%3Aairtable&type=Repositories)*
+* and more Github-Projects using topic *[Airtable](https://github.com/search?q=topic%3Aairtable&type=Repositories)*
 
 # Credits
 
