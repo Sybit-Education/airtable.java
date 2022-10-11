@@ -89,7 +89,7 @@ public class TableSelectTest extends WireMockBaseTest {
         } catch (AirtableException e) {
             message = e.getMessage();
         }
-        assertEquals("Could not find table NotExists in application " + base.name() + " (TABLE_NOT_FOUND) [Http code 404]", message);
+        assertEquals("Table not found: NotExists", message);
     }
 
 //    @Test
