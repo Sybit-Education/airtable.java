@@ -394,8 +394,8 @@ The **integration tests** are based on the [Airtable template Movies](https://ai
 # Other Airtable Projects
 
 * [Airtable.js](https://github.com/Airtable/airtable.js): official JavaScript Client
-* [Airtable Ruby Client](https://github.com/Airtable/airtable-ruby): Ruzby Client
-* [Airtable Phyton](https://github.com/nicocanali/airtable-python): Phyton Client
+* [Airtable Ruby Client](https://github.com/Airtable/airtable-ruby): Ruby Client
+* [Airtable Python](https://github.com/nicocanali/airtable-python): Python Client
 * [Airtabler](https://github.com/bergant/airtabler): R interface to the Airtable API
 * [Airtable.cs](https://github.com/alphamax/AirTable.cs): AirTable API .Net client.
 * and more Github-Projects using topic *[Airtable](https://github.com/search?q=topic%3Aairtable&type=Repositories)*
