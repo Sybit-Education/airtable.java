@@ -6,13 +6,14 @@
  */
 package com.sybit.airtable;
 
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
 import com.sybit.airtable.converter.ListConverter;
 import com.sybit.airtable.converter.MapConverter;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
+import kong.unirest.CookieSpecs;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
 
 import org.apache.http.HttpHost;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -146,16 +147,19 @@ public class Airtable {
         }
 
         this.config = config;
-
+        Unirest.config().reset();
+        
         if (config.getTimeout() != null) {
             LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
-            Unirest.setTimeouts(config.getTimeout(), config.getTimeout());
+            Unirest.config().connectTimeout(config.getTimeout().intValue());
+            Unirest.config().socketTimeout(config.getTimeout().intValue());
         }
 
         configureProxy(config.getEndpointUrl());
 
         // Only one time
-        Unirest.setObjectMapper(objectMapper);
+        Unirest.config().setObjectMapper(objectMapper);
+        Unirest.config().cookieSpec(CookieSpecs.STANDARD);
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
@@ -182,9 +186,12 @@ public class Airtable {
 
         this.config.setProxy(proxy);
         if (proxy == null) {
-            Unirest.setProxy(null);
+            Unirest.config().proxy(null);
         } else {
-            Unirest.setProxy(HttpHost.create(this.config.getProxy()));
+            final HttpHost httpHost = HttpHost.create(this.config.getProxy());
+            final String hostName = httpHost.getHostName();
+            int port = httpHost.getPort();
+            Unirest.config().proxy(hostName, port);
         }
 
     }

@@ -8,7 +8,7 @@ package com.sybit.airtable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mashape.unirest.http.ObjectMapper;
+import kong.unirest.ObjectMapper;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

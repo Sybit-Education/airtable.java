@@ -8,10 +8,10 @@ package com.sybit.airtable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.mashape.unirest.http.ObjectMapper;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.mock.WireMockBaseTest;
+import kong.unirest.ObjectMapper;
 import org.apache.http.client.HttpResponseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -140,6 +140,6 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
         } catch (AirtableException e) {
             message = e.getMessage();
         }
-        assertEquals("Could not find table NotExists in application " + base.name() + " (TABLE_NOT_FOUND) [Http code 404]", message);
+        assertEquals("Table not found: NotExists", message);
     }
 }
