@@ -5,9 +5,15 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
-/*
- * Gets the version name from the latest Git tag
- */
+
+plugins {
+    id "maven-publish"
+    id "jacoco"
+    id 'com.github.jk1.dependency-license-report' version '2.0'
+}
+
+apply plugin: 'java'
+
 def getVersionName = { ->
     try {
         def stdout = new ByteArrayOutputStream()
@@ -18,43 +24,22 @@ def getVersionName = { ->
         return stdout.toString().trim()
     }
     catch (ignored) {
-        return version;
+        return "";
     }
-}
+} as Object
 
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-   }
+group = 'com.sybit.airtable'
+//version = getVersionName()
+description = """API to access Airtable"""
 
-   dependencies {
-       classpath 'com.palantir:jacoco-coverage:0.4.0'
-       classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
-       classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-   }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.palantir.jacoco-coverage'
-    apply plugin: 'com.jfrog.bintray'
-}
-
-group = 'com.sybit'
-version = getVersionName()
-
-description = """com.sybit airtable"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+tasks.named("processTestResources") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 sourceSets {
@@ -65,22 +50,20 @@ sourceSets {
         //runtimeClasspath += files('src/itest/resources/com/buransky')
         // Use "java" if you don't use Scala as a programming language
         java.srcDir file('src/itest/java')
-  }
-  // This is just to trick IntelliJ IDEA to add integration test
-  // resources to classpath when running integration tests from
-  // the IDE. It's is not a good solution but I don't know about
-  // a better one.
-  test {
-    resources.srcDir file('src/itest/resources')
-  }
+    }
+    // This is just to trick IntelliJ IDEA to add integration test
+    // resources to classpath when running integration tests from
+    // the IDE. It's is not a good solution but I don't know about
+    // a better one.
+    test {
+        resources.srcDir file('src/itest/resources')
+    }
 }
 
 repositories {
-    mavenLocal()
-    jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
-    maven { url "http://dl.bintray.com/typesafe/maven-releases" }
+    maven { url "https://dl.bintray.com/typesafe/maven-releases" }
 }
 
 configurations {
@@ -98,11 +81,16 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version:'2.6'
     compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.26'
 
-    testCompile group: 'junit', name: 'junit', version:'4.12'
+    testCompile group: 'junit', name: 'junit', version:'4.13.2'
     testCompile group: 'com.github.tomakehurst', name: 'wiremock', version:'2.23.2'
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.26'
 
     codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
+}
+
+
+test {
+    useJUnit()
 }
 
 // custom tasks for creating source jar
@@ -123,7 +111,7 @@ artifacts {
 
 //task to send coverage data to Codacy
 task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
-    main = "com.codacy.CodacyCoverageReporter"
+    mainClass = "com.codacy.CodacyCoverageReporter"
     classpath = configurations.codacy
     args = [
             "report",
@@ -135,25 +123,44 @@ task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
 }
 
 task integrationTest(type: Test) {
-  testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
-  classpath = sourceSets.integrationTest.runtimeClasspath
-  // This is not needed, but I like to see which tests have run
-  testLogging {
-    events "passed", "skipped", "failed"
-  }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 publishing {
     publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+        /*        
+        maven(MavenPublication) {
+            artifactId = rootProject.name
+            groupId = group
+            version getVersionName()
 
-        MyPublication(MavenPublication) {
-            //we have to change scope from runtime to compile. Especially for Gson-lib.
-            pom.withXml {
-                asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
+            pom {
+                name = 'Airtable.java'
+                description = 'This is a Java API client for Airtable'
+                url = 'https://github.com/Sybit-Education/airtable.java'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
                     }
-                }.each { it.scope*.value = 'compile' }
+                }
+                developers {
+                    developer {
+                        id = 'stritti'
+                        name = 'Stephan Strittmatter'
+                        email = 'stephan.strittmatter@sybit.de'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://Sybit-Education/airtable.java.git'
+                    developerConnection = 'scm:git:ssh://Sybit-Education/airtable.java.git'
+                    url = 'https://github.com/Sybit-Education/airtable.java'
+                }
             }
 
             if (plugins.hasPlugin('war')) {
@@ -161,39 +168,32 @@ publishing {
             } else {
                 from components.java
             }
-            groupId group
-            artifactId rootProject.name
-            version getVersionName()
+
+            //we have to change scope from runtime to compile. Especially for Gson-lib.
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.implementation.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each { it.scope*.value = 'implementation' }
+            }
 
             artifact sourcesJar
             artifact javadocJar
         }
+        */
 
     }
-}
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-
-    publications = ['MyPublication']
-    //configurations = ['archives']
-
-    dryRun = false //Whether to run this as dry-run, without deploying
-    publish = true //If version should be auto published after an upload
-
-    pkg {
-        repo = 'maven'
-        userOrg = 'sybit-education'
-        name = 'airtable.java'
-        licenses = ['MIT License']
-        vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
-        version {
-            name = getVersionName()
-            released = new Date()
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Sybit-Education/airtable.java")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("ACTION_DEPLOY_USER")
+                password = project.findProperty("gpr.key") ?: System.getenv("ACTION_DEPLOY_TOKEN")
+            }
         }
     }
 }
 
 integrationTest.mustRunAfter test
-
