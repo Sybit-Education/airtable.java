@@ -147,10 +147,10 @@ public class Airtable {
         }
 
         this.config = config;
-
+        Unirest.config().reset();
+        
         if (config.getTimeout() != null) {
             LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
-            Unirest.config().reset();
             Unirest.config().connectTimeout(config.getTimeout().intValue());
             Unirest.config().socketTimeout(config.getTimeout().intValue());
         }
@@ -186,13 +186,11 @@ public class Airtable {
 
         this.config.setProxy(proxy);
         if (proxy == null) {
-            Unirest.config().reset();
             Unirest.config().proxy(null);
         } else {
-            HttpHost httpHost = HttpHost.create(this.config.getProxy());
-            String hostName = httpHost.getHostName();
+            final HttpHost httpHost = HttpHost.create(this.config.getProxy());
+            final String hostName = httpHost.getHostName();
             int port = httpHost.getPort();
-            Unirest.config().reset();
             Unirest.config().proxy(hostName, port);
         }
 
