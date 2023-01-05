@@ -83,7 +83,7 @@ dependencies {
 
     testImplementation group: 'junit', name: 'junit', version:'4.13.2'
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version:'2.23.2'
-    testImplementation group: 'org.slf4j', name: 'slf4j-jdk14', version:'2.0.3'
+    testImplementation group: 'org.slf4j', name: 'slf4j-jdk14', version:'2.0.6'
 
     codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
 }
