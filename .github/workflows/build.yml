@@ -37,7 +37,10 @@ jobs:
       - name: Unit Tests
         run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} test
       - name: Integration Tests
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} -D AIRTABLE_TOKEN=${{ vars.AIRTABLE_TOKEN }} -D AIRTABLE_BASE=${{ AIRTABLE_BASE }} integrationTest
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} integrationTest
+        env:
+          AIRTABLE_TOKEN: ${{ vars.AIRTABLE_TOKEN }}
+          AIRTABLE_BASE: ${{ vars.AIRTABLE_BASE }}
       - name: Archive test report
         uses: actions/upload-artifact@v4
         with:
