@@ -18,6 +18,7 @@ on:
 permissions:
   checks: write
   pull-requests: write
+  contents: write
 
 jobs:
   build:
@@ -53,10 +54,4 @@ jobs:
         if: always()
         with:
           files: |
-            build/test-results/**/*.xml
-      - name: Publish with Gradle
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} publish
-        if: github.event_name == 'release'
-        env:
-          ACTION_DEPLOY_USER: ${{ secrets.ACTION_DEPLOY_USER }}
-          ACTION_DEPLOY_TOKEN: ${{ secrets.ACTION_DEPLOY_TOKEN }}
+            build/test-results/**/*.xml  

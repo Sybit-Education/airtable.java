@@ -1,0 +1,33 @@
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Publish package
+on:
+  release:
+    types: [created]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Publish with Gradle
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} publish
+        env:
+          ACTION_DEPLOY_USER: ${{ secrets.ACTION_DEPLOY_USER }}
+          ACTION_DEPLOY_TOKEN: ${{ secrets.ACTION_DEPLOY_TOKEN }}
