@@ -30,6 +30,13 @@ public class Movie {
     @SerializedName("Genre")
     private List<String> genre;
     private Date createdTime;
+    @SerializedName("seen?")
+    private String seen;
+    @SerializedName("personal Notes")
+    private String personalNotes;
+
+    @SerializedName("personal Rating")
+    private String personalRating;
 
     public String getId() {
         return id;
@@ -93,5 +100,29 @@ public class Movie {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getSeen() {
+        return seen;
+    }
+
+    public void setSeen(String seen) {
+        this.seen = seen;
+    }
+
+    public String getPersonalRating() {
+        return personalRating;
+    }
+
+    public void setPersonalRating(String personalRating) {
+        this.personalRating = personalRating;
+    }
+
+    public String getPersonalNotes() {
+        return personalNotes;
+    }
+
+    public void setPersonalNotes(String personalNotes) {
+        this.personalNotes = personalNotes;
     }
 }

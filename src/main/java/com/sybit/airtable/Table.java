@@ -201,7 +201,7 @@ public class Table<T> {
                 list.addAll(this.select(query, offset));
             }
         } else if (404 == code) {
-            throw new AirtableException("Table not found: " + this.name );            
+            throw new AirtableException("Table not found: " + this.name );
         } else if (429 == code) {
             randomWait();
             return select(query);
@@ -765,9 +765,9 @@ public class Table<T> {
         if (propertyExists(retval, property)) {
             BeanUtils.setProperty(retval, property, value);
         } else {
-            if(!foundSerializedNameAnnotation && !SourceVersion.isName(property))
-                LOG.error(String.format("Key '%s' contains illegal characters for a java identifier, but no field with a matching @SerializedName is present for type %s.", property, this.type.getName()));
-
+            if(!foundSerializedNameAnnotation && !SourceVersion.isName(property)) {
+                LOG.error("Key '{}' contains illegal characters for a java identifier, but no field with a matching @SerializedName is present for type {}.", property, this.type.getName());
+            }
             throw new IllegalArgumentException(this.type.getName() + " does not have a property corresponding to [" + property + "]");
         }
     }

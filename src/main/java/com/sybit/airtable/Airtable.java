@@ -21,6 +21,7 @@ import kong.unirest.Unirest;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,13 @@ public class Airtable {
 
     private static final Logger LOG = LoggerFactory.getLogger(Airtable.class);
 
+    /**
+     * API-Key for Airtable.
+     * @deprecated since 0.3, use {@link #AIRTABLE_TOKEN} instead.
+     */
+    @Deprecated(forRemoval = true, since = "0.3")
     private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
+    private static final String AIRTABLE_TOKEN = "AIRTABLE_TOKEN";
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
     private Configuration config;
@@ -86,15 +93,33 @@ public class Airtable {
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
-        LOG.info("System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
         String airtableApi = System.getProperty(AIRTABLE_API_KEY);
+        if (airtableApi != null) {
+            LOG.warn("System-Property: Using apikey '{} is deprecated, use '-D {}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+        } else {
+            airtableApi = System.getProperty(AIRTABLE_TOKEN);
+        }
 
         if (airtableApi == null) {
             LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
             airtableApi = System.getenv(AIRTABLE_API_KEY);
+            if (airtableApi != null) {
+                LOG.warn("Environment-Variable: Using apikey '{}' is deprecated, use '{}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+            } else {
+                airtableApi = System.getenv(AIRTABLE_TOKEN);
+            }
         }
         if (airtableApi == null) {
             airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
+            if (airtableApi != null) {
+                LOG.warn("Credential file: Using '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+            } else {
+                airtableApi = getCredentialProperty(AIRTABLE_TOKEN);
+            }
+        }
+
+        if(airtableApi == null) {
+            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found.");
         }
 
         return this.configure(airtableApi, objectMapper);
@@ -159,7 +184,7 @@ public class Airtable {
 
         this.config = config;
         Unirest.config().reset();
-        
+
         if (config.getTimeout() != null) {
             LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
             Unirest.config().connectTimeout(config.getTimeout().intValue());
