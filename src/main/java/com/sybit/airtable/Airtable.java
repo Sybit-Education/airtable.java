@@ -58,7 +58,14 @@ public class Airtable {
      */
     @Deprecated(forRemoval = true, since = "0.3")
     private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
+    /**
+     * Name of variable for API-Token of Airtable.
+     * @since 0.3
+     */
     private static final String AIRTABLE_TOKEN = "AIRTABLE_TOKEN";
+    /**
+     * Name of variable for base name for Airtable.
+     */
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
     private Configuration config;
@@ -93,20 +100,21 @@ public class Airtable {
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
-        LOG.info("Environment-Variable: Trying property '-D {}' to get apikey.", AIRTABLE_TOKEN);
+        LOG.info("Environment-Variable: Trying property '-D {}' to get token ...", AIRTABLE_TOKEN);
         String airtableApi = System.getProperty(AIRTABLE_TOKEN);
 
         if (airtableApi == null) {
-            LOG.info("Environment-Variable: Trying OS environment '{}' to get apikey.", AIRTABLE_TOKEN);
+            LOG.info("Environment-Variable: Trying OS environment variable '{}' to get token ...", AIRTABLE_TOKEN);
             airtableApi = System.getenv(AIRTABLE_TOKEN);
         }
         if (airtableApi == null) {
-            LOG.info("Environment-Variable: Trying credential file to get apikey {}", AIRTABLE_TOKEN);
+            LOG.info("Environment-Variable: Trying credential file containing {} to get token ...", AIRTABLE_TOKEN);
             airtableApi = getCredentialProperty(AIRTABLE_TOKEN);
         }
 
         // deprecated since 0.3
         if(airtableApi == null) {
+            LOG.warn("Variable '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
             airtableApi = System.getProperty(AIRTABLE_API_KEY);
             if (airtableApi != null) {
                 LOG.warn("System-Property: Using apikey '{} is deprecated, use '-D {}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
@@ -127,8 +135,9 @@ public class Airtable {
             }
         }
         // end deprecated
+
         if(airtableApi == null) {
-            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found.");
+            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found. See https://airtable.com/create/tokens how to create private access token.");
         }
 
         return this.configure(airtableApi, objectMapper);
