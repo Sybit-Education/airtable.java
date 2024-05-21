@@ -9,21 +9,26 @@ package com.sybit.airtable;
 import com.google.gson.annotations.SerializedName;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
-import com.sybit.airtable.vo.*;
+import com.sybit.airtable.vo.Attachment;
+import com.sybit.airtable.vo.Delete;
+import com.sybit.airtable.vo.PostRecord;
+import com.sybit.airtable.vo.RecordItem;
+import com.sybit.airtable.vo.Records;
+import kong.unirest.GetRequest;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import kong.unirest.GetRequest;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.HttpHead;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.lang.model.SourceVersion;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -704,15 +709,16 @@ public class Table<T> {
     /**
      * Transform the record to the given type.
      * @param rec record to transform.
-     * @param retval return value of transformation.
+     * @param type type of transformation.
      * @return transformed record.
      * @throws IllegalAccessException if error occurs.
      */
-    private T transform(Map<String, Object> rec, T retval) throws InvocationTargetException, IllegalAccessException {
+    private T transform(Map<String, Object> rec, T type) throws InvocationTargetException, IllegalAccessException {
+        T retval = type;
         for (String key : rec.keySet()) {
             if ("fields".equals(key)) {
                 //noinspection unchecked
-                retval = transform((Map<String, Object>) rec.get("fields"), retval);
+                retval = transform((Map<String, Object>) rec.get("fields"), type);
             } else {
                 setProperty(retval, key, rec.get(key));
             }
@@ -724,12 +730,13 @@ public class Table<T> {
     /**
      * Transform the record to the given type.
      * @param rec record to transform.
-     * @param retval return value of transformation.
+     * @param type Type to  transform into
      * @return transformed record.
      * @throws InvocationTargetException if error occurs.
      * @throws IllegalAccessException if error occurs.
      */
-    private T transform(RecordItem rec, T retval) throws InvocationTargetException, IllegalAccessException {
+    private T transform(RecordItem rec, T type) throws InvocationTargetException, IllegalAccessException {
+        T retval = type;
         setProperty(retval, FIELD_ID, rec.getId());
         setProperty(retval, FIELD_CREATED_TIME, rec.getCreatedTime());
 
@@ -785,7 +792,7 @@ public class Table<T> {
         }
 
         String property = key.trim();
-        property = property.substring(0, 1).toLowerCase() + property.substring(1, property.length());
+        property = property.substring(0, 1).toLowerCase() + property.substring(1);
 
         return property;
     }
@@ -849,11 +856,12 @@ public class Table<T> {
                     final Field[] attributesPhotos = attachments.getClass().getDeclaredFields();
                     for (Field attributePhoto : attributesPhotos) {
                         final String namePhotoAttribute = attributePhoto.getName();
-                        if (FIELD_ID.equals(namePhotoAttribute) || "size".equals(namePhotoAttribute)
-                                || "type".equals(namePhotoAttribute) || "filename".equals(namePhotoAttribute)) {
-                            if (BeanUtils.getProperty(attachments.get(i), namePhotoAttribute) != null) {
-                                throw new AirtableException("Property " + namePhotoAttribute + " should be null!");
-                            }
+                        if ((FIELD_ID.equals(namePhotoAttribute)
+                                || "size".equals(namePhotoAttribute)
+                                || "type".equals(namePhotoAttribute)
+                                || "filename".equals(namePhotoAttribute)
+                            ) && (BeanUtils.getProperty(attachments.get(i), namePhotoAttribute) != null)) {
+                            throw new AirtableException("Property " + namePhotoAttribute + " should be null!");
                         }
                     }
                 }

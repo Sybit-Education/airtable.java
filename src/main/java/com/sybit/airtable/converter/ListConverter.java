@@ -30,12 +30,6 @@ public class ListConverter extends AbstractConverter {
     private Class listClass;
 
     /**
-     * Constructor.
-     */
-    public ListConverter() {
-    }
-
-    /**
      *
      * Method overwritten so it doesent return only the first Element of the
      * Array.

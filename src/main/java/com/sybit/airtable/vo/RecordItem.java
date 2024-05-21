@@ -6,7 +6,6 @@
  */
 package com.sybit.airtable.vo;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -27,13 +26,6 @@ public class RecordItem {
      * Created time of the record.
      */
     private String createdTime;
-
-    /**
-     * Constructor.
-     */
-    public RecordItem() {
-        // default constructor
-    }
 
     /**
      * Get the id.

@@ -8,10 +8,11 @@ package com.sybit.airtable.converter;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.sybit.airtable.vo.Thumbnail;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.converters.AbstractConverter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -26,12 +27,6 @@ import org.apache.commons.beanutils.converters.AbstractConverter;
 public class MapConverter extends AbstractConverter{
 
     private Class mapClass;
-
-    /**
-     * Constructor.
-     */
-    public MapConverter() {
-    }
 
     /**
      * Converts the input object into a <code>Map</code> object.

@@ -14,10 +14,6 @@ import com.sybit.airtable.vo.Thumbnail;
 import kong.unirest.CookieSpecs;
 import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
-
-import kong.unirest.ObjectMapper;
-import kong.unirest.Proxy;
-import kong.unirest.Unirest;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
@@ -27,8 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +107,18 @@ public class Airtable {
         }
 
         // deprecated since 0.3
+        airtableApi = getAirtableApiKeyDeprecated(airtableApi);
+        // end deprecated
+
+        if(airtableApi == null) {
+            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found. See https://airtable.com/create/tokens how to create private access token.");
+        }
+
+        return this.configure(airtableApi, objectMapper);
+    }
+
+    @Deprecated(forRemoval = true, since = "0.3")
+    private String getAirtableApiKeyDeprecated(String airtableApi) {
         if(airtableApi == null) {
             LOG.warn("Variable '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
             airtableApi = System.getProperty(AIRTABLE_API_KEY);
@@ -134,13 +140,7 @@ public class Airtable {
                 }
             }
         }
-        // end deprecated
-
-        if(airtableApi == null) {
-            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found. See https://airtable.com/create/tokens how to create private access token.");
-        }
-
-        return this.configure(airtableApi, objectMapper);
+        return airtableApi;
     }
 
     /**

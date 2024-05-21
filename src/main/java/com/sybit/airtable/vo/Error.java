@@ -6,8 +6,6 @@
  */
 package com.sybit.airtable.vo;
 
-import java.io.Serializable;
-
 /**
  * Error object.
  */
@@ -20,13 +18,6 @@ public class Error {
      * Error message.
      */
     private String message;
-
-    /**
-     * Constructor.
-     */
-    public Error() {
-        // default constructor
-    }
 
     /**
      * Get the type.

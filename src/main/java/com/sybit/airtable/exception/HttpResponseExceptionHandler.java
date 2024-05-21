@@ -7,7 +7,6 @@
 package com.sybit.airtable.exception;
 
 import com.google.gson.Gson;
-import kong.unirest.HttpResponse;
 import com.sybit.airtable.vo.Error;
 import kong.unirest.HttpResponse;
 import kong.unirest.UnirestParsingException;

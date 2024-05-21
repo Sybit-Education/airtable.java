@@ -7,8 +7,6 @@
 package com.sybit.airtable.vo;
 
 
-import java.io.Serializable;
-
 /**
  * Value Object for the Thumbnail.
  */
@@ -31,13 +29,6 @@ public class Thumbnail {
      * Height of the thumbnail.
      */
     private Float height;
-
-    /**
-     * Constructor.
-     */
-    public Thumbnail() {
-        // default constructor
-    }
 
     /**
      * get the url.

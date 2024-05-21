@@ -7,8 +7,6 @@
 package com.sybit.airtable.vo;
 
 
-import java.io.Serializable;
-
 /**
  * Value Object for the Post Record.
  * @author fzr
@@ -20,13 +18,6 @@ public class PostRecord<T> {
      * The fields.
      */
     private T fields;
-
-    /**
-     * Constructor.
-     */
-    public PostRecord() {
-        // default constructor
-    }
 
     /**
      * Get the fields.

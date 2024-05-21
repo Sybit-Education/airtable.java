@@ -6,7 +6,6 @@
  */
 package com.sybit.airtable.vo;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +23,6 @@ public class Records {
      * Offset.
      */
     private String offset;
-
-    /**
-     * Constructor.
-     */
-    public Records() {
-        // default constructor
-    }
 
     /**
      * Get the records.

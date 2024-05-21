@@ -14,7 +14,7 @@ import java.util.Map;
  * Airtable Attachment items.
  *
  */
-public class Attachment implements Serializable {
+public class Attachment {
 
     /**
      * ID of attachment.
@@ -40,13 +40,6 @@ public class Attachment implements Serializable {
      * Thumbnails of attachment.
      */
     private Map<String,Thumbnail> thumbnails;
-
-    /**
-     * Constructor.
-     */
-    public Attachment() {
-        // default constructor
-    }
 
     /**
      * get the id.

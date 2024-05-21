@@ -6,8 +6,6 @@
  */
 package com.sybit.airtable.vo;
 
-import java.io.Serializable;
-
 /**
  * Value Object for the Delete Response.
  *
@@ -24,13 +22,7 @@ public class Delete {
      */
     private String id;
 
-    /**
-     * Constructor.
-     */
-    public Delete() {
-    }
-
-    /**
+      /**
      * If it is deleted.
      * @return the deleted
      */
