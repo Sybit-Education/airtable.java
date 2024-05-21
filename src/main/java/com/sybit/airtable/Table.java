@@ -28,6 +28,7 @@ import javax.lang.model.SourceVersion;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -48,6 +49,9 @@ public class Table<T> {
 
     private static final String FIELD_ID = "id";
     private static final String FIELD_CREATED_TIME = "createdTime";
+    public static final String HTTP_HEADER_ACCEPT = "accept";
+    public static final String HTTP_HEADER_AUTHORIZATION = "Authorization";
+    public static final String HTTP_HEADER_CONTENT_TYPE = "Content-type";
 
     private final String name;
     private final Class<T> type;
@@ -109,7 +113,7 @@ public class Table<T> {
 
             @Override
             public List<Sort> getSort() {
-                return null;
+                return Collections.emptyList();
             }
 
             @Override
@@ -119,7 +123,7 @@ public class Table<T> {
 
             @Override
             public String[] getFields() {
-                return null;
+                return new String[0];
             }
 
             @Override
@@ -147,15 +151,14 @@ public class Table<T> {
         HttpResponse<Records> response;
         try {
             final GetRequest request = Unirest.get(getTableEndpointUrl())
-                    .header("accept", MIME_TYPE_JSON)
-                    .header("Authorization", getBearerToken())
-                    .header("Content-type" , MIME_TYPE_JSON);
+                    .header(HTTP_HEADER_ACCEPT, MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_AUTHORIZATION, getBearerToken())
+                    .header(HTTP_HEADER_CONTENT_TYPE, MIME_TYPE_JSON);
 
             if (query.getFields() != null && query.getFields().length > 0) {
                 String[] fields = query.getFields();
                 for (String field : fields) {
                     request.queryString("fields[]", field);
-
                 }
             }
             if (query.getMaxRecords() != null) {
@@ -295,7 +298,7 @@ public class Table<T> {
 
             @Override
             public List<Sort> getSort() {
-                return null;
+                return Collections.emptyList();
             }
 
             @Override
@@ -305,7 +308,7 @@ public class Table<T> {
 
             @Override
             public String[] getFields() {
-                return null;
+                return new String[0];
             }
 
             @Override
@@ -341,7 +344,7 @@ public class Table<T> {
 
             @Override
             public List<Sort> getSort() {
-                return null;
+                return Collections.emptyList();
             }
 
             @Override
@@ -351,7 +354,7 @@ public class Table<T> {
 
             @Override
             public String[] getFields() {
-                return null;
+                return new String[0];
             }
 
             @Override
@@ -400,7 +403,7 @@ public class Table<T> {
 
             @Override
             public String[] getFields() {
-                return null;
+                return new String[0];
             }
 
             @Override
@@ -437,7 +440,7 @@ public class Table<T> {
 
             @Override
             public List<Sort> getSort() {
-                return null;
+                return Collections.emptyList();
             }
 
             @Override
@@ -499,8 +502,8 @@ public class Table<T> {
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.get(getTableEndpointUrl() + "/" + id)
-                    .header("accept", MIME_TYPE_JSON)
-                    .header("Authorization", getBearerToken())
+                    .header(HTTP_HEADER_ACCEPT, MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_AUTHORIZATION, getBearerToken())
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
             throw new AirtableException(e);
@@ -550,9 +553,9 @@ public class Table<T> {
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.post(getTableEndpointUrl())
-                    .header("accept", MIME_TYPE_JSON)
-                    .header("Authorization", getBearerToken())
-                    .header("Content-type", MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_ACCEPT, MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_AUTHORIZATION, getBearerToken())
+                    .header(HTTP_HEADER_CONTENT_TYPE, MIME_TYPE_JSON)
                     .body(body)
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
@@ -604,9 +607,9 @@ public class Table<T> {
         HttpResponse<RecordItem> response;
         try {
             response = Unirest.patch(getTableEndpointUrl() + "/" + id)
-                    .header("accept", MIME_TYPE_JSON)
-                    .header("Authorization", getBearerToken())
-                    .header("Content-type", MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_ACCEPT, MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_AUTHORIZATION, getBearerToken())
+                    .header(HTTP_HEADER_CONTENT_TYPE, MIME_TYPE_JSON)
                     .body(body)
                     .asObject(RecordItem.class);
         } catch (UnirestException e) {
@@ -663,8 +666,8 @@ public class Table<T> {
         HttpResponse<Delete> response;
         try {
             response = Unirest.delete(getTableEndpointUrl() + "/" + id)
-                    .header("accept", MIME_TYPE_JSON)
-                    .header("Authorization", getBearerToken())
+                    .header(HTTP_HEADER_ACCEPT, MIME_TYPE_JSON)
+                    .header(HTTP_HEADER_AUTHORIZATION, getBearerToken())
                     .asObject(Delete.class);
         } catch (UnirestException e) {
             throw new AirtableException(e);

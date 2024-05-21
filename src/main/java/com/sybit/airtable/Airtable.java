@@ -65,13 +65,6 @@ public class Airtable {
     private Configuration config;
 
     /**
-     * Constructor.
-     */
-    public Airtable() {
-        // private constructor
-    }
-
-    /**
      * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property,
      * enviroment variable or within credentials.properties.
      *
@@ -94,32 +87,36 @@ public class Airtable {
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
-        LOG.info("Environment-Variable: Trying property '-D {}' to get token ...", AIRTABLE_TOKEN);
-        String airtableApi = System.getProperty(AIRTABLE_TOKEN);
+        LOG.info("Environment-Variable: Trying property '-D {}' to get access token ...", AIRTABLE_TOKEN);
+        String accessToken = System.getProperty(AIRTABLE_TOKEN);
 
-        if (airtableApi == null) {
-            LOG.info("Environment-Variable: Trying OS environment variable '{}' to get token ...", AIRTABLE_TOKEN);
-            airtableApi = System.getenv(AIRTABLE_TOKEN);
+        if (accessToken == null) {
+            LOG.info("Environment-Variable: Trying OS environment variable '{}' to get access token ...", AIRTABLE_TOKEN);
+            accessToken = System.getenv(AIRTABLE_TOKEN);
         }
-        if (airtableApi == null) {
-            LOG.info("Environment-Variable: Trying credential file containing {} to get token ...", AIRTABLE_TOKEN);
-            airtableApi = getCredentialProperty(AIRTABLE_TOKEN);
+        if (accessToken == null) {
+            LOG.info("Environment-Variable: Trying credential file containing {} to get access token ...", AIRTABLE_TOKEN);
+            accessToken = getCredentialProperty(AIRTABLE_TOKEN);
         }
 
         // deprecated since 0.3
-        airtableApi = getAirtableApiKeyDeprecated(airtableApi);
+        accessToken = getAirtableApiKeyDeprecated(accessToken);
         // end deprecated
 
-        if(airtableApi == null) {
+        if(accessToken == null) {
             throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found. See https://airtable.com/create/tokens how to create private access token.");
         }
 
-        return this.configure(airtableApi, objectMapper);
+        return this.configure(accessToken, objectMapper);
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated(forRemoval = true, since = "0.3")
-    private String getAirtableApiKeyDeprecated(String airtableApi) {
-        if(airtableApi == null) {
+    private String getAirtableApiKeyDeprecated(String airtableToken) {
+        String airtableApi;
+        if(airtableToken== null) {
             LOG.warn("Variable '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
             airtableApi = System.getProperty(AIRTABLE_API_KEY);
             if (airtableApi != null) {
@@ -139,6 +136,8 @@ public class Airtable {
                     LOG.warn("Credential file: Using '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
                 }
             }
+        } else {
+            airtableApi = null;
         }
         return airtableApi;
     }
@@ -146,13 +145,13 @@ public class Airtable {
     /**
      * Configure Airtable.
      *
-     * @param apiKey API-Key of Airtable.
+     * @param token private access token of Airtable.
      * @return An Airtable instance configured with GsonObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
-    public Airtable configure(String apiKey) throws AirtableException {
-        return configure(apiKey, new GsonObjectMapper());
+    public Airtable configure(String token) throws AirtableException {
+        return configure(token, new GsonObjectMapper());
     }
 
     /**
