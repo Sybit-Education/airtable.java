@@ -76,7 +76,7 @@ dependencies {
     implementation 'com.konghq:unirest-java:3.14.5'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
     implementation 'org.json:json:20240303'
-    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
     implementation 'commons-io:commons-io:2.16.1'
     implementation 'org.slf4j:slf4j-api:2.0.13'
