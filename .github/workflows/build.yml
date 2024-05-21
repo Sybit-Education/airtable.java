@@ -32,8 +32,6 @@ jobs:
           cache: gradle
       - name: Build with Gradle
         run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} build
-      - name: Run Tests
-        run: ./gradlew test integrationTest
       - name: Archive test report
         uses: actions/upload-artifact@v4
         with:
