@@ -12,6 +12,12 @@ name: Publish package
 on:
   release:
     types: [created]
+
+permissions:
+  checks: write
+  pull-requests: write
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
