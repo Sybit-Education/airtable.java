@@ -13,11 +13,6 @@ The documentation will provide detailed information about your created base.
 
 # Usage
 
-For adding dependency, you could use bintray-repository:
-[https://bintray.com/sybit-education/maven/airtable.java](https://bintray.com/sybit-education/maven/airtable.java)
-
-The files are stored at: [https://dl.bintray.com/sybit-education/maven/](https://dl.bintray.com/sybit-education/maven/)
-
 ## Gradle
 
 For Gradle add compile `com.sybit:airtable.java:[version]` to compile dependencies.
