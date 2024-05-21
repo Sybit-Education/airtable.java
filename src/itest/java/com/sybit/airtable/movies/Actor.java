@@ -9,6 +9,8 @@ package com.sybit.airtable.movies;
 
 import com.google.gson.annotations.SerializedName;
 import com.sybit.airtable.vo.Attachment;
+
+import java.util.Date;
 import java.util.List;
 
 public class Actor {
@@ -22,8 +24,11 @@ public class Actor {
     private String biography;
     @SerializedName("Filmography")
     private String[] filmography;
-    
-   
+
+    @SerializedName("createdTime")
+    private Date createdTime;
+
+
 
     public String getId() {
         return id;
@@ -64,6 +69,13 @@ public class Actor {
     public void setBiography(String Biography) {
         this.biography = Biography;
     }
-    
-    
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
 }
+

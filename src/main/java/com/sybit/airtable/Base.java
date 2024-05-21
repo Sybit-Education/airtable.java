@@ -42,10 +42,10 @@ public class Base {
         this.baseName = name;
         this.parent = airtable;
     }
-    
+
     /**
      * Get Airtable object as parent.
-     * @return
+     * @return Airtable object.
      */
     public Airtable airtable() {
         return parent;
@@ -71,7 +71,7 @@ public class Base {
         assert clazz != null : "clazz was null";
 
         if(!tableMap.containsKey(name)) {
-            LOG.debug("Create new instance for table [" + name + "]");
+            LOG.debug("Create new instance for table [{}]", name);
             Table t = new Table(name, clazz);
             t.setParent(this);
             tableMap.put(name, t);

@@ -8,32 +8,46 @@ package com.sybit.airtable.vo;
 
 
 /**
- *
- * @author fzr
+ * Value Object for the Thumbnail.
  */
 public class Thumbnail {
-    
-        private String name;
-    
-        private String url;
-        private Float width;
-        private Float height;
 
-        /**
-         * @return the url
-         */
-        public String getUrl() {
-            return url;
-        }
+    /**
+     * Name of the thumbnail.
+     */
+    private String name;
 
-        /**
-         * @param url the url to set
-         */
-        public void setUrl(String url) {
+    /**
+     * URL of the thumbnail.
+     */
+    private String url;
+    /**
+     * Width of the thumbnail.
+     */
+    private Float width;
+    /**
+     * Height of the thumbnail.
+     */
+    private Float height;
+
+    /**
+     * get the url.
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * set the url.
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
             this.url = url;
         }
 
     /**
+     * get the width.
      * @return the width
      */
     public Float getWidth() {
@@ -41,6 +55,7 @@ public class Thumbnail {
     }
 
     /**
+     * set the width.
      * @param width the width to set
      */
     public void setWidth(Float width) {
@@ -48,6 +63,7 @@ public class Thumbnail {
     }
 
     /**
+     * get the height.
      * @return the height
      */
     public Float getHeight() {
@@ -55,6 +71,7 @@ public class Thumbnail {
     }
 
     /**
+     * set the height.
      * @param height the height to set
      */
     public void setHeight(Float height) {
@@ -62,6 +79,7 @@ public class Thumbnail {
     }
 
     /**
+     * get the name.
      * @return the name
      */
     public String getName() {
@@ -69,14 +87,10 @@ public class Thumbnail {
     }
 
     /**
+     * set the name.
      * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
-        
-        
-
-
-        
 }

@@ -21,6 +21,19 @@ import java.util.Optional;
  */
 public class HttpResponseExceptionHandler {
 
+    /**
+     * Private constructor.
+     */
+    private HttpResponseExceptionHandler() {
+        // private constructor
+    }
+
+    /**
+     * Handle the response and create an exception.
+     *
+     * @param response the HttpResponse
+     * @throws AirtableException the exception
+     */
     public static void onResponse(HttpResponse response) throws AirtableException {
 
         final Integer statusCode = response.getStatus();
@@ -35,6 +48,12 @@ public class HttpResponseExceptionHandler {
         throw new AirtableException(response.getStatusText(), "Unable to parse response: " + response.getBody(), statusCode);
     }
 
+    /**
+     * Extract the error from the response.
+     *
+     * @param message the response message
+     * @return the error
+     */
     private static Error extractError(String message) {
 
         final Gson gson = new Gson();

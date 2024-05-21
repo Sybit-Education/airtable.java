@@ -14,11 +14,10 @@ import com.sybit.airtable.vo.Thumbnail;
 import kong.unirest.CookieSpecs;
 import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
-
-import org.apache.http.HttpHost;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import org.apache.http.HttpHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,20 @@ public class Airtable {
 
     private static final Logger LOG = LoggerFactory.getLogger(Airtable.class);
 
+    /**
+     * API-Key for Airtable.
+     * @deprecated since 0.3, use {@link #AIRTABLE_TOKEN} instead.
+     */
+    @Deprecated(forRemoval = true, since = "0.3")
     private static final String AIRTABLE_API_KEY = "AIRTABLE_API_KEY";
+    /**
+     * Name of variable for API-Token of Airtable.
+     * @since 0.3
+     */
+    private static final String AIRTABLE_TOKEN = "AIRTABLE_TOKEN";
+    /**
+     * Name of variable for base name for Airtable.
+     */
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
     private Configuration config;
@@ -75,30 +87,71 @@ public class Airtable {
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
-        LOG.info("System-Property: Using Java property '-D" + AIRTABLE_API_KEY + "' to get apikey.");
-        String airtableApi = System.getProperty(AIRTABLE_API_KEY);
+        LOG.info("Environment-Variable: Trying property '-D {}' to get access token ...", AIRTABLE_TOKEN);
+        String accessToken = System.getProperty(AIRTABLE_TOKEN);
 
-        if (airtableApi == null) {
-            LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
-            airtableApi = System.getenv(AIRTABLE_API_KEY);
+        if (accessToken == null) {
+            LOG.info("Environment-Variable: Trying OS environment variable '{}' to get access token ...", AIRTABLE_TOKEN);
+            accessToken = System.getenv(AIRTABLE_TOKEN);
         }
-        if (airtableApi == null) {
-            airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
+        if (accessToken == null) {
+            LOG.info("Environment-Variable: Trying credential file containing {} to get access token ...", AIRTABLE_TOKEN);
+            accessToken = getCredentialProperty(AIRTABLE_TOKEN);
         }
 
-        return this.configure(airtableApi, objectMapper);
+        // deprecated since 0.3
+        accessToken = getAirtableApiKeyDeprecated(accessToken);
+        // end deprecated
+
+        if(accessToken == null) {
+            throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found. See https://airtable.com/create/tokens how to create private access token.");
+        }
+
+        return this.configure(accessToken, objectMapper);
+    }
+
+    /**
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true, since = "0.3")
+    private String getAirtableApiKeyDeprecated(String airtableToken) {
+        String airtableApi;
+        if(airtableToken== null) {
+            LOG.warn("Variable '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+            airtableApi = System.getProperty(AIRTABLE_API_KEY);
+            if (airtableApi != null) {
+                LOG.warn("System-Property: Using apikey '{} is deprecated, use '-D {}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+            }
+
+            if (airtableApi == null) {
+                LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
+                airtableApi = System.getenv(AIRTABLE_API_KEY);
+                if (airtableApi != null) {
+                    LOG.warn("Environment-Variable: Using apikey '{}' is deprecated, use '{}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+                }
+            }
+            if (airtableApi == null) {
+                airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
+                if (airtableApi != null) {
+                    LOG.warn("Credential file: Using '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+                }
+            }
+        } else {
+            airtableApi = airtableToken;
+        }
+        return airtableApi;
     }
 
     /**
      * Configure Airtable.
      *
-     * @param apiKey API-Key of Airtable.
+     * @param token private access token of Airtable.
      * @return An Airtable instance configured with GsonObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
-    public Airtable configure(String apiKey) throws AirtableException {
-        return configure(apiKey, new GsonObjectMapper());
+    public Airtable configure(String token) throws AirtableException {
+        return configure(token, new GsonObjectMapper());
     }
 
     /**
@@ -106,7 +159,7 @@ public class Airtable {
      *
      * @param apiKey API-Key of Airtable.
      * @param objectMapper A custom ObjectMapper implementation
-     * @return
+     * @return An Airtable instance configured with supplied ObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
@@ -116,9 +169,9 @@ public class Airtable {
 
     /**
      * Configure the Airtable client by given config.
-     * 
+     *
      * @param config Configuration of client.
-     * @return
+     * @return An Airtable instance configured with GsonObjectMapper
      * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
@@ -128,10 +181,10 @@ public class Airtable {
 
     /**
      * Configure the Airtable client by given config.
-     * 
+     *
      * @param config Configuration of client.
      * @param objectMapper A custom ObjectMapper implementation
-     * @return
+     * @return An Airtable instance configured with supplied ObjectMapper
      * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
@@ -139,7 +192,7 @@ public class Airtable {
         assert config != null : "config was null";
         assert objectMapper != null : "objectMapper was null";
 
-        if (config.getApiKey() == null) {
+        if (config.getAccessToken() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
         if (config.getEndpointUrl() == null) {
@@ -148,7 +201,7 @@ public class Airtable {
 
         this.config = config;
         Unirest.config().reset();
-        
+
         if (config.getTimeout() != null) {
             LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
             Unirest.config().connectTimeout(config.getTimeout().intValue());
@@ -202,7 +255,7 @@ public class Airtable {
      * Proxy will be ignored for endpointUrls containing <code>localhost</code>
      * or <code>127.0.0.1</code>.
      *
-     * @param endpointUrl
+     * @param endpointUrl the endpoint url.
      */
     private void configureProxy(String endpointUrl) {
         if (this.config.getProxy() == null) {
@@ -210,11 +263,11 @@ public class Airtable {
             final String httpsProxy = System.getenv("https_proxy");
             if (httpsProxy != null
                     && (endpointUrl.contains("https"))) {
-                LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: " + httpsProxy);
+                LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: {}", httpsProxy);
                 setProxy(httpProxy);
             } else if (httpProxy != null
                     && (endpointUrl.contains("http"))) {
-                LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
+                LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: {}", httpProxy);
                 setProxy(httpsProxy);
             } else {
                 setProxy(null);
@@ -255,7 +308,7 @@ public class Airtable {
      * Builder method to create base of given base id.
      *
      * @param base the base id.
-     * @return
+     * @return the base object.
      * @throws com.sybit.airtable.exception.AirtableException AIRTABLE_BASE was
      * Null
      */
@@ -263,15 +316,22 @@ public class Airtable {
         if (base == null) {
             throw new AirtableException("base was null");
         }
-        final Base b = new Base(base, this);
 
-        return b;
+        return new Base(base, this);
     }
 
+    /**
+     * Get the configuration.
+     * @return the configuration.
+     */
     public Configuration getConfig() {
         return config;
     }
 
+    /**
+     * Set the configuration.
+     * @param config the configuration.
+     */
     public void setConfig(Configuration config) {
         assert config != null : "config was null";
 
@@ -280,19 +340,29 @@ public class Airtable {
     }
 
     /**
-     *
-     * @return
+     * Get the endpoint url.
+     * @return the endpoint url.
      */
     public String endpointUrl() {
         return this.config.getEndpointUrl();
     }
 
     /**
-     *
-     * @return
+     * Get the api key.
+     * @return the api key.
+     * @deprecated since 0.3, use {@link #accessToken()} instead.
      */
+    @Deprecated(forRemoval = true, since = "0.3")
     public String apiKey() {
-        return this.config.getApiKey();
+        return this.config.getAccessToken();
+    }
+
+    /**
+     * Get the access token.
+     * @return the access token.
+     */
+    public String accessToken() {
+        return this.config.getAccessToken();
     }
 
     /**
@@ -304,7 +374,7 @@ public class Airtable {
     private String getCredentialProperty(String key) {
 
         final String file = "/credentials.properties";
-        LOG.info("credentials file: Using file '" + file + "' using key '" + key + "' to get value.");
+        LOG.info("credentials file: Using file '{}' using key '{}' to get value.", file, key);
         String value;
 
         InputStream in = null;
@@ -323,6 +393,10 @@ public class Airtable {
         return value;
     }
 
+    /**
+     * Set the endpoint url.
+     * @param endpointUrl the endpoint url.
+     */
     public void setEndpointUrl(String endpointUrl) {
         this.config.setEndpointUrl(endpointUrl);
         configureProxy(endpointUrl);

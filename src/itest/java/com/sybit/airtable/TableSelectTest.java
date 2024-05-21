@@ -9,7 +9,6 @@ package com.sybit.airtable;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.mock.WireMockBaseTest;
-import org.apache.http.client.HttpResponseException;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public class TableSelectTest extends WireMockBaseTest {
 
 
     @Test
-    public void testSelectTable() throws AirtableException, HttpResponseException {
+    public void testSelectTable() throws AirtableException {
 
 
         List<Movie> retval = base.table("Movies", Movie.class).select();
@@ -34,7 +33,7 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableMaxRecords() throws AirtableException, HttpResponseException {
+    public void testSelectTableMaxRecords() throws AirtableException {
 
         List<Movie> retval = base.table("Movies", Movie.class).select(2);
         assertNotNull(retval);
@@ -43,7 +42,7 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableSorted() throws AirtableException, HttpResponseException {
+    public void testSelectTableSorted() throws AirtableException {
 
         Table table = base.table("Movies", Movie.class);
 
@@ -62,7 +61,7 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableView() throws AirtableException, HttpResponseException {
+    public void testSelectTableView() throws AirtableException {
 
 
         List<Movie> retval = base.table("Movies", Movie.class).select("Main View");
@@ -73,14 +72,14 @@ public class TableSelectTest extends WireMockBaseTest {
     }
 
     @Test(expected = AirtableException.class)
-    public void testSelectNonExistingTable() throws AirtableException, HttpResponseException {
+    public void testSelectNonExistingTable() throws AirtableException {
 
         List<Movie> retval = base.table("NotExists", Movie.class).select();
         assertNotNull(retval);
     }
 
     @Test
-    public void testSelectNonExistingTableExceptionMessage() throws HttpResponseException {
+    public void testSelectNonExistingTableExceptionMessage() {
 
         String message;
         try {

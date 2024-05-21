@@ -41,18 +41,18 @@ access to Airtable:
 Airtable airtable = new Airtable().configure();
 ```
 
-### API-Key
+### Personal Access Token
 
-The API key could be passed to the app in different ways:
+The personal access token could be passed to the app in different ways:
 
-* Defining Java property `AIRTABLE_API_KEY` (e.g. `-DAIRTABLE_API_KEY=foo`).
-* Defining OS environment variable `AIRTABLE_API_KEY` (e.g. `export AIRTABLE_API_KEY=foo`).
-* Defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_API_KEY=foo`.
-* On the other hand the API-key could also be added by using the method `Airtable.configure(String apiKey)`.
+* Defining Java property `AIRTABLE_TOKEN` (e.g. `-DAIRTABLE_TOKEN=foo`).
+* Defining OS environment variable `AIRTABLE_TOKEN` (e.g. `export AIRTABLE_TOKEN=foo`).
+* Defining property file `credentials.properties` in root classpath containing key/value `AIRTABLE_TOKEN=foo`.
+* On the other hand the token could also be added by using the method `Airtable.configure(String token)`.
 
-#### How to get API-Key
+#### How to get Personal Access Token
 
-See: <https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key>-
+See: <https://support.airtable.com//docs/creating-personal-access-tokens>-
 
 ### Proxy Support
 

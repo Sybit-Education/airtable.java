@@ -8,15 +8,19 @@ package com.sybit.airtable.vo;
 
 
 /**
- *
+ * Value Object for the Post Record.
  * @author fzr
- * @param <T>
+ * @param <T> the type of the fields
  */
 public class PostRecord<T> {
-    
+
+    /**
+     * The fields.
+     */
     private T fields;
 
     /**
+     * Get the fields.
      * @return the fields
      */
     public T getFields() {
@@ -24,11 +28,12 @@ public class PostRecord<T> {
     }
 
     /**
+     * Set the fields.
      * @param fields the fields to set
      */
     public void setFields(T fields) {
         this.fields = fields;
     }
-    
-    
+
+
 }

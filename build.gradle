@@ -5,15 +5,17 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
-
 plugins {
-    id "maven-publish"
-    id "jacoco"
+    id 'java-library'
+    id 'jacoco'
+    id 'idea'
+    id 'maven-publish'
     id 'com.github.jk1.dependency-license-report' version '2.1'
 }
 
-apply plugin: 'java'
-
+/*
+ * Gets the version name from the latest Git tag
+ */
 def getVersionName = { ->
     try {
         def stdout = new ByteArrayOutputStream()
@@ -28,101 +30,91 @@ def getVersionName = { ->
     }
 } as Object
 
-group = 'com.sybit.airtable'
-//version = getVersionName()
-description = """API to access Airtable"""
 
-tasks.withType(JavaCompile) {
+group = 'com.sybit'
+version = getVersionName()
+description = "Java API for Airtable"
+
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-tasks.named("processTestResources") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    options.deprecation = true
+    options.compilerArgs += ['-Xlint:deprecation']
+    // options.compilerArgs += ['-Xlint:unchecked']
+    sourceCompatibility = 18
 }
 
 sourceSets {
     integrationTest {
         compileClasspath += main.output + test.output
         runtimeClasspath += main.output + test.output
-        // You can add other directories to the classpath like this:
-        //runtimeClasspath += files('src/itest/resources/com/buransky')
-        // Use "java" if you don't use Scala as a programming language
-        java.srcDir file('src/itest/java')
+
+        java {
+            srcDir file('src/itest/java')
+        }
+        resources {
+            srcDir file('src/itest/resources')
+        }
     }
-    // This is just to trick IntelliJ IDEA to add integration test
-    // resources to classpath when running integration tests from
-    // the IDE. It's is not a good solution but I don't know about
-    // a better one.
-    test {
-        resources.srcDir file('src/itest/resources')
+}
+
+idea {
+    module {
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
     }
 }
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
-    maven { url "https://dl.bintray.com/typesafe/maven-releases" }
 }
 
 configurations {
-    codacy
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
+    integrationTestImplementation.extendsFrom implementation, testImplementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly, testRuntimeOnly
 }
 
 dependencies {
-    implementation group: 'com.konghq', name: 'unirest-java', version: '3.14.5'
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
-    implementation group: 'org.json', name: 'json', version: '20230227'
-    implementation group: 'com.google.code.gson', name: 'gson', version:'2.9.1'
-    implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-    implementation group: 'org.slf4j', name: 'slf4j-api', version:'2.0.7'
+    implementation 'com.konghq:unirest-java:3.14.5'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    implementation 'org.json:json:20240303'
+    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'commons-io:commons-io:2.16.1'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
 
-    testImplementation group: 'junit', name: 'junit', version:'4.13.2'
-    testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version:'2.23.2'
-    testImplementation group: 'org.slf4j', name: 'slf4j-jdk14', version:'2.0.6'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.github.tomakehurst:wiremock:3.0.1'
+    testImplementation 'org.slf4j:slf4j-jdk14:2.0.6'
 
-    codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.8.2'
 }
 
-
-test {
-    useJUnit()
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
-// custom tasks for creating source jar
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-// custom tasks for creating javadoc jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
-// add javadoc/source jar tasks as artifacts
-artifacts {
-    archives sourcesJar, javadocJar
+tasks.named('jacocoTestReport') {
+    reports {
+        xml.required = true
+    }
 }
 
-//task to send coverage data to Codacy
-task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
-    mainClass = "com.codacy.CodacyCoverageReporter"
-    classpath = configurations.codacy
-    args = [
-            "report",
-            "-l",
-            "Java",
-            "-r",
-            "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-    ]
-}
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
 
-task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    shouldRunAfter test
+    useJUnitPlatform()
+
+    // This is not needed, but I like to see which tests have run
     testLogging {
         events "passed", "skipped", "failed"
     }
@@ -196,4 +188,4 @@ publishing {
     }
 }
 
-integrationTest.mustRunAfter test
+check.dependsOn integrationTest
