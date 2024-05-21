@@ -6,23 +6,32 @@
  */
 package com.sybit.airtable.vo;
 
+import java.io.Serializable;
 import java.util.Map;
 
 
 /**
- * Airtabe Attachment items.
+ * Airtable Attachment items.
  *
  */
-public class Attachment {
-    
+public class Attachment implements Serializable {
+
     private String id;
     private String url;
     private String filename;
     private Float size;
     private String type;
     private Map<String,Thumbnail> thumbnails;
-        
+
     /**
+     * Constructor.
+     */
+    public Attachment() {
+        // default constructor
+    }
+
+    /**
+     * get the id.
      * @return the id
      */
     public String getId() {
@@ -30,6 +39,7 @@ public class Attachment {
     }
 
     /**
+     * set the id.
      * @param id the id to set
      */
     public void setId(String id) {
@@ -37,6 +47,7 @@ public class Attachment {
     }
 
     /**
+     * get the url.
      * @return the url
      */
     public String getUrl() {
@@ -44,6 +55,7 @@ public class Attachment {
     }
 
     /**
+     * set the url.
      * @param url the url to set
      */
     public void setUrl(String url) {
@@ -51,6 +63,7 @@ public class Attachment {
     }
 
     /**
+     * get the filename.
      * @return the filename
      */
     public String getFilename() {
@@ -58,6 +71,7 @@ public class Attachment {
     }
 
     /**
+     * set the filename.
      * @param filename the filename to set
      */
     public void setFilename(String filename) {
@@ -65,6 +79,7 @@ public class Attachment {
     }
 
     /**
+     * get the size.
      * @return the size
      */
     public Float getSize() {
@@ -72,6 +87,7 @@ public class Attachment {
     }
 
     /**
+     * set the size.
      * @param size the size to set
      */
     public void setSize(Float size) {
@@ -79,6 +95,7 @@ public class Attachment {
     }
 
     /**
+     * get the type.
      * @return the type
      */
     public String getType() {
@@ -86,6 +103,7 @@ public class Attachment {
     }
 
     /**
+     * set the type.
      * @param type the type to set
      */
     public void setType(String type) {
@@ -93,6 +111,7 @@ public class Attachment {
     }
 
     /**
+     * get the thumbnails.
      * @return the thumbnails
      */
     public Map<String,Thumbnail> getThumbnails() {
@@ -100,16 +119,10 @@ public class Attachment {
     }
 
     /**
+     * set the thumbnails.
      * @param thumbnails the thumbnails to set
      */
     public void setThumbnails(Map<String,Thumbnail> thumbnails) {
         this.thumbnails = thumbnails;
     }
-
-
-
-    
-
-    
-    
 }

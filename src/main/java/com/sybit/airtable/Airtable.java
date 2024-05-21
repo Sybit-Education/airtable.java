@@ -6,15 +6,16 @@
  */
 package com.sybit.airtable;
 
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
+
 import com.sybit.airtable.converter.ListConverter;
 import com.sybit.airtable.converter.MapConverter;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
 
-import org.apache.http.HttpHost;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Proxy;
+import kong.unirest.Unirest;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,13 @@ public class Airtable {
     private static final String AIRTABLE_BASE = "AIRTABLE_BASE";
 
     private Configuration config;
+
+    /**
+     * Constructor.
+     */
+    public Airtable() {
+        // private constructor
+    }
 
     /**
      * Configure, <code>AIRTABLE_API_KEY</code> passed by Java property,
@@ -105,7 +115,7 @@ public class Airtable {
      *
      * @param apiKey API-Key of Airtable.
      * @param objectMapper A custom ObjectMapper implementation
-     * @return
+     * @return An Airtable instance configured with supplied ObjectMapper
      * @throws com.sybit.airtable.exception.AirtableException Missing API-Key
      */
     @SuppressWarnings("WeakerAccess")
@@ -115,9 +125,9 @@ public class Airtable {
 
     /**
      * Configure the Airtable client by given config.
-     * 
+     *
      * @param config Configuration of client.
-     * @return
+     * @return An Airtable instance configured with GsonObjectMapper
      * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
@@ -127,10 +137,10 @@ public class Airtable {
 
     /**
      * Configure the Airtable client by given config.
-     * 
+     *
      * @param config Configuration of client.
      * @param objectMapper A custom ObjectMapper implementation
-     * @return
+     * @return An Airtable instance configured with supplied ObjectMapper
      * @throws AirtableException Missing API-Key or Endpoint
      */
     @SuppressWarnings("WeakerAccess")
@@ -138,7 +148,7 @@ public class Airtable {
         assert config != null : "config was null";
         assert objectMapper != null : "objectMapper was null";
 
-        if (config.getApiKey() == null) {
+        if (config.getAccessToken() == null) {
             throw new AirtableException("Missing Airtable API-Key");
         }
         if (config.getEndpointUrl() == null) {
@@ -148,14 +158,14 @@ public class Airtable {
         this.config = config;
 
         if (config.getTimeout() != null) {
-            LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
-            Unirest.setTimeouts(config.getTimeout(), config.getTimeout());
+            LOG.info("Set connection timeout to:  {} ms.",  config.getTimeout() );
+            Unirest.config().connectTimeout(config.getTimeout());
         }
 
         configureProxy(config.getEndpointUrl());
 
         // Only one time
-        Unirest.setObjectMapper(objectMapper);
+        Unirest.config().setObjectMapper(objectMapper);
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
@@ -182,9 +192,15 @@ public class Airtable {
 
         this.config.setProxy(proxy);
         if (proxy == null) {
-            Unirest.setProxy(null);
+            Unirest.config().proxy(null);
         } else {
-            Unirest.setProxy(HttpHost.create(this.config.getProxy()));
+            try {
+                URI uri = new URI(this.config.getProxy());
+                Unirest.config().proxy(new Proxy(uri.getHost(), uri.getPort()));
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid Proxy URI: " + this.config.getProxy(), e);
+            }
+
         }
 
     }
@@ -195,7 +211,7 @@ public class Airtable {
      * Proxy will be ignored for endpointUrls containing <code>localhost</code>
      * or <code>127.0.0.1</code>.
      *
-     * @param endpointUrl
+     * @param endpointUrl the endpoint url.
      */
     private void configureProxy(String endpointUrl) {
         if (this.config.getProxy() == null) {
@@ -203,11 +219,11 @@ public class Airtable {
             final String httpsProxy = System.getenv("https_proxy");
             if (httpsProxy != null
                     && (endpointUrl.contains("https"))) {
-                LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: " + httpsProxy);
+                LOG.info("Use Proxy: Environment variable 'https_proxy' found and used: {}", httpsProxy);
                 setProxy(httpProxy);
             } else if (httpProxy != null
                     && (endpointUrl.contains("http"))) {
-                LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: " + httpProxy);
+                LOG.info("Use Proxy: Environment variable 'http_proxy' found and used: {}", httpProxy);
                 setProxy(httpsProxy);
             } else {
                 setProxy(null);
@@ -248,7 +264,7 @@ public class Airtable {
      * Builder method to create base of given base id.
      *
      * @param base the base id.
-     * @return
+     * @return the base object.
      * @throws com.sybit.airtable.exception.AirtableException AIRTABLE_BASE was
      * Null
      */
@@ -256,15 +272,22 @@ public class Airtable {
         if (base == null) {
             throw new AirtableException("base was null");
         }
-        final Base b = new Base(base, this);
 
-        return b;
+        return new Base(base, this);
     }
 
+    /**
+     * Get the configuration.
+     * @return the configuration.
+     */
     public Configuration getConfig() {
         return config;
     }
 
+    /**
+     * Set the configuration.
+     * @param config the configuration.
+     */
     public void setConfig(Configuration config) {
         assert config != null : "config was null";
 
@@ -273,19 +296,29 @@ public class Airtable {
     }
 
     /**
-     *
-     * @return
+     * Get the endpoint url.
+     * @return the endpoint url.
      */
     public String endpointUrl() {
         return this.config.getEndpointUrl();
     }
 
     /**
-     *
-     * @return
+     * Get the api key.
+     * @return the api key.
+     * @deprecated since 0.3, use {@link #accessToken()} instead.
      */
+    @Deprecated(forRemoval = true, since = "0.3")
     public String apiKey() {
-        return this.config.getApiKey();
+        return this.config.getAccessToken();
+    }
+
+    /**
+     * Get the access token.
+     * @return the access token.
+     */
+    public String accessToken() {
+        return this.config.getAccessToken();
     }
 
     /**
@@ -297,7 +330,7 @@ public class Airtable {
     private String getCredentialProperty(String key) {
 
         final String file = "/credentials.properties";
-        LOG.info("credentials file: Using file '" + file + "' using key '" + key + "' to get value.");
+        LOG.info("credentials file: Using file '{}' using key '{}' to get value.", file, key);
         String value;
 
         InputStream in = null;
@@ -316,6 +349,10 @@ public class Airtable {
         return value;
     }
 
+    /**
+     * Set the endpoint url.
+     * @param endpointUrl the endpoint url.
+     */
     public void setEndpointUrl(String endpointUrl) {
         this.config.setEndpointUrl(endpointUrl);
         configureProxy(endpointUrl);

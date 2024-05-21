@@ -5,6 +5,13 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  */
 
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'idea'
+    id 'maven-publish'
+}
+
 /*
  * Gets the version name from the latest Git tag
  */
@@ -22,125 +29,93 @@ def getVersionName = { ->
     }
 }
 
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-   }
-
-   dependencies {
-       classpath 'com.palantir:jacoco-coverage:0.4.0'
-       classpath "com.smokejumperit.gradle.license:Gradle-License-Report:0.0.2"
-       classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-   }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.palantir.jacoco-coverage'
-    apply plugin: 'com.jfrog.bintray'
-}
 
 group = 'com.sybit'
 version = getVersionName()
+description = "Java API for Airtable"
 
-description = """com.sybit airtable"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.deprecation = true
+    options.compilerArgs += ['-Xlint:deprecation']
+    // options.compilerArgs += ['-Xlint:unchecked']
+    sourceCompatibility = 17
 }
 
 sourceSets {
     integrationTest {
         compileClasspath += main.output + test.output
         runtimeClasspath += main.output + test.output
-        // You can add other directories to the classpath like this:
-        //runtimeClasspath += files('src/itest/resources/com/buransky')
-        // Use "java" if you don't use Scala as a programming language
-        java.srcDir file('src/itest/java')
-  }
-  // This is just to trick IntelliJ IDEA to add integration test
-  // resources to classpath when running integration tests from
-  // the IDE. It's is not a good solution but I don't know about
-  // a better one.
-  test {
-    resources.srcDir file('src/itest/resources')
-  }
+
+        java {
+            srcDir file('src/itest/java')
+        }
+        resources {
+            srcDir file('src/itest/resources')
+        }
+    }
+}
+
+idea {
+    module {
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
+    }
 }
 
 repositories {
-    mavenLocal()
-    jcenter()
     mavenCentral()
-    maven { url "https://jitpack.io" }
-    maven { url "http://dl.bintray.com/typesafe/maven-releases" }
 }
 
 configurations {
-    codacy
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
+    integrationTestImplementation.extendsFrom implementation, testImplementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly, testRuntimeOnly
 }
 
 dependencies {
-    compile group: 'com.mashape.unirest', name: 'unirest-java', version:'1.4.9'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'5.0.3'
-    compile group: 'org.json', name: 'json', version:'3.6.5'
-    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.6'
-    compile group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.4'
-    compile group: 'commons-io', name: 'commons-io', version:'2.8.0'
-    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.26'
+    implementation 'com.konghq:unirest-java:3.14.5'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    implementation 'org.json:json:20240303'
+    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'commons-io:commons-io:2.16.1'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
 
-    testCompile group: 'junit', name: 'junit', version:'4.12'
-    testCompile group: 'com.github.tomakehurst', name: 'wiremock', version:'2.27.2'
-    testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.26'
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'com.github.tomakehurst:wiremock:3.0.1'
+    testImplementation 'org.slf4j:slf4j-jdk14:1.7.16'
 
-    codacy group: 'com.codacy', name: 'codacy-coverage-reporter', version: '7.1.0'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.8.2'
 }
 
-// custom tasks for creating source jar
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-// custom tasks for creating javadoc jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
-// add javadoc/source jar tasks as artifacts
-artifacts {
-    archives sourcesJar, javadocJar
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
-//task to send coverage data to Codacy
-task sendCoverageToCodacy(type: JavaExec, dependsOn: jacocoTestReport) {
-    main = "com.codacy.CodacyCoverageReporter"
-    classpath = configurations.codacy
-    args = [
-            "report",
-            "-l",
-            "Java",
-            "-r",
-            "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-    ]
+tasks.named('jacocoTestReport') {
+    reports {
+        xml.required = true
+    }
 }
 
-task integrationTest(type: Test) {
-  testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
-  classpath = sourceSets.integrationTest.runtimeClasspath
-  // This is not needed, but I like to see which tests have run
-  testLogging {
-    events "passed", "skipped", "failed"
-  }
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    shouldRunAfter test
+    useJUnitPlatform()
+
+    // This is not needed, but I like to see which tests have run
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 publishing {
@@ -172,28 +147,5 @@ publishing {
     }
 }
 
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-
-    publications = ['MyPublication']
-    //configurations = ['archives']
-
-    dryRun = false //Whether to run this as dry-run, without deploying
-    publish = true //If version should be auto published after an upload
-
-    pkg {
-        repo = 'maven'
-        userOrg = 'sybit-education'
-        name = 'airtable.java'
-        licenses = ['MIT License']
-        vcsUrl = 'https://github.com/Sybit-Education/airtable.java.git'
-        version {
-            name = getVersionName()
-            released = new Date()
-        }
-    }
-}
-
-integrationTest.mustRunAfter test
+check.dependsOn integrationTest
 

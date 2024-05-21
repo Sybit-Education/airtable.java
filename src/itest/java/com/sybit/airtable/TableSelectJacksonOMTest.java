@@ -8,15 +8,15 @@ package com.sybit.airtable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.mashape.unirest.http.ObjectMapper;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.movies.Movie;
 import com.sybit.airtable.mock.WireMockBaseTest;
-import org.apache.http.client.HttpResponseException;
+import kong.unirest.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -40,11 +40,13 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
                 } catch (UnrecognizedPropertyException e) {
                     try {
                         // dummy instance to follow code flow and execute HttpResponseExceptionHandler.onResponse
-                        T instance = valueType.newInstance();
+                        T instance = valueType.getDeclaredConstructor().newInstance();
                         return instance;
                     }
                     catch (IllegalAccessException | InstantiationException e1) {
                         throw new RuntimeException(e);
+                    } catch (InvocationTargetException | NoSuchMethodException ex) {
+                        throw new RuntimeException(ex);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -73,7 +75,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTable() throws AirtableException, HttpResponseException {
+    public void testSelectTable() throws AirtableException {
 
 
         List<Movie> retval = base.table("Movies", Movie.class).select();
@@ -83,7 +85,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableMaxRecords() throws AirtableException, HttpResponseException {
+    public void testSelectTableMaxRecords() throws AirtableException {
 
 
         List<Movie> retval = base.table("Movies", Movie.class).select(2);
@@ -93,9 +95,9 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableSorted() throws AirtableException, HttpResponseException {
+    public void testSelectTableSorted() throws AirtableException {
 
-        Table table = base.table("Movies", Movie.class);
+        Table<Movie> table = base.table("Movies", Movie.class);
 
         List<Movie> retval = table.select(new Sort("Name", Sort.Direction.asc));
         assertNotNull(retval);
@@ -112,7 +114,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
     @Test
-    public void testSelectTableView() throws AirtableException, HttpResponseException {
+    public void testSelectTableView() throws AirtableException {
 
         List<Movie> retval = base.table("Movies", Movie.class).select("Main View");
         assertNotNull(retval);
@@ -122,7 +124,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
     }
 
     @Test(expected = AirtableException.class)
-    public void testSelectNonExistingTable() throws AirtableException, HttpResponseException {
+    public void testSelectNonExistingTable() throws AirtableException {
 
 
         List<Movie> retval = base.table("NotExists", Movie.class).select();
@@ -131,7 +133,7 @@ public class TableSelectJacksonOMTest extends WireMockBaseTest {
 
 
     @Test
-    public void testSelectNonExistingExceptionMessageTable() throws HttpResponseException {
+    public void testSelectNonExistingExceptionMessageTable() {
 
         String message;
         try {

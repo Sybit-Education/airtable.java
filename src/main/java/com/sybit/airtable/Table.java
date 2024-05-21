@@ -7,10 +7,10 @@
 package com.sybit.airtable;
 
 import com.google.gson.annotations.SerializedName;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.GetRequest;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.exception.HttpResponseExceptionHandler;
 import com.sybit.airtable.vo.*;
@@ -32,15 +32,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * Representation Class of Airtable Tables.
  *
- * @param <T>
+ * @param <T> Type of Table.
  * @since 0.1
  */
 public class Table<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Table.class);
-    
+
     private static final String MIME_TYPE_JSON = "application/json";
-    
+
     private static final String FIELD_ID = "id";
     private static final String FIELD_CREATED_TIME = "createdTime";
 
@@ -50,7 +50,7 @@ public class Table<T> {
     private Base parent;
 
     /**
-     *
+     * Constructor of Table.
      * @param name name of table.
      * @param type class to represent table row
      */
@@ -64,7 +64,7 @@ public class Table<T> {
 
     /**
      * Constructor of Table.
-     * 
+     *
      * @param name Name of Table
      * @param type Class to map the rows.
      * @param base Base containing table.
@@ -77,7 +77,7 @@ public class Table<T> {
 
     /**
      * Set the parent base.
-     * 
+     *
      * @param parent parent base of table.
      */
     public void setParent(Base parent) {
@@ -88,10 +88,9 @@ public class Table<T> {
      * Select all rows of table.
      *
      * @return List of all items.
-     * @throws AirtableException
-     * @throws org.apache.http.client.HttpResponseException
+     * @throws AirtableException if error occurs.
      */
-    public List<T> select() throws AirtableException, HttpResponseException {
+    public List<T> select() throws AirtableException {
         return select(new Query() {
             @Override
             public Integer getMaxRecords() {
@@ -136,7 +135,7 @@ public class Table<T> {
      *
      * @param query defined query
      * @return list of table items
-     * @throws AirtableException
+     * @throws AirtableException if error occurs.
      */
     @SuppressWarnings("WeakerAccess")
     public List<T> select(final Query query) throws AirtableException {
@@ -165,7 +164,7 @@ public class Table<T> {
             }
             if (query.getPageSize() != null) {
                 if (query.getPageSize() > 100) {
-                    LOG.warn("pageSize is limited to max 100 but was " + query.getPageSize());
+                    LOG.warn("pageSize is limited to max 100 but was {}", query.getPageSize());
                     request.queryString("pageSize", 100);
                 } else {
                     request.queryString("pageSize", query.getPageSize());
@@ -182,7 +181,7 @@ public class Table<T> {
                 request.queryString("offset", query.getOffset());
             }
 
-            LOG.debug("URL=" + request.getUrl());
+            LOG.debug("URL={}", request.getUrl());
 
             response = request.asObject(Records.class);
         } catch (UnirestException e) {
@@ -224,10 +223,10 @@ public class Table<T> {
     /**
      * Get <code>List</code> by given offset.
      *
-     * @param query 
-     * @param offset
-     * @return
-     * @throws AirtableException
+     * @param query query to execute.
+     * @param offset offset of records.
+     * @return list of items.
+     * @throws AirtableException if error occurs.
      */
     private List<T> select(Query query, String offset) throws AirtableException {
         return select(new Query() {
@@ -272,11 +271,10 @@ public class Table<T> {
      * Select with parameter maxRecords
      *
      * @param maxRecords maximum of records per request.
-     * @return
-     * @throws AirtableException
-     * @throws HttpResponseException
+     * @return list of items.
+     * @throws AirtableException if error occurs.
      */
-    public List<T> select(Integer maxRecords) throws AirtableException, HttpResponseException {
+    public List<T> select(Integer maxRecords) throws AirtableException {
         return select(new Query() {
             @Override
             public Integer getMaxRecords() {
@@ -316,14 +314,13 @@ public class Table<T> {
     }
 
     /**
-     * Select data of table by definied view.
+     * Select data of table by defined view.
      *
-     * @param view
-     * @return
-     * @throws AirtableException
-     * @throws HttpResponseException
+     * @param view name of view.
+     * @return list of items.
+     * @throws AirtableException if error occurs.
      */
-    public List<T> select(String view) throws AirtableException, HttpResponseException {
+    public List<T> select(String view) throws AirtableException {
         return select(new Query() {
             @Override
             public Integer getMaxRecords() {
@@ -363,14 +360,13 @@ public class Table<T> {
     }
 
     /**
-     * select Table data with defined sortation
+     * select Table data with defined sortation.
      *
-     * @param sortation
-     * @return
-     * @throws AirtableException
-     * @throws HttpResponseException
+     * @param sortation  sortation of result set.
+     * @return list of items.
+     * @throws AirtableException if error occurs.
      */
-    public List<T> select(Sort sortation) throws AirtableException, HttpResponseException {
+    public List<T> select(Sort sortation) throws AirtableException {
         final List<Sort> sortList = new ArrayList<>();
         sortList.add(sortation);
 
@@ -417,10 +413,9 @@ public class Table<T> {
      *
      * @param fields array of requested fields.
      * @return list of item using only requested fields.
-     * @throws AirtableException
-     * @throws HttpResponseException
+     * @throws AirtableException if error occurs.
      */
-    public List<T> select(String[] fields) throws AirtableException, HttpResponseException {
+    public List<T> select(String[] fields) throws AirtableException {
 
         return select(new Query() {
             @Override
@@ -463,19 +458,19 @@ public class Table<T> {
     /**
      * Get List of records of response.
      *
-     * @param response
-     * @return
+     * @param response response of request.
+     * @return list of records.
      */
     private List<T> getList(HttpResponse<Records> response) {
 
         final Records records = response.getBody();
         final List<T> list = new ArrayList<>();
 
-        for (Map<String, Object> record : records.getRecords()) {
+        for (Map<String, Object>  rec: records.getRecords()) {
             T item = null;
             try {
-                item = transform(record, this.type.newInstance());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                item = transform(rec, this.type.getDeclaredConstructor().newInstance());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 LOG.error(e.getMessage(), e);
             }
             list.add(item);
@@ -488,7 +483,7 @@ public class Table<T> {
      *
      * @param id id of record.
      * @return searched record.
-     * @throws AirtableException
+     * @throws AirtableException if error occurs.
      */
     public T find(final String id) throws AirtableException {
 
@@ -516,8 +511,8 @@ public class Table<T> {
         }
 
         try {
-            return transform(body, this.type.newInstance());
-        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            return transform(body, this.type.getDeclaredConstructor().newInstance());
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             throw new AirtableException(e);
         }
     }
@@ -527,10 +522,10 @@ public class Table<T> {
      *
      * @param item the item to be created
      * @return the created item
-     * @throws AirtableException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
+     * @throws AirtableException if error occurs.
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
     public T create(final T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
@@ -565,7 +560,7 @@ public class Table<T> {
         }
 
         try {
-            return transform(responseBody, this.type.newInstance());
+            return transform(responseBody, this.type.getDeclaredConstructor().newInstance());
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -575,13 +570,13 @@ public class Table<T> {
 
     /**
      * Update given <code>item</code> in storage.
-     * 
+     *
      * @param item Item to update.
      * @return updated <code>item</code> returned by airtable.
-     * @throws AirtableException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException 
+     * @throws AirtableException if error occurs.
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
     public T update(final T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
@@ -617,7 +612,7 @@ public class Table<T> {
 
         T result;
         try {
-            result = transform(responseBody, this.type.newInstance());
+            result = transform(responseBody, this.type.getDeclaredConstructor().newInstance());
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.error(e.getMessage(), e);
             result = null;
@@ -627,9 +622,9 @@ public class Table<T> {
     }
 
     /**
-     * 
-     * @param item
-     * @return 
+     * Replace the given item in storage.
+     * @param item item to replace.
+     * @return replaced item.
      */
     public T replace(T item) {
 
@@ -641,11 +636,9 @@ public class Table<T> {
      *
      * @param id Id of the row to delete.
      * @return true if success.
-     * @throws AirtableException
+     * @throws AirtableException if error occurs.
      */
-
     public boolean destroy(String id) throws AirtableException {
-
 
         boolean isDeleted;
 
@@ -679,8 +672,8 @@ public class Table<T> {
     }
 
     /**
-     *
-     * @return
+     * Get the parent base.
+     * @return parent base.
      */
     private Base base() {
         return parent;
@@ -699,27 +692,26 @@ public class Table<T> {
     /**
      * Get Bearer Token for Authentication Header.
      *
-     * @return
+     * @return Bearer Token.
      */
     private String getBearerToken() {
-        return "Bearer " + base().airtable().apiKey();
+        return "Bearer " + base().airtable().accessToken();
     }
 
     /**
-     *
-     * @param record
-     * @param retval
-     * @return
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * Transform the record to the given type.
+     * @param rec record to transform.
+     * @param retval return value of transformation.
+     * @return transformed record.
+     * @throws IllegalAccessException if error occurs.
      */
-    private T transform(Map<String, Object> record, T retval) throws InvocationTargetException, IllegalAccessException {
-        for (String key : record.keySet()) {
+    private T transform(Map<String, Object> rec, T retval) throws InvocationTargetException, IllegalAccessException {
+        for (String key : rec.keySet()) {
             if ("fields".equals(key)) {
                 //noinspection unchecked
-                retval = transform((Map<String, Object>) record.get("fields"), retval);
+                retval = transform((Map<String, Object>) rec.get("fields"), retval);
             } else {
-                setProperty(retval, key, record.get(key));
+                setProperty(retval, key, rec.get(key));
             }
         }
 
@@ -727,29 +719,29 @@ public class Table<T> {
     }
 
     /**
-     *
-     * @param record
-     * @param retval
-     * @return
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * Transform the record to the given type.
+     * @param rec record to transform.
+     * @param retval return value of transformation.
+     * @return transformed record.
+     * @throws InvocationTargetException if error occurs.
+     * @throws IllegalAccessException if error occurs.
      */
-    private T transform(RecordItem record, T retval) throws InvocationTargetException, IllegalAccessException {
-        setProperty(retval, FIELD_ID, record.getId());
-        setProperty(retval, FIELD_CREATED_TIME, record.getCreatedTime());
+    private T transform(RecordItem rec, T retval) throws InvocationTargetException, IllegalAccessException {
+        setProperty(retval, FIELD_ID, rec.getId());
+        setProperty(retval, FIELD_CREATED_TIME, rec.getCreatedTime());
 
-        retval = transform(record.getFields(), retval);
+        retval = transform(rec.getFields(), retval);
 
         return retval;
     }
 
     /**
-     *
-     * @param retval
-     * @param key
-     * @param value
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
+     * set the property of the given object.
+     * @param retval object to set property.
+     * @param key key of property.
+     * @param value value of property.
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
      */
     private void setProperty(T retval, String key, Object value) throws IllegalAccessException, InvocationTargetException {
         String property = key2property(key);
@@ -773,11 +765,11 @@ public class Table<T> {
     /**
      * Convert AirTable ColumnName to Java PropertyName.
      *
-     * @param key
-     * @return
+     * @param key column name
+     * @return property name
      */
     String key2property(final String key) {
-        
+
         if(key == null || key.isEmpty()) {
             throw new IllegalArgumentException("Key was null or empty.");
         }
@@ -806,11 +798,11 @@ public class Table<T> {
     /**
      * Checks if the Property Values of the item are valid for the Request.
      *
-     * @param item
-     * @throws AirtableException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
+     * @param item the item to check
+     * @throws AirtableException if error occurs.
+     * @throws IllegalAccessException  if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
     private void checkProperties(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
@@ -833,26 +825,26 @@ public class Table<T> {
 
     /**
      * Check properties of Attachement objects.
-     * 
-     * @param attachements
-     * @throws AirtableException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException 
+     *
+     * @param attachments list of attachments.
+     * @throws AirtableException if error occurs.
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
-    private void checkPropertiesOfAttachement(List<Attachment> attachements) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void checkPropertiesOfAttachement(List<Attachment> attachments) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        if (attachements != null) {
-            for (int i = 0; i < attachements.size(); i++) {
-                if (propertyExists(attachements.get(i), FIELD_ID) || propertyExists(attachements.get(i), "size") 
-                        || propertyExists(attachements.get(i), "type") || propertyExists(attachements.get(i), "filename")) {
-                    
-                    final Field[] attributesPhotos = attachements.getClass().getDeclaredFields();
+        if (attachments != null) {
+            for (int i = 0; i < attachments.size(); i++) {
+                if (propertyExists(attachments.get(i), FIELD_ID) || propertyExists(attachments.get(i), "size")
+                        || propertyExists(attachments.get(i), "type") || propertyExists(attachments.get(i), "filename")) {
+
+                    final Field[] attributesPhotos = attachments.getClass().getDeclaredFields();
                     for (Field attributePhoto : attributesPhotos) {
                         final String namePhotoAttribute = attributePhoto.getName();
-                        if (FIELD_ID.equals(namePhotoAttribute) || "size".equals(namePhotoAttribute) 
+                        if (FIELD_ID.equals(namePhotoAttribute) || "size".equals(namePhotoAttribute)
                                 || "type".equals(namePhotoAttribute) || "filename".equals(namePhotoAttribute)) {
-                            if (BeanUtils.getProperty(attachements.get(i), namePhotoAttribute) != null) {
+                            if (BeanUtils.getProperty(attachments.get(i), namePhotoAttribute) != null) {
                                 throw new AirtableException("Property " + namePhotoAttribute + " should be null!");
                             }
                         }
@@ -863,14 +855,14 @@ public class Table<T> {
     }
 
     /**
-     * Get the String Id from the item.
+     * Get the String id of the item.
      *
-     * @param item
-     * @return
-     * @throws AirtableException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
+     * @param item the item to get the id from.
+     * @return the id of the item.
+     * @throws AirtableException if error occurs.
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
     private String getIdOfItem(T item) throws AirtableException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
@@ -884,15 +876,14 @@ public class Table<T> {
     }
 
     /**
-     *
      * Filter the Fields of the PostRecord Object. Id and created Time are set
-     * to null so Object Mapper doesent convert them to JSON.
+     * to null so Object Mapper doesn't convert them to JSON.
      *
-     * @param item
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
+     * @param item the item to filter
+     * @return the filtered item
+     * @throws IllegalAccessException if error occurs.
+     * @throws InvocationTargetException if error occurs.
+     * @throws NoSuchMethodException if error occurs.
      */
     private T filterFields(T item) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
@@ -900,7 +891,7 @@ public class Table<T> {
 
         for (Field attribute : attributes) {
             String attrName = attribute.getName();
-            if ((FIELD_ID.equals(attrName) || FIELD_CREATED_TIME.equals(attrName)) 
+            if ((FIELD_ID.equals(attrName) || FIELD_CREATED_TIME.equals(attrName))
                     && (BeanUtils.getProperty(item, attrName) != null)) {
                 BeanUtilsBean.getInstance().getPropertyUtils().setProperty(item, attrName, null);
             }
@@ -908,5 +899,4 @@ public class Table<T> {
 
         return item;
     }
-
 }

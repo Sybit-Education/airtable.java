@@ -21,7 +21,7 @@ public class AirtableException extends Exception {
 
     /**
      * Constructs a new exception with the specified detail message.
-     * @param message Detail message. 
+     * @param message Detail message.
      */
     public AirtableException(String message) {
         super(message);
@@ -36,14 +36,14 @@ public class AirtableException extends Exception {
         super(cause);
 
         if(cause.getCause() instanceof ConnectTimeoutException) {
-            LOG.log(Level.SEVERE, "possible forgotten to set correct apiKey or base?");
+            LOG.log(Level.SEVERE, "possible forgotten to set correct accessToken or base?");
         }
     }
 
     /**
      * Default Exception simmilar to AirtableError of JavaScript Library.
      * @param error Error code.
-     * @param message Detail message. 
+     * @param message Detail message.
      * @param status HTTP Status Code.
      */
     public AirtableException(String error, String message, Integer status) {

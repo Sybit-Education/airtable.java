@@ -6,16 +6,26 @@
  */
 package com.sybit.airtable.vo;
 
+import java.io.Serializable;
+
 /**
+ * Value Object for the Delete Response.
  *
  * @author fzr
  */
-public class Delete {
-    
+public class Delete implements Serializable {
+
     private boolean deleted;
     private String id;
 
     /**
+     * Constructor.
+     */
+    public Delete() {
+    }
+
+    /**
+     * If it is deleted.
      * @return the deleted
      */
     public boolean isDeleted() {
@@ -23,6 +33,7 @@ public class Delete {
     }
 
     /**
+     * Set if it is deleted.
      * @param deleted the deleted to set
      */
     public void setDeleted(boolean deleted) {
@@ -30,6 +41,7 @@ public class Delete {
     }
 
     /**
+     * Get the id.
      * @return the id
      */
     public String getId() {
@@ -37,12 +49,13 @@ public class Delete {
     }
 
     /**
+     * Set  the id.
      * @param id the id to set
      */
     public void setId(String id) {
         this.id = id;
     }
-    
-    
-    
+
+
+
 }

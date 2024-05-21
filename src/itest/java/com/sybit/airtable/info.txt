@@ -1,2 +1,0 @@
-
-https://dzone.com/articles/integration-testing-with-gradle

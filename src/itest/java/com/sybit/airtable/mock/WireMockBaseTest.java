@@ -9,6 +9,7 @@ package com.sybit.airtable.mock;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.sybit.airtable.Airtable;
 import com.sybit.airtable.exception.AirtableException;
+import kong.unirest.Unirest;
 import org.junit.Before;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -18,6 +19,8 @@ import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
 import com.sybit.airtable.Base;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 
@@ -135,8 +138,9 @@ public class WireMockBaseTest {
     };
 
     @Before
-    public void setUp() throws AirtableException {
+    public void setUp() throws AirtableException, URISyntaxException {
 
+        Unirest.config().reset();
         airtable.configure();
         airtable.setProxy("127.0.0.1");
         airtable.setEndpointUrl("http://localhost:8080");
@@ -159,7 +163,7 @@ public class WireMockBaseTest {
         //start the Wiremock-Server
         startServer();
 
-        //check if record 
+        //check if record
         if (prop.isRecording()) {
             //check if cleanDirectorys
             if (prop.isCleanDirectorys()) {

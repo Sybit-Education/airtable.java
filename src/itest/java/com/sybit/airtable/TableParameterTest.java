@@ -23,11 +23,11 @@ import org.junit.Test;
 public class TableParameterTest extends WireMockBaseTest {
 
     @Test
-    public void offsetParamTest() throws AirtableException, HttpResponseException {
+    public void offsetParamTest() throws AirtableException {
 
         Table<Movie> movieTable = base.table("Movies", Movie.class);
 
-        
+
         Query query = new Query() {
             @Override
             public String[] getFields() {

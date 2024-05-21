@@ -7,7 +7,7 @@
 package com.sybit.airtable.exception;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
+import kong.unirest.HttpResponse;
 import com.sybit.airtable.vo.Error;
 
 import java.util.Map;
@@ -19,16 +19,35 @@ import java.util.Map;
  */
 public class HttpResponseExceptionHandler {
 
+    /**
+     * Private constructor.
+     */
+    private HttpResponseExceptionHandler() {
+        // private constructor
+    }
+
+    /**
+     * Handle the response and create an exception.
+     *
+     * @param response the HttpResponse
+     * @throws AirtableException the exception
+     */
     public static void onResponse(HttpResponse response) throws AirtableException {
 
         final Integer statusCode = response.getStatus();
-        String message = convertStreamToString(response.getRawBody());
+        String message = convertStreamToString(response.getBody());
 
         Error err = extractError(message);
 
         throw new AirtableException(err.getType(), err.getMessage(), statusCode);
     }
 
+    /**
+     * Extract the error from the response.
+     *
+     * @param message the response message
+     * @return the error
+     */
     private static Error extractError(String message) {
 
         final Gson gson = new Gson();
@@ -47,8 +66,13 @@ public class HttpResponseExceptionHandler {
         return err;
     }
 
-    public static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
+    /**
+     * Convert the response body to a string.
+     *
+     * @param is the response body
+     * @return the response body as string
+     */
+    public static String convertStreamToString(Object is) {
+        return new String((byte[]) is);
     }
 }

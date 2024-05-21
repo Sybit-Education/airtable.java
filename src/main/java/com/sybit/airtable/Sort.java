@@ -13,7 +13,15 @@ package com.sybit.airtable;
  */
 public class Sort {
 
-    public enum Direction {asc, desc}
+    /**
+     * Sort directions.
+     */
+    public enum Direction {
+        /** Ascending sort. */
+        asc,
+        /** Descending sort. */
+        desc
+    }
 
     private final String field;
 
@@ -39,16 +47,16 @@ public class Sort {
     }
 
     /**
-     *
-     * @return
+     * Get the field name.
+     * @return field name
      */
     public String getField() {
         return field;
     }
 
     /**
-     *
-     * @return
+     * Get the sort direction.
+     * @return sort direction
      */
     public Direction getDirection() {
         return direction;

@@ -8,7 +8,8 @@ package com.sybit.airtable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mashape.unirest.http.ObjectMapper;
+import kong.unirest.ObjectMapper;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,10 +22,10 @@ import java.util.logging.Logger;
 class GsonObjectMapper implements ObjectMapper {
     private static final Logger LOG = Logger.getLogger( GsonObjectMapper.class.getName() );
     private final Gson gson;
-                
+
     public GsonObjectMapper() {
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-     
+
     }
 
     @Override

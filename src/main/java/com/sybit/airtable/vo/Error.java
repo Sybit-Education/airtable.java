@@ -6,22 +6,50 @@
  */
 package com.sybit.airtable.vo;
 
-public class Error {
+import java.io.Serializable;
+
+/**
+ * Error object.
+ */
+public class Error implements Serializable {
     private String type;
     private String message;
 
+    /**
+     * Constructor.
+     */
+    public Error() {
+    }
+
+    /**
+     * Get the type.
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Set the type.
+     * @param type the type to set
+
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Get the message.
+     * @return the message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Set the message.
+     * @param message the message to set
+     */
     public void setMessage(String message) {
         this.message = message;
     }

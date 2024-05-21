@@ -30,6 +30,12 @@ public class ListConverter extends AbstractConverter {
     private Class listClass;
 
     /**
+     * Constructor.
+     */
+    public ListConverter() {
+    }
+
+    /**
      *
      * Method overwritten so it doesent return only the first Element of the
      * Array.
@@ -63,7 +69,7 @@ public class ListConverter extends AbstractConverter {
      * accessed
      */
     @Override
-    protected <T> T convertToType(final Class<T> type, Object value) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    protected <T> T convertToType(final Class<T> type, Object value) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if (listClass == null) {
             throw new IllegalAccessException("listClass is not initialized by setListClass().");
@@ -74,7 +80,7 @@ public class ListConverter extends AbstractConverter {
         if (value instanceof List) {
             for (T item : ((List<T>) value)) {
                 if (item instanceof LinkedTreeMap) {
-                    Object instanz = listClass.newInstance();
+                    Object instanz = listClass.getDeclaredConstructor().newInstance();
                     for (String key : ((LinkedTreeMap<String, Object>) item).keySet()) {
                         Object val = ((LinkedTreeMap) item).get(key);
                         BeanUtils.setProperty(instanz, key, val);
@@ -144,6 +150,7 @@ public class ListConverter extends AbstractConverter {
     }
 
     /**
+     * set the listClass.
      * @param listClass the listClass to set
      */
     public void setListClass(Class listClass) {
@@ -151,7 +158,7 @@ public class ListConverter extends AbstractConverter {
     }
 
     /**
-     *
+     * get the listClass.
      * @return this.listClass
      */
     public Class getListClass() {
