@@ -6,12 +6,14 @@
  */
 package com.sybit.airtable;
 
-
 import com.sybit.airtable.converter.ListConverter;
 import com.sybit.airtable.converter.MapConverter;
 import com.sybit.airtable.exception.AirtableException;
 import com.sybit.airtable.vo.Attachment;
 import com.sybit.airtable.vo.Thumbnail;
+import kong.unirest.CookieSpecs;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
 
 import kong.unirest.ObjectMapper;
 import kong.unirest.Proxy;
@@ -156,16 +158,19 @@ public class Airtable {
         }
 
         this.config = config;
-
+        Unirest.config().reset();
+        
         if (config.getTimeout() != null) {
-            LOG.info("Set connection timeout to:  {} ms.",  config.getTimeout() );
-            Unirest.config().connectTimeout(config.getTimeout());
+            LOG.info("Set connection timeout to: " + config.getTimeout() + "ms.");
+            Unirest.config().connectTimeout(config.getTimeout().intValue());
+            Unirest.config().socketTimeout(config.getTimeout().intValue());
         }
 
         configureProxy(config.getEndpointUrl());
 
         // Only one time
         Unirest.config().setObjectMapper(objectMapper);
+        Unirest.config().cookieSpec(CookieSpecs.STANDARD);
 
         // Add specific Converter for Date
         DateTimeConverter dtConverter = new DateConverter();
@@ -194,13 +199,10 @@ public class Airtable {
         if (proxy == null) {
             Unirest.config().proxy(null);
         } else {
-            try {
-                URI uri = new URI(this.config.getProxy());
-                Unirest.config().proxy(new Proxy(uri.getHost(), uri.getPort()));
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException("Invalid Proxy URI: " + this.config.getProxy(), e);
-            }
-
+            final HttpHost httpHost = HttpHost.create(this.config.getProxy());
+            final String hostName = httpHost.getHostName();
+            int port = httpHost.getPort();
+            Unirest.config().proxy(hostName, port);
         }
 
     }

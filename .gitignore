@@ -22,3 +22,4 @@ src/itest/resources/credentials.properties
 src/itest/resources/credentials.properties
 out/
 *.iml
+bin/

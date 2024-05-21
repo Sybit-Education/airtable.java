@@ -9,8 +9,11 @@ package com.sybit.airtable.exception;
 import com.google.gson.Gson;
 import kong.unirest.HttpResponse;
 import com.sybit.airtable.vo.Error;
+import kong.unirest.HttpResponse;
+import kong.unirest.UnirestParsingException;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Handle HTTP responses and create exceptions.
@@ -35,11 +38,15 @@ public class HttpResponseExceptionHandler {
     public static void onResponse(HttpResponse response) throws AirtableException {
 
         final Integer statusCode = response.getStatus();
-        String message = convertStreamToString(response.getBody());
+        Optional<UnirestParsingException> parsingError = response.getParsingError();
+        if (parsingError.isPresent()) {
+            UnirestParsingException unirestParsingException = parsingError.get();
+            String originalBody = unirestParsingException.getOriginalBody();
+            Error err = extractError(originalBody);
 
-        Error err = extractError(message);
-
-        throw new AirtableException(err.getType(), err.getMessage(), statusCode);
+            throw new AirtableException(err.getType(), err.getMessage(), statusCode);
+        }
+        throw new AirtableException(response.getStatusText(), "Unable to parse response: " + response.getBody(), statusCode);
     }
 
     /**
@@ -66,13 +73,4 @@ public class HttpResponseExceptionHandler {
         return err;
     }
 
-    /**
-     * Convert the response body to a string.
-     *
-     * @param is the response body
-     * @return the response body as string
-     */
-    public static String convertStreamToString(Object is) {
-        return new String((byte[]) is);
-    }
 }
