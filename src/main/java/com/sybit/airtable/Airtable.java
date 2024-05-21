@@ -137,7 +137,7 @@ public class Airtable {
                 }
             }
         } else {
-            airtableApi = null;
+            airtableApi = airtableToken;
         }
         return airtableApi;
     }
