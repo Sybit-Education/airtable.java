@@ -33,11 +33,11 @@ jobs:
           distribution: 'temurin'
           cache: gradle
       - name: Build
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} build -x check
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} build -x check --scan
       - name: Unit Tests
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} test
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} test --scan
       - name: Integration Tests
-        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} integrationTest
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} integrationTest --scan
         env:
           AIRTABLE_TOKEN: ${{ vars.AIRTABLE_TOKEN }}
           AIRTABLE_BASE: ${{ vars.AIRTABLE_BASE }}
