@@ -95,9 +95,7 @@ java {
 
 tasks.named('test') {
     useJUnitPlatform()
-    reports {
-        junitXml. = true
-    }
+    finalizedBy jacocoTestReport
 }
 
 tasks.named('jacocoTestReport') {
