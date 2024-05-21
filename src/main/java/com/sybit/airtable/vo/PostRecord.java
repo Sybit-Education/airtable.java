@@ -14,14 +14,19 @@ import java.io.Serializable;
  * @author fzr
  * @param <T> the type of the fields
  */
-public class PostRecord<T> implements Serializable {
+public class PostRecord<T> {
 
+    /**
+     * The fields.
+     */
     private T fields;
 
     /**
      * Constructor.
      */
-    public PostRecord() {}
+    public PostRecord() {
+        // default constructor
+    }
 
     /**
      * Get the fields.

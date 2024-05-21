@@ -12,18 +12,31 @@ import java.io.Serializable;
 /**
  * Value Object for the Thumbnail.
  */
-public class Thumbnail implements Serializable {
+public class Thumbnail {
 
+    /**
+     * Name of the thumbnail.
+     */
     private String name;
 
+    /**
+     * URL of the thumbnail.
+     */
     private String url;
+    /**
+     * Width of the thumbnail.
+     */
     private Float width;
+    /**
+     * Height of the thumbnail.
+     */
     private Float height;
 
     /**
      * Constructor.
      */
     public Thumbnail() {
+        // default constructor
     }
 
     /**

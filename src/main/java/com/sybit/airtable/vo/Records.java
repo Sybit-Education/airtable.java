@@ -13,16 +13,23 @@ import java.util.Map;
 /**
  * Value Object for the Records.
  */
-public class Records implements Serializable {
+public class Records {
 
+    /**
+     * List of records.
+     */
     private List<Map<String, Object>> records;
 
+    /**
+     * Offset.
+     */
     private String offset;
 
     /**
      * Constructor.
      */
     public Records() {
+        // default constructor
     }
 
     /**

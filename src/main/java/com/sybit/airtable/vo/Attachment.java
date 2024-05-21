@@ -16,11 +16,29 @@ import java.util.Map;
  */
 public class Attachment implements Serializable {
 
+    /**
+     * ID of attachment.
+     */
     private String id;
+    /**
+     * URL of attachment.
+     */
     private String url;
+    /**
+     * Filename of attachment.
+     */
     private String filename;
+    /**
+     * Size of attachment.
+     */
     private Float size;
+    /**
+     * Type of attachment.
+     */
     private String type;
+    /**
+     * Thumbnails of attachment.
+     */
     private Map<String,Thumbnail> thumbnails;
 
     /**

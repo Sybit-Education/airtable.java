@@ -13,9 +13,15 @@ import java.io.Serializable;
  *
  * @author fzr
  */
-public class Delete implements Serializable {
+public class Delete {
 
+    /**
+     *
+     */
     private boolean deleted;
+    /**
+     * ID of the deleted item.
+     */
     private String id;
 
     /**

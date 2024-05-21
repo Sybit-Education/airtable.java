@@ -12,17 +12,27 @@ import java.util.Map;
 /**
  * Value Object for the Record Item.
  */
-public class RecordItem implements Serializable {
+public class RecordItem {
+    /**
+     * ID of the record.
+     */
     private String id;
 
+    /**
+     * Fields of the record.
+     */
     private Map<String, Object> fields;
 
+    /**
+     * Created time of the record.
+     */
     private String createdTime;
 
     /**
      * Constructor.
      */
     public RecordItem() {
+        // default constructor
     }
 
     /**

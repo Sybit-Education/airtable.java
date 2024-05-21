@@ -11,14 +11,21 @@ import java.io.Serializable;
 /**
  * Error object.
  */
-public class Error implements Serializable {
+public class Error {
+    /**
+     * Type of error.
+     */
     private String type;
+    /**
+     * Error message.
+     */
     private String message;
 
     /**
      * Constructor.
      */
     public Error() {
+        // default constructor
     }
 
     /**
