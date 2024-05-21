@@ -44,9 +44,7 @@ jobs:
         if: always()
         with:
           files: |
-            build/reports/tests/**/*.xml
-            build/reports/tests/**/*.trx
-            build/reports/tests/**/*.json
+            build/test-results/**/*.xml
       - name: Publish with Gradle
         run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} publish
         env:
