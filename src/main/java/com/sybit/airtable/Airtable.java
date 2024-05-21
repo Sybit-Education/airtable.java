@@ -93,31 +93,40 @@ public class Airtable {
     @SuppressWarnings("UnusedReturnValue")
     public Airtable configure(ObjectMapper objectMapper) throws AirtableException {
 
-        String airtableApi = System.getProperty(AIRTABLE_API_KEY);
-        if (airtableApi != null) {
-            LOG.warn("System-Property: Using apikey '{} is deprecated, use '-D {}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
-        } else {
-            airtableApi = System.getProperty(AIRTABLE_TOKEN);
-        }
+        LOG.info("Environment-Variable: Trying property '-D {}' to get apikey.", AIRTABLE_TOKEN);
+        String airtableApi = System.getProperty(AIRTABLE_TOKEN);
 
         if (airtableApi == null) {
-            LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
-            airtableApi = System.getenv(AIRTABLE_API_KEY);
-            if (airtableApi != null) {
-                LOG.warn("Environment-Variable: Using apikey '{}' is deprecated, use '{}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
-            } else {
-                airtableApi = System.getenv(AIRTABLE_TOKEN);
-            }
+            LOG.info("Environment-Variable: Trying OS environment '{}' to get apikey.", AIRTABLE_TOKEN);
+            airtableApi = System.getenv(AIRTABLE_TOKEN);
         }
         if (airtableApi == null) {
-            airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
-            if (airtableApi != null) {
-                LOG.warn("Credential file: Using '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
-            } else {
-                airtableApi = getCredentialProperty(AIRTABLE_TOKEN);
-            }
+            LOG.info("Environment-Variable: Trying credential file to get apikey {}", AIRTABLE_TOKEN);
+            airtableApi = getCredentialProperty(AIRTABLE_TOKEN);
         }
 
+        // deprecated since 0.3
+        if(airtableApi == null) {
+            airtableApi = System.getProperty(AIRTABLE_API_KEY);
+            if (airtableApi != null) {
+                LOG.warn("System-Property: Using apikey '{} is deprecated, use '-D {}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+            }
+
+            if (airtableApi == null) {
+                LOG.info("Environment-Variable: Using OS environment '" + AIRTABLE_API_KEY + "' to get apikey.");
+                airtableApi = System.getenv(AIRTABLE_API_KEY);
+                if (airtableApi != null) {
+                    LOG.warn("Environment-Variable: Using apikey '{}' is deprecated, use '{}' instead .", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+                }
+            }
+            if (airtableApi == null) {
+                airtableApi = getCredentialProperty(AIRTABLE_API_KEY);
+                if (airtableApi != null) {
+                    LOG.warn("Credential file: Using '{}' is deprecated, use '{}' instead.", AIRTABLE_API_KEY, AIRTABLE_TOKEN);
+                }
+            }
+        }
+        // end deprecated
         if(airtableApi == null) {
             throw new AirtableException("Missing Airtable API-Token: '" + AIRTABLE_TOKEN + "' not found.");
         }

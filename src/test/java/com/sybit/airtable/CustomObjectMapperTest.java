@@ -104,15 +104,10 @@ public class CustomObjectMapperTest {
         innerMap.put("url","http://example.com");
         value.put("small",innerMap);
 
-
         Map<String,Thumbnail> thumb = (Map<String,Thumbnail>) mapConverter.convert(type,value);
-        System.out.println(thumb);
         assertNotNull(thumb);
         assertNotNull(thumb.get("small"));
         assertNotNull(thumb.get("small").getUrl());
-
-
-
     }
 
 }
