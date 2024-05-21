@@ -30,12 +30,10 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} build
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} build
       - name: Run Tests
         uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: test integrationTest
+        run: ./gradlew test integrationTest
       - name: Archive test report
         uses: actions/upload-artifact@v4
         with:
@@ -43,8 +41,7 @@ jobs:
           path: build/reports/tests/test
       - name: Publish with Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} publish
+        run: ./gradlew -Pversion=${{ github.event.release.tag_name || '1.0-SNAPSHOT' }} publish
         env:
           ACTION_DEPLOY_USER: ${{ secrets.ACTION_DEPLOY_USER }}
           ACTION_DEPLOY_TOKEN: ${{ secrets.ACTION_DEPLOY_TOKEN }}
