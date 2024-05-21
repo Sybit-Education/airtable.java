@@ -21,14 +21,12 @@ import kong.unirest.UnirestException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.http.client.methods.HttpHead;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.lang.model.SourceVersion;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -520,7 +518,11 @@ public class Table<T> {
         }
 
         try {
-            return transform(body, this.type.getDeclaredConstructor().newInstance());
+            if(body != null) {
+                return transform(body, this.type.getDeclaredConstructor().newInstance());
+            } else {
+                return null;
+            }
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e) {
             throw new AirtableException(e);
         }
@@ -542,7 +544,7 @@ public class Table<T> {
 
         checkProperties(item);
 
-        PostRecord body = new PostRecord<>();
+        PostRecord<T> body = new PostRecord<>();
         body.setFields(item);
 
         HttpResponse<RecordItem> response;
@@ -569,7 +571,11 @@ public class Table<T> {
         }
 
         try {
-            return transform(responseBody, this.type.getDeclaredConstructor().newInstance());
+            if(responseBody!= null) {
+                return transform(responseBody, this.type.getDeclaredConstructor().newInstance());
+            } else {
+                return null;
+            }
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -592,7 +598,7 @@ public class Table<T> {
 
         String id = getIdOfItem(item);
 
-        PostRecord body = new PostRecord<>();
+        PostRecord<T> body = new PostRecord<>();
         body.setFields(filterFields(item));
 
         HttpResponse<RecordItem> response;
@@ -620,7 +626,11 @@ public class Table<T> {
 
         T result;
         try {
-            result = transform(responseBody, this.type.getDeclaredConstructor().newInstance());
+            if(responseBody != null) {
+                result = transform(responseBody, this.type.getDeclaredConstructor().newInstance());
+            } else {
+                result = null;
+            }
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
             LOG.error(e.getMessage(), e);
             result = null;
