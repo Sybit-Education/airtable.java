@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
     implementation 'commons-io:commons-io:2.16.1'
-    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'org.slf4j:slf4j-api:2.0.16'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.github.tomakehurst:wiremock:3.0.1'
