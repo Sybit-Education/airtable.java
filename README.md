@@ -1,3 +1,5 @@
+**⚠️ The project is no longer maintained, as we now use NocoDB for our educational projects. ⚠️**
+
 # Airtable.java - The Java API for Airtable
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25c71982881d40eeb1517e65827f5c62)](https://www.codacy.com/app/stritti/airtable-java?utm_source=github.com&utm_medium=referral&utm_content=Sybit-Education/airtable.java&utm_campaign=badger)
